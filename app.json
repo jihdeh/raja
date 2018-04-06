@@ -16,6 +16,9 @@
     },
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "facebookScheme": "fb194433294293107",
+    "facebookAppId": "194433294293107",
+    "facebookDisplayName": "Umbrella77"
   }
 }
