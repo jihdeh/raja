@@ -25,7 +25,7 @@ class Login extends Component {
           <Text>OR</Text>
           <View />
         </View>
-        <LoginInputs />
+        <LoginInputs navigation={navigation} />
       </View>
     );
   }

@@ -108,7 +108,7 @@ class Login extends Component {
           <Text style={Styles.buttonText}>LOGIN</Text>
         </TouchableOpacity>
         <View style={Styles.linkBox}>
-          <Text onPress={() => navigation.navigate("SignUpOne")}>
+          <Text onPress={() => navigation.navigate("SignUp")}>
             Create Account
           </Text>
           <Text onPress={() => navigation.navigate("ResetPassword")}>

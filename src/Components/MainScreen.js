@@ -12,6 +12,8 @@ import LikesTab from "./AppTabNavigator/LikesTab";
 import ProfileTab from "./AppTabNavigator/ProfileTab";
 
 import LoginScreen from "../Containers/Login";
+import SignUpScreen from "../Containers/SignUp";
+
 import ErrorModal from "../Components/ErrorModal";
 import Styles from "../Styles/MainScreenStyle";
 import { clearError } from "../Actions/ErrorAction";
@@ -111,7 +113,8 @@ const AppTabNavigator = TabNavigator(
 
 const AppStackNavigator = StackNavigator(
   {
-    Login: { screen: LoginScreen }
+    Login: { screen: LoginScreen },
+    SignUp: { screen: SignUpScreen }
   },
   {
     navigationOptions: {
