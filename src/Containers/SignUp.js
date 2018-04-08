@@ -11,13 +11,15 @@ import {
 } from "react-native";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { createAccount } from "../Actions/AuthAction";
 import { displayError } from "../Actions/ErrorAction";
 import Styles from "../Styles/SignUpStyle";
 
 class SignUp extends Component {
   state = {
-    lastNameInput: "",
-    firstNameInput: "",
+    passwordInput: "",
+    usernameInput: "",
+    confirmPasswordInput: "",
     emailInput: ""
   };
 
@@ -25,15 +27,61 @@ class SignUp extends Component {
     this.props.navigation.goBack();
   };
 
-  gotoNext = () => {
-    const { navigation, dispatch } = this.props;
+  validateEmail = email => {
+    var emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return emailPattern.test(email.toLowerCase());
+  };
+
+  validateInputFields = ({
+    passwordInput,
+    confirmPasswordInput,
+    emailInput,
+    usernameInput
+  }) => {
+    const hasFilledInputs =
+      !passwordInput.trim() || !confirmPasswordInput.trim();
+
+    const noWhiteSpaceUsername = /\s/.test(usernameInput);
+
+    const isEmailValid = this.validateEmail(emailInput);
+
+    if (!emailInput || !usernameInput) {
+      this.props.displayError("Email and Username please.");
+      return;
+    } else if (!isEmailValid) {
+      this.props.displayError("Email address should be valid.");
+      return false;
+    } else if (passwordInput !== confirmPasswordInput) {
+      this.props.displayError("Passwords do not match!");
+      return false;
+    } else if (noWhiteSpaceUsername) {
+      this.props.displayError("No spaces allowed in username");
+      return false;
+    }
+
+    return true;
+  };
+
+  onSignUp = () => {
+    const { navigation } = this.props;
+    const { state } = navigation;
     const {
-      lastNameInput,
-      firstNameInput,
-      emailInput,
       passwordInput,
-      confirmPasswordInput
+      confirmPasswordInput,
+      emailInput,
+      usernameInput
     } = this.state;
+
+    if (!this.validateInputFields(this.state)) return;
+
+    const userData = {
+      email: emailInput.trim(),
+      password: passwordInput.trim(),
+      username: usernameInput.replace(/\s+/g, ""),
+      passwordConfirm: confirmPasswordInput.trim()
+    };
+
+    this.props.onSignUp(userData);
   };
 
   render() {
@@ -53,22 +101,23 @@ class SignUp extends Component {
           <TextInput
             style={Styles.input}
             underlineColorAndroid="transparent"
-            placeholder="First Name"
+            placeholder="Username"
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
-            onChangeText={firstNameInput => this.setState({ firstNameInput })}
-            value={this.state.firstNameInput}
+            onChangeText={usernameInput => this.setState({ usernameInput })}
+            value={this.state.usernameInput}
             returnKeyType="next"
-            onSubmitEditing={() => this.lastNameInput.focus()}
+            onSubmitEditing={() => this.passwordInput.focus()}
           />
+
           <TextInput
             style={Styles.input}
             underlineColorAndroid="transparent"
-            placeholder="Last Name"
+            placeholder="Email"
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
-            returnKeyType="go"
-            onChangeText={lastNameInput => this.setState({ lastNameInput })}
-            value={this.state.lastNameInput}
-            ref={input => (this.lastNameInput = input)}
+            onChangeText={emailInput => this.setState({ emailInput })}
+            value={this.state.emailInput}
+            returnKeyType="next"
+            onSubmitEditing={() => this.passwordInput.focus()}
           />
 
           <TextInput
@@ -98,7 +147,7 @@ class SignUp extends Component {
             ref={input => (this.repeatPasswordInput = input)}
           />
           <TouchableOpacity
-            onPress={this.gotoNext}
+            onPress={this.onSignUp}
             style={Styles.buttonContainer}
           >
             <Text style={Styles.buttonText}>JOIN JULI!</Text>
@@ -111,6 +160,7 @@ class SignUp extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onSignUp: bindActionCreators(createAccount, dispatch),
     displayError: bindActionCreators(displayError, dispatch)
   };
 };

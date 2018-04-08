@@ -11,11 +11,10 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { login } from "../../Actions/LoginAction";
+import { login } from "../../Actions/AuthAction";
 import { displayError } from "../../Actions/ErrorAction";
 
 import Styles from "../../Styles/LoginStyle";
-// import { displayError } from "../actions/errorActions";
 
 class Login extends Component {
   state = {
@@ -46,16 +45,16 @@ class Login extends Component {
     let passwordInput = this.state.passwordInput.trim();
     e.preventDefault();
 
-    // const hasFilledInputs = !emailInput || !passwordInput;
-    // const isEmailValid = this.validateEmail(emailInput);
-    // if (hasFilledInputs) {
-    //   this.props.displayError("Both the email and password must be entered!");
-    //   return;
-    // }
-    // if (!isEmailValid) {
-    //   this.props.displayError("A valid email address is required.");
-    //   return;
-    // }
+    const hasFilledInputs = !emailInput || !passwordInput;
+    const isEmailValid = this.validateEmail(emailInput);
+    if (hasFilledInputs) {
+      this.props.displayError("Both the email and password must be entered!");
+      return;
+    }
+    if (!isEmailValid) {
+      this.props.displayError("A valid email address is required.");
+      return;
+    }
     const dummyToken = "19u1ikad87ayhdjas32348yhwjbdrhh8ads8qeijeb3j23h83h";
     this.props.login(dummyToken);
     // this.props.onLogin({

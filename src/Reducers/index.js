@@ -1,8 +1,8 @@
 import { combineReducers } from "redux-immutable";
-import LoginReducer from "./LoginReducer";
+import AuthReducer from "./AuthReducer";
 import ErrorReducer from "./ErrorReducer";
 
 export default combineReducers({
-  auth: LoginReducer,
+  auth: AuthReducer,
   errorMessage: ErrorReducer
 });
