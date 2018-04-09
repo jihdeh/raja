@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import { Provider } from "react-redux";
 import { StackNavigator } from "react-navigation";
 import MainScreen from "./src/Components/MainScreen";
@@ -6,7 +6,7 @@ import configureStore from "./src/configureStore";
 
 const store = configureStore();
 
-export default class App extends React.Component {
+export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = { loading: true };

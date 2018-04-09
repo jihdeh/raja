@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Platform } from "react-native";
+import { View, Text, StyleSheet, Platform, AsyncStorage } from "react-native";
 import { Icon } from "native-base";
 
 import { TabNavigator, StackNavigator } from "react-navigation";
@@ -29,20 +29,58 @@ const displayHeader = {
 };
 
 class MainScreen extends Component {
+  state = {
+    isLoggedIn: null
+  };
+
   static navigationOptions = ({ navigation }) => {
     const { params } = navigation.state;
+
     hasParams = !params ? { header: null } : params;
     return {
       ...hasParams
     };
   };
 
+  async componentWillMount() {
+    const isLoggedIn = await AsyncStorage.getItem("token");
+    if (isLoggedIn && !this.props.navigation.getParam("headerRight")) {
+      this.props.navigation.setParams({ ...displayHeader });
+    }
+    this.setState({
+      isLoggedIn: isLoggedIn
+    });
+  }
+
   componentWillReceiveProps(props) {
     const { auth } = props;
-    const { token: isAuthenticated } = auth.toJS();
+    const { user: isAuthenticated } = auth.toJS();
+
     if (isAuthenticated && !props.navigation.getParam("headerRight")) {
       props.navigation.setParams({ ...displayHeader });
+    } else if (
+      !isAuthenticated &&
+      this.state.isLoggedIn &&
+      props.navigation.getParam("headerRight")
+    ) {
+      props.navigation.setParams({
+        headerLeft: undefined,
+        headerRight: undefined
+      });
     }
+
+    if (isAuthenticated && isAuthenticated.token) {
+      AsyncStorage.getItem("token").then(value => {
+        if (!value) {
+          AsyncStorage.setItem("token", isAuthenticated.token);
+        }
+      });
+    }
+
+    this.setState({
+      isLoggedIn: isAuthenticated && isAuthenticated.token
+    });
+    return;
   }
 
   onClose() {
@@ -50,8 +88,9 @@ class MainScreen extends Component {
   }
 
   render() {
+    const { isLoggedIn } = this.state;
     const { auth, errorMessage } = this.props;
-    const { token: isAuthenticated } = auth.toJS();
+    const { user: isAuthenticated } = auth.toJS();
     const theErrorMessage = errorMessage.toJS();
 
     return (
@@ -60,7 +99,11 @@ class MainScreen extends Component {
           errorMessage={theErrorMessage}
           onClose={() => this.onClose()}
         />
-        {isAuthenticated ? <AppTabNavigator /> : <AppStackNavigator />}
+        {isAuthenticated || isLoggedIn ? (
+          <AppTabNavigator />
+        ) : (
+          <AppStackNavigator />
+        )}
       </View>
     );
   }
