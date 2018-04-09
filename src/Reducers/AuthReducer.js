@@ -1,18 +1,16 @@
-import { Map } from 'immutable';
-import {
-  IS_AUTHENTICATED
-} from '../Constants/ActionTypes'
+import { Map } from "immutable";
+import { IS_AUTHENTICATED } from "../Constants/ActionTypes";
 import { set } from "../utils/functional-immutable";
 
 const initialState = new Map();
 
-const LoginReducer = (state = initialState, action) => {
-  switch (action.type) {
+const AuthReducer = (state = initialState, { type, payload }) => {
+  switch (type) {
     case IS_AUTHENTICATED:
-      return set('token', action.payload, state);
+      return set("user", payload, state);
     default:
       return state;
   }
 };
 
-export default LoginReducer;
+export default AuthReducer;

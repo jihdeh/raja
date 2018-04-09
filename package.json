@@ -6,6 +6,7 @@
     "axios": "^0.18.0",
     "expo": "^25.0.0",
     "immutable": "^3.8.2",
+    "jwt-decode": "^2.2.0",
     "native-base": "^2.3.10",
     "ramda": "^0.25.0",
     "react": "16.2.0",

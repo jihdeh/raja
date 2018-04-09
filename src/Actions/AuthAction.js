@@ -17,8 +17,15 @@ export const login = ({ email, password }) => dispatch => {
     })
     .catch(error => {
       const { data } = error.response;
-      displayError(data.msg)(dispatch);
+      displayError(data.message)(dispatch);
     });
+};
+
+export const logout = () => dispatch => {
+  dispatch({
+    type: IS_AUTHENTICATED,
+    payload: null
+  });
 };
 
 export const facebookLogin = ({ access_token }) => dispatch => {
@@ -32,16 +39,14 @@ export const facebookLogin = ({ access_token }) => dispatch => {
     })
     .catch(error => {
       const { data } = error.response;
-      displayError(data.msg)(dispatch);
+      displayError(data.message)(dispatch);
     });
 };
 
 export const createAccount = accountDetails => async dispatch => {
-  console.log(accountDetails);
   axios
     .post(`${BASE_URL}/auth/register`, accountDetails)
     .then(async ({ data }) => {
-      console.log(data);
       await dispatch({
         type: CREATE_ACCOUNT_SUCCESS,
         payload: data
@@ -52,7 +57,7 @@ export const createAccount = accountDetails => async dispatch => {
     })
     .catch(error => {
       const { data } = error.response;
-      console.log(error, "---", data);
-      displayError(data.msg)(dispatch);
+      console.log(data);
+      displayError(data.message)(dispatch);
     });
 };

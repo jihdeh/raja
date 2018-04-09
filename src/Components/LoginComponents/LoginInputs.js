@@ -16,24 +16,12 @@ import { displayError } from "../../Actions/ErrorAction";
 
 import Styles from "../../Styles/LoginStyle";
 
-class Login extends Component {
+class LoginInput extends Component {
   state = {
     emailInput: "",
-    passwordInput: ""
+    passwordInput: "",
+    loading: null
   };
-
-  // componentWillReceiveProps(prevProps) {
-  //   const { auth } = prevProps;
-  //   if (auth && auth.token) {
-  //     AsyncStorage.getItem("token").then(value => {
-  //       if (!value) {
-  //         AsyncStorage.setItem("token", auth.token);
-  //         prevProps.navigation.navigate("Home");
-  //       }
-  //     });
-  //   }
-  //   return;
-  // }
 
   validateEmail = email => {
     var emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -55,12 +43,15 @@ class Login extends Component {
       this.props.displayError("A valid email address is required.");
       return;
     }
-    const dummyToken = "19u1ikad87ayhdjas32348yhwjbdrhh8ads8qeijeb3j23h83h";
-    this.props.login(dummyToken);
-    // this.props.onLogin({
-    //   email: emailInput,
-    //   password: passwordInput
-    // });
+
+    this.setState({
+      loading: true
+    });
+
+    this.props.login({
+      email: emailInput,
+      password: passwordInput
+    });
   };
 
   handleBack = () => {
@@ -114,6 +105,11 @@ class Login extends Component {
             Forgot password?
           </Text>
         </View>
+        {this.state.loading && (
+          <View style={{ display: "flex" }}>
+            <Text>Loading....</Text>
+          </View>
+        )}
       </KeyboardAvoidingView>
     );
   }
@@ -128,4 +124,4 @@ const mapDispatchToProps = dispatch => ({
   displayError: bindActionCreators(displayError, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginInput);

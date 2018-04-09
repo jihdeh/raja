@@ -20,7 +20,8 @@ class SignUp extends Component {
     passwordInput: "",
     usernameInput: "",
     confirmPasswordInput: "",
-    emailInput: ""
+    emailInput: "",
+    loading: false
   };
 
   handleBack = () => {
@@ -81,6 +82,9 @@ class SignUp extends Component {
       passwordConfirm: confirmPasswordInput.trim()
     };
 
+    this.setState({
+      loading: true
+    });
     this.props.onSignUp(userData);
   };
 
@@ -152,6 +156,7 @@ class SignUp extends Component {
           >
             <Text style={Styles.buttonText}>JOIN JULI!</Text>
           </TouchableOpacity>
+          {this.state.loading && <Text>Loading....</Text>}
         </View>
       </View>
     );
