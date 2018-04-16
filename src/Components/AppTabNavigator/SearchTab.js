@@ -18,6 +18,12 @@ class SearchTab extends Component {
     )
   };
 
+  constructor() {
+    super();
+
+    this.suggestionCountArray = [];
+  }
+
   state = {
     searchInput: "",
     searchResultCount: 0,
@@ -51,6 +57,7 @@ class SearchTab extends Component {
       <View>
         <View style={Styles.suggestionContainer}>
           <TouchableOpacity
+            style={selectedTab === "product" && Styles.suggestionHeaderWrapper}
             onPress={() =>
               this.setState({
                 selectedTab: "product"
@@ -60,6 +67,7 @@ class SearchTab extends Component {
             <Text style={Styles.suggestionHeader}>Products</Text>
           </TouchableOpacity>
           <TouchableOpacity
+            style={selectedTab === "profile" && Styles.suggestionHeaderWrapper}
             onPress={() =>
               this.setState({
                 selectedTab: "profile"
@@ -70,9 +78,7 @@ class SearchTab extends Component {
           </TouchableOpacity>
         </View>
         <View style={Styles.suggestionTextContainer}>
-          <Text style={Styles.suggestionText}>
-            SUGGESTIONS ({searchResultCount})
-          </Text>
+          <Text style={Styles.suggestionText}>SUGGESTIONS (...)</Text>
         </View>
         <View>
           {selectedTab === "product"
@@ -92,6 +98,7 @@ class SearchTab extends Component {
       const result = suggestions.filter(
         (product, key) => product.name.toLowerCase().indexOf(cleanInput) > -1
       );
+
       return result.map((product, key) => (
         <Text key={key}>{product.name}</Text>
       ));
@@ -99,9 +106,12 @@ class SearchTab extends Component {
       const result = suggestions.filter(
         (profile, key) => profile.name.toLowerCase().indexOf(cleanInput) > -1
       );
-      return result.map((profile, key) => (
-        <Text key={key}>{profile.name}</Text>
-      ));
+
+      return result.length ? (
+        result.map((profile, key) => <Text key={key}>{profile.name}</Text>)
+      ) : (
+        <Text>No results found</Text>
+      );
     }
   }
 

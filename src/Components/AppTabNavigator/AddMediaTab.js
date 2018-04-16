@@ -1,35 +1,78 @@
 import React, { Component } from "react";
 import {
-    View,
-    Text,
-    StyleSheet
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  ScrollView,
+  Image
 } from "react-native";
+import ImageBrowser from "../ImageBrowser";
 
-import { Icon } from 'native-base'
+import { Icon } from "native-base";
 
 class AddMediaTab extends Component {
+  static navigationOptions = {
+    tabBarIcon: ({ tintColor }) => (
+      <Icon name="ios-add-circle" style={{ color: tintColor }} />
+    )
+  };
 
-    static navigationOptions = {
+  constructor(props) {
+    super(props);
+    this.state = {
+      imageBrowserOpen: false,
+      photos: []
+    };
+  }
+  imageBrowserCallback = callback => {
+    callback
+      .then(photos => {
+        console.log(photos);
+        this.setState({
+          imageBrowserOpen: false,
+          photos
+        });
+      })
+      .catch(e => console.log(e));
+  };
 
-        tabBarIcon: ({ tintColor }) => (
-            <Icon name="ios-add-circle" style={{ color: tintColor }} />
-        )
+  renderImage(item, i) {
+    return (
+      <Image
+        style={{ height: 100, width: 100 }}
+        source={{ uri: item.file }}
+        key={i}
+      />
+    );
+  }
+  render() {
+    if (this.state.imageBrowserOpen) {
+      return <ImageBrowser max={4} callback={this.imageBrowserCallback} />;
     }
-
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text>AddMediaTab</Text>
-            </View>
-        );
-    }
+    return (
+      <View style={styles.container}>
+        <Button
+          title="Choose Images"
+          onPress={() => this.setState({ imageBrowserOpen: true })}
+        />
+        <Text>This is an example of a</Text>
+        <Text>multi image selector using expo</Text>
+        <ScrollView>
+          {this.state.photos.map((item, i) => this.renderImage(item, i))}
+        </ScrollView>
+      </View>
+    );
+  }
 }
 export default AddMediaTab;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    }
+  container: {
+    flex: 1,
+    marginTop: 30,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center"
+  }
 });

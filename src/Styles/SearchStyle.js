@@ -36,6 +36,9 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: "center"
   },
+  suggestionHeaderWrapper: {
+    backgroundColor: "#bababa"
+  },
   suggestionContainer: {
     borderColor: "#bababa",
     borderBottomWidth: 1,
