@@ -21,6 +21,7 @@ class ProfileTab extends Component {
   onLogout = () => {
     AsyncStorage.clear();
     this.props.logout();
+    this.props.navigation.navigate("Landing");
   };
 
   render() {

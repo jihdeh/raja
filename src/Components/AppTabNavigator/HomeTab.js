@@ -4,7 +4,6 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
 import { Container, Content, Icon } from "native-base";
-import CardComponent from "../CardComponent";
 import HotLists from "../HomeComponents/HotLists";
 import UserFeeds from "../HomeComponents/UserFeeds";
 import Styles from "../../Styles/HomeStyle";

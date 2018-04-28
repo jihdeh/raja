@@ -2,28 +2,30 @@ import React, { Component } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import get from "lodash/get";
 import FacebookButton from "../Components/LoginComponents/FacebookLoginButton";
 import LoginInputs from "../Components/LoginComponents/LoginInputs";
 import Styles from "../Styles/LoginStyle";
 
 class Login extends Component {
+  componentWillReceiveProps(props) {
+    const { auth } = props;
+    const { user: isAuthenticated } = auth.toJS();
+    if (get(isAuthenticated, "token")) {
+      this.props.navigation.navigate("Home");
+    }
+  }
+
   render() {
     const { navigation } = this.props;
 
     return (
-      <View style={Styles.container}>
-        <Image
-          style={Styles.logo}
-          source={{
-            uri:
-              "https://airshp.com/wp-content/uploads/AL1-LogoSuite2016-v3_MARK-688x688.png"
-          }}
-        />
+      <View>
         <FacebookButton />
         <View style={Styles.horizon}>
-          <View style={Styles.horizonLine} />
-          <Text>OR</Text>
-          <View />
+          <View style={Styles.horizonLine}>
+            <Text>OR</Text>
+          </View>
         </View>
         <LoginInputs navigation={navigation} />
       </View>
@@ -31,4 +33,8 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = state => ({
+  auth: state.get("auth")
+});
+
+export default connect(mapStateToProps)(Login);

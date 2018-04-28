@@ -5,11 +5,21 @@ import {
   View,
   Button,
   ScrollView,
-  Image
+  Image,
+  KeyboardAvoidingView,
+  TextInput,
+  TouchableOpacity
 } from "react-native";
+import { Icon } from "native-base";
+import Picker from "react-native-picker-select";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+import { displayError } from "../../Actions/ErrorAction";
 import ImageBrowser from "../ImageBrowser";
 
-import { Icon } from "native-base";
+import GStyles from "../../Styles/GeneralStyle";
+import Styles from "../../Styles/AddMediaStyle";
 
 class AddMediaTab extends Component {
   static navigationOptions = {
@@ -22,13 +32,28 @@ class AddMediaTab extends Component {
     super(props);
     this.state = {
       imageBrowserOpen: false,
-      photos: []
+      photos: [],
+      gotoNext: false,
+      titleInput: "",
+      descriptionInput: "",
+      items: [
+        {
+          label: "Orange",
+          value: "orange",
+          key: "orange"
+        },
+        {
+          label: "Blue",
+          value: "blue",
+          key: "blue"
+        }
+      ]
     };
   }
+
   imageBrowserCallback = callback => {
     callback
       .then(photos => {
-        console.log(photos);
         this.setState({
           imageBrowserOpen: false,
           photos
@@ -38,41 +63,149 @@ class AddMediaTab extends Component {
   };
 
   renderImage(item, i) {
-    return (
-      <Image
-        style={{ height: 100, width: 100 }}
-        source={{ uri: item.file }}
-        key={i}
-      />
-    );
+    return <Image style={Styles.image} source={{ uri: item.file }} key={i} />;
   }
+
+  validate() {
+    const {
+      photos,
+      titleInput,
+      descriptionInput,
+      productCategory,
+      productSubCategory
+    } = this.state;
+    if (!photos.length) {
+      this.props.displayError("Please upload images");
+      return false;
+    }
+    if (
+      !titleInput.trim() ||
+      !descriptionInput.trim() ||
+      !productCategory ||
+      !productSubCategory
+    ) {
+      this.props.displayError("All fields are required");
+      return false;
+    }
+    return true;
+  }
+
+  onNext = () => {
+    if (this.validate()) {
+      this.props.navigation.navigate("BidSelection", {});
+    }
+  };
+
   render() {
     if (this.state.imageBrowserOpen) {
-      return <ImageBrowser max={4} callback={this.imageBrowserCallback} />;
+      return <ImageBrowser max={6} callback={this.imageBrowserCallback} />;
     }
+
     return (
-      <View style={styles.container}>
-        <Button
-          title="Choose Images"
-          onPress={() => this.setState({ imageBrowserOpen: true })}
-        />
-        <Text>This is an example of a</Text>
-        <Text>multi image selector using expo</Text>
-        <ScrollView>
-          {this.state.photos.map((item, i) => this.renderImage(item, i))}
-        </ScrollView>
+      <View style={{ flex: 1 }}>
+        <View style={GStyles.hotListHeader}>
+          <Text>Sell Product</Text>
+          <TouchableOpacity
+            onPress={() => this.setState({ imageBrowserOpen: true })}
+          >
+            <Text>
+              <Icon name="ios-add-circle-outline" style={{ fontSize: 20 }} />
+              Add Image
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={GStyles.container}>
+          <ScrollView
+            contentContainerStyle={{
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+            style={{ flex: 1 }}
+          >
+            <View style={Styles.imageContainer}>
+              {this.state.photos.map((item, i) => this.renderImage(item, i))}
+            </View>
+            <View style={Styles.afterLayer}>
+              <KeyboardAvoidingView
+                behavior="padding"
+                keyboardVerticalOffset={64}
+              >
+                <Text style={Styles.product_text}>Enter title:</Text>
+                <TextInput
+                  style={GStyles.input}
+                  underlineColorAndroid="transparent"
+                  placeholder="Title"
+                  placeholderTextColor="rgba(45, 45, 45, 0.3)"
+                  returnKeyType="next"
+                  onSubmitEditing={() => this.descriptionInput.focus()}
+                  keyboardType="default"
+                  autoCapitalize={"none"}
+                  onChangeText={titleInput => this.setState({ titleInput })}
+                  value={this.state.titleInput}
+                  autoCorrect={false}
+                />
+                <Text style={Styles.product_text}>Enter Description:</Text>
+                <TextInput
+                  style={[GStyles.input, Styles.description]}
+                  underlineColorAndroid="transparent"
+                  placeholder="Description of product"
+                  multiline={true}
+                  placeholderTextColor="rgba(45, 45, 45, 0.3)"
+                  ref={input => {
+                    this.descriptionInput = input;
+                  }}
+                  onChangeText={descriptionInput =>
+                    this.setState({ descriptionInput })
+                  }
+                  value={this.state.descriptionInput}
+                />
+              </KeyboardAvoidingView>
+              <Text style={Styles.product_text}>Select Category:</Text>
+              <View style={Styles.categorySelection_input}>
+                <Picker
+                  items={this.state.items}
+                  hideIcon
+                  onValueChange={(selectedValue, itemIndex) =>
+                    this.setState({ productCategory: selectedValue })
+                  }
+                  placeholder={{
+                    label: "Select a category...",
+                    value: null
+                  }}
+                  value={this.state.productCategory}
+                />
+              </View>
+              <Text style={Styles.product_text}>Select Sub-Category:</Text>
+              <View style={Styles.categorySelection_input}>
+                <Picker
+                  items={this.state.items}
+                  hideIcon
+                  onValueChange={(itemValue, itemIndex) =>
+                    this.setState({ productSubCategory: itemValue })
+                  }
+                  placeholder={{
+                    label: "Select a sub category...",
+                    value: null
+                  }}
+                  value={this.state.productSubCategory}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={this.onNext}
+                style={[Styles.btn, GStyles.buttonContainer]}
+              >
+                <Text style={GStyles.buttonText}>NEXT</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </View>
       </View>
     );
   }
 }
-export default AddMediaTab;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 30,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
-  }
+const mapDispatchToProps = dispatch => ({
+  displayError: bindActionCreators(displayError, dispatch)
 });
+
+export default connect(null, mapDispatchToProps)(AddMediaTab);

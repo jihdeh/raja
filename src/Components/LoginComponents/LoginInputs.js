@@ -32,7 +32,6 @@ class LoginInput extends Component {
     let emailInput = this.state.emailInput.trim();
     let passwordInput = this.state.passwordInput.trim();
     e.preventDefault();
-
     const hasFilledInputs = !emailInput || !passwordInput;
     const isEmailValid = this.validateEmail(emailInput);
     if (hasFilledInputs) {
@@ -115,13 +114,9 @@ class LoginInput extends Component {
   }
 }
 
-const mapStateToProps = ({ auth }) => ({
-  auth
-});
-
 const mapDispatchToProps = dispatch => ({
   login: bindActionCreators(login, dispatch),
   displayError: bindActionCreators(displayError, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginInput);
+export default connect(null, mapDispatchToProps)(LoginInput);

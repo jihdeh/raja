@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet, Platform, AsyncStorage } from "react-native";
 import { Icon } from "native-base";
+import get from "lodash/get";
 
 import { TabNavigator, StackNavigator } from "react-navigation";
 import { connect } from "react-redux";
@@ -11,14 +12,18 @@ import AddMediaTab from "./AppTabNavigator/AddMediaTab";
 import LikesTab from "./AppTabNavigator/LikesTab";
 import ProfileTab from "./AppTabNavigator/ProfileTab";
 
+import LandingScreen from "../Containers/Landing";
 import LoginScreen from "../Containers/Login";
 import SignUpScreen from "../Containers/SignUp";
 
-import ErrorModal from "../Components/ErrorModal";
+import ErrorModal from "./ErrorModal";
+import BidSelection from "./AuctionComponents/bidSelection";
+
 import Styles from "../Styles/MainScreenStyle";
 import { clearError } from "../Actions/ErrorAction";
 
 const displayHeader = {
+  header: undefined,
   headerLeft: <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />,
   headerRight: (
     <View style={Styles.headerRightContainer}>
@@ -52,35 +57,27 @@ class MainScreen extends Component {
     });
   }
 
-  componentWillReceiveProps(props) {
+  async componentWillReceiveProps(props) {
     const { auth } = props;
     const { user: isAuthenticated } = auth.toJS();
+    const isLoggedIn = await AsyncStorage.getItem("token");
 
-    if (isAuthenticated && !props.navigation.getParam("headerRight")) {
-      props.navigation.setParams({ ...displayHeader });
+    if (
+      get(isAuthenticated, "token") &&
+      !this.props.navigation.getParam("headerRight")
+    ) {
+      this.props.navigation.setParams({ ...displayHeader });
     } else if (
-      !isAuthenticated &&
-      this.state.isLoggedIn &&
+      !get(isAuthenticated, "token") &&
+      !isLoggedIn &&
       props.navigation.getParam("headerRight")
     ) {
       props.navigation.setParams({
         headerLeft: undefined,
-        headerRight: undefined
+        headerRight: undefined,
+        header: null
       });
     }
-
-    if (isAuthenticated && isAuthenticated.token) {
-      AsyncStorage.getItem("token").then(value => {
-        if (!value) {
-          AsyncStorage.setItem("token", isAuthenticated.token);
-        }
-      });
-    }
-
-    this.setState({
-      isLoggedIn: isAuthenticated && isAuthenticated.token
-    });
-    return;
   }
 
   onClose() {
@@ -89,8 +86,7 @@ class MainScreen extends Component {
 
   render() {
     const { isLoggedIn } = this.state;
-    const { auth, errorMessage } = this.props;
-    const { user: isAuthenticated } = auth.toJS();
+    const { errorMessage } = this.props;
     const theErrorMessage = errorMessage.toJS();
 
     return (
@@ -99,11 +95,7 @@ class MainScreen extends Component {
           errorMessage={theErrorMessage}
           onClose={() => this.onClose()}
         />
-        {isAuthenticated || isLoggedIn ? (
-          <AppTabNavigator />
-        ) : (
-          <AppStackNavigator />
-        )}
+        <AppStackNavigator />
       </View>
     );
   }
@@ -156,8 +148,13 @@ const AppTabNavigator = TabNavigator(
 
 const AppStackNavigator = StackNavigator(
   {
+    Landing: { screen: LandingScreen },
     Login: { screen: LoginScreen },
-    SignUp: { screen: SignUpScreen }
+    SignUp: { screen: SignUpScreen },
+    BidSelection: { screen: BidSelection },
+    Home: {
+      screen: AppTabNavigator
+    }
   },
   {
     navigationOptions: {
