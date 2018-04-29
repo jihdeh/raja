@@ -117,7 +117,7 @@ const AppTabNavigator = TabNavigator(
       screen: SearchTab
     },
     AddMediaTab: {
-      screen: AddMediaTab
+      screen: BidSelection
     },
     LikesTab: {
       screen: LikesTab

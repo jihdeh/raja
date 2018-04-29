@@ -176,7 +176,7 @@ class AddMediaTab extends Component {
                 />
               </View>
               <Text style={Styles.product_text}>Select Sub-Category:</Text>
-              <View style={Styles.categorySelection_input}>
+              <View style={GStyles.dropDownSelection_input}>
                 <Picker
                   items={this.state.items}
                   hideIcon

@@ -35,16 +35,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 5
   },
-  categorySelection_input: {
-    flex: 0,
-    paddingLeft: 8,
-    paddingTop: 5,
-    paddingBottom: 5,
-    marginBottom: 10,
-    borderRadius: 3,
-    borderWidth: 0.5,
-    borderColor: "#999"
-  },
   btn: {
     marginBottom: 10
   }

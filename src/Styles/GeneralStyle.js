@@ -53,6 +53,16 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     fontSize: 16
   },
+  dropDownSelection_input: {
+    flex: 0,
+    paddingLeft: 8,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginBottom: 10,
+    borderRadius: 3,
+    borderWidth: 0.5,
+    borderColor: "#999"
+  },
   linkBox: {
     flexDirection: "row",
     justifyContent: "space-between",
