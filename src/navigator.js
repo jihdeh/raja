@@ -8,6 +8,7 @@ import LikesTab from "./Components/AppTabNavigator/LikesTab";
 import ProfileTab from "./Components/AppTabNavigator/ProfileTab";
 import BidSelection from "./Components/AuctionComponents/bidSelection";
 import Notifications from "./Components/Notifications";
+import ProductOverview from "./Components/AuctionComponents/productOverview";
 
 import LandingScreen from "./Containers/Landing";
 import LoginScreen from "./Containers/Login";
@@ -61,6 +62,9 @@ const AppNavigator = StackNavigator({
   },
   Notifications: {
     screen: Notifications
+  },
+  ProductOverview: {
+    screen: ProductOverview
   }
 });
 

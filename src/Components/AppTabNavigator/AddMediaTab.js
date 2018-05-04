@@ -105,7 +105,7 @@ class AddMediaTab extends Component {
 
   onNext = () => {
     if (this.validate()) {
-      this.props.navigation.navigate("BidSelection", {});
+      this.props.navigation.navigate("BidSelection", { ...this.state });
     }
   };
 

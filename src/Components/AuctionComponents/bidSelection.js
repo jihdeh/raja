@@ -11,6 +11,10 @@ import CheckBox from "react-native-checkbox";
 import { Icon } from "native-base";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import Picker from "react-native-picker-select";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+import { displayError } from "../../Actions/ErrorAction";
 
 import GStyles from "../../Styles/GeneralStyle";
 import Styles from "../../Styles/BidSelectionStyle";
@@ -21,6 +25,8 @@ class BidSelection extends Component {
     productQualityType: "new",
     fixedPrice: "0",
     targetPrice: "0",
+    targetDate: null,
+    productWeight: "0",
     isDateTimePickerVisible: false,
     deliveryMethod: "Courier",
     items: [
@@ -60,9 +66,9 @@ class BidSelection extends Component {
     });
   };
 
-  onPriceInputChange = (text, priceLabel) => {
+  onNumericInputChange = (text, typeLabel) => {
     this.setState({
-      [priceLabel]: text.replace(/[^0-9.]/g, "")
+      [typeLabel]: text.replace(/[^0-9.]/g, "")
     });
   };
 
@@ -72,10 +78,46 @@ class BidSelection extends Component {
 
   _handleDatePicked = date => {
     console.log("A date has been picked: ", date);
+    this.setState({
+      targetDate: date
+    });
     this._hideDateTimePicker();
   };
 
-  onNext = () => {};
+  validate() {
+    const {
+      targetDate,
+      targetPrice,
+      selectedSellType,
+      productQualityType,
+      fixedPrice,
+      deliveryMethod
+    } = this.state;
+
+    if (!targetPrice.trim() || !fixedPrice.trim()) {
+      this.props.displayError("Please enter price of item");
+    }
+
+    if (
+      !selectedSellType ||
+      !productQualityType ||
+      !deliveryMethod ||
+      (+targetPrice !== 0 && !targetDate)
+    ) {
+      this.props.displayError("All fields are required");
+      return false;
+    }
+    return true;
+  }
+
+  onNext = () => {
+    if (this.validate()) {
+      this.props.navigation.navigate("ProductOverview", {
+        ...this.state,
+        ...this.props
+      });
+    }
+  };
 
   render() {
     const { selectedSellType, productQualityType } = this.state;
@@ -112,7 +154,7 @@ class BidSelection extends Component {
                 keyboardType="numeric"
                 placeholderTextColor="rgba(45, 45, 45, 0.3)"
                 onChangeText={price =>
-                  this.onPriceInputChange(price, "fixedPrice")
+                  this.onNumericInputChange(price, "fixedPrice")
                 }
                 value={this.state.fixedPrice}
               />
@@ -124,9 +166,10 @@ class BidSelection extends Component {
                 style={GStyles.input}
                 underlineColorAndroid="transparent"
                 placeholder="Target Price"
+                keyboardType="numeric"
                 placeholderTextColor="rgba(45, 45, 45, 0.3)"
                 onChangeText={price =>
-                  this.onPriceInputChange(price, "targetPrice")
+                  this.onNumericInputChange(price, "targetPrice")
                 }
                 value={this.state.targetPrice}
               />
@@ -179,12 +222,13 @@ class BidSelection extends Component {
             <TextInput
               style={GStyles.input}
               underlineColorAndroid="transparent"
-              placeholder="Target Price"
+              placeholder="Product Weight"
+              keyboardType="numeric"
               placeholderTextColor="rgba(45, 45, 45, 0.3)"
-              onChangeText={price =>
-                this.onPriceInputChange(price, "targetPrice")
+              onChangeText={weight =>
+                this.onNumericInputChange(weight, "productWeight")
               }
-              value={this.state.targetPrice}
+              value={this.state.productWeight}
             />
             <Text style={Styles.product_text}>Delivery Method:</Text>
             <View style={GStyles.dropDownSelection_input}>
@@ -216,5 +260,8 @@ class BidSelection extends Component {
     );
   }
 }
+const mapDispatchToProps = dispatch => ({
+  displayError: bindActionCreators(displayError, dispatch)
+});
 
-export default BidSelection;
+export default connect(null, mapDispatchToProps)(BidSelection);
