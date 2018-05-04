@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { NavigationActions, addNavigationHelpers } from "react-navigation";
 import AppNavigator from "../navigator";
 
-import Header from "../Components/Header";
 import ErrorModal from "../Components/ErrorModal";
 
 // import Styles from "../Styles/MainScreenStyle";

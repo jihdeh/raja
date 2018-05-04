@@ -7,15 +7,30 @@ import {
   TouchableOpacity
 } from "react-native";
 import Styles from "../../Styles/SearchStyle";
+import GStyles from "../../Styles/GeneralStyle";
 import DummyProductList from "../../utils/dummySearchCategoryJson";
 
 import { Icon } from "native-base";
 
 class SearchTab extends Component {
-  static navigationOptions = {
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="ios-search" style={{ color: tintColor }} />
-    )
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+    return {
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="ios-search" style={{ color: tintColor }} />
+      ),
+      headerLeft: <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />,
+      headerRight: (
+        <View style={GStyles.headerRightContainer}>
+          <Icon style={GStyles.headerRightIcon} name="ios-bookmark-outline" />
+          <Icon
+            style={GStyles.headerRightIcon}
+            name="md-mail"
+            onPress={() => navigation.navigate("Notifications")}
+          />
+        </View>
+      )
+    };
   };
 
   constructor() {

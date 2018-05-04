@@ -22,10 +22,23 @@ import GStyles from "../../Styles/GeneralStyle";
 import Styles from "../../Styles/AddMediaStyle";
 
 class AddMediaTab extends Component {
-  static navigationOptions = {
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="ios-add-circle" style={{ color: tintColor }} />
-    )
+  static navigationOptions = ({ navigation }) => {
+    return {
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="ios-add-circle" style={{ color: tintColor }} />
+      ),
+      headerLeft: <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />,
+      headerRight: (
+        <View style={GStyles.headerRightContainer}>
+          <Icon style={GStyles.headerRightIcon} name="ios-bookmark-outline" />
+          <Icon
+            style={GStyles.headerRightIcon}
+            name="md-mail"
+            onPress={() => navigation.navigate("Notifications")}
+          />
+        </View>
+      )
+    };
   };
 
   constructor(props) {

@@ -88,6 +88,13 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "700",
     fontSize: 16
+  },
+  headerRightContainer: {
+    flex: 1,
+    flexDirection: "row"
+  },
+  headerRightIcon: {
+    paddingRight: 10
   }
 });
 

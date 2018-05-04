@@ -51,25 +51,17 @@ const AppTabNavigator = TabNavigator(
   }
 );
 
-const AppNavigator = StackNavigator(
-  {
-    Landing: { screen: LandingScreen },
-    Login: { screen: LoginScreen },
-    SignUp: { screen: SignUpScreen },
-    BidSelection: { screen: BidSelection },
-    Home: {
-      screen: AppTabNavigator
-    },
-    Notifications: {
-      screen: Notifications
-    }
+const AppNavigator = StackNavigator({
+  Landing: { screen: LandingScreen },
+  Login: { screen: LoginScreen },
+  SignUp: { screen: SignUpScreen },
+  BidSelection: { screen: BidSelection },
+  Home: {
+    screen: AppTabNavigator
   },
-  {
-    headerMode: "screen",
-    navigationOptions: {
-      header: null
-    }
+  Notifications: {
+    screen: Notifications
   }
-);
+});
 
 export default AppNavigator;
