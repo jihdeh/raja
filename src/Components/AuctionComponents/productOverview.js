@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import moment from "moment/moment";
 import Styles from "../../Styles/ProductOverview";
 import GStyles from "../../Styles/GeneralStyle";
 
@@ -46,6 +47,45 @@ class ProductOverview extends Component {
           <Text>Description:</Text>
           <Text style={Styles.rightEnd}>{params.descriptionInput}</Text>
         </View>
+        <View style={Styles.productInformation}>
+          <Text>Category:</Text>
+          <Text style={Styles.rightEnd}>{params.productCategory}</Text>
+        </View>
+        <View style={Styles.productInformation}>
+          <Text>Sub Category:</Text>
+          <Text style={Styles.rightEnd}>{params.productSubCategory}</Text>
+        </View>
+        <View style={Styles.productInformation}>
+          <Text>Product Condition:</Text>
+          <Text style={Styles.rightEnd}>{params.productQualityType}</Text>
+        </View>
+        <View style={Styles.productInformation}>
+          <Text>Product Weight:</Text>
+          <Text style={Styles.rightEnd}>{params.productWeight}kg</Text>
+        </View>
+        <View style={Styles.productInformation}>
+          <Text>Selling at:</Text>
+          <Text style={Styles.rightEnd}>
+            ${params.selectedSellType === "fixed"
+              ? params.fixedPrice
+              : params.targetPrice}
+          </Text>
+        </View>
+        {params.selectedSellType === "auction" && (
+          <View style={Styles.productInformation}>
+            <Text>Auction Ends on:</Text>
+            <Text style={Styles.rightEnd}>
+              {moment(params.targetDate).format("MMMM Do YYYY, h:mm:ss a")}
+            </Text>
+          </View>
+        )}
+        <View style={Styles.productInformation}>
+          <Text>Delivery Method:</Text>
+          <Text style={Styles.rightEnd}>{params.deliveryMethod}</Text>
+        </View>
+        <TouchableOpacity onPress={this.onNext} style={GStyles.buttonContainer}>
+          <Text style={GStyles.buttonText}>SUBMIT</Text>
+        </TouchableOpacity>
       </ScrollView>
     );
   }

@@ -92,12 +92,16 @@ class BidSelection extends Component {
     } = this.state;
 
     if (
-      !targetPrice.trim() ||
-      (selectedSellType == "auction" && +targetPrice === 0) ||
-      (selectedSellType == "auction" && isNaN(+targetPrice)) ||
+      selectedSellType == "auction" &&
+      (!targetPrice.trim() || +targetPrice === 0 || isNaN(+targetPrice))
+    ) {
+      this.props.displayError("Please enter target auction price of item");
+      return false;
+    } else if (
+      selectedSellType == "fixed" &&
       (!fixedPrice.trim() || +fixedPrice === 0 || isNaN(+fixedPrice))
     ) {
-      this.props.displayError("Please enter price of item");
+      this.props.displayError("Please enter fixed price of item");
       return false;
     }
 
@@ -255,10 +259,7 @@ class BidSelection extends Component {
                 onValueChange={(method, index) =>
                   this.setState({ deliveryMethod: method })
                 }
-                placeholder={{
-                  label: "Select a delivery method...",
-                  value: "courier"
-                }}
+                placeholder={{}}
                 value={this.state.deliveryMethod}
               />
             </View>
