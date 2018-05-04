@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   btn: {
-    marginBottom: 10
+    marginBottom: 20
   }
 });
 

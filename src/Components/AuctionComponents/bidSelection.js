@@ -37,6 +37,19 @@ class BidSelection extends Component {
     ]
   };
 
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: (
+        <TouchableOpacity onPress={this.handleBack}>
+          <Image
+            style={GStyles.icon}
+            source={require("../../../assets/backArrow.png")}
+          />
+        </TouchableOpacity>
+      )
+    };
+  };
+
   handleBack = () => {
     this.props.navigation.goBack();
   };
@@ -191,12 +204,6 @@ class BidSelection extends Component {
           </View>
 
           <View style={Styles.buttonActions}>
-            <TouchableOpacity onPress={this.handleBack}>
-              <Image
-                style={GStyles.icon}
-                source={require("../../../assets/backArrow.png")}
-              />
-            </TouchableOpacity>
             <TouchableOpacity
               onPress={this.onNext}
               style={[Styles.btn, GStyles.buttonContainer]}

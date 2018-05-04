@@ -115,12 +115,11 @@ class AddMediaTab extends Component {
     }
 
     return (
-      <View style={Styles.mediaContainer}>
+      <View>
         <View style={GStyles.hotListHeader}>
           <Text>Sell Product</Text>
           <TouchableOpacity
             style={{
-              flex: 1,
               flexDirection: "row",
               justifyContent: "flex-end"
             }}
@@ -130,91 +129,89 @@ class AddMediaTab extends Component {
             <Text>Add Image</Text>
           </TouchableOpacity>
         </View>
-        <View style={GStyles.container}>
-          <ScrollView
-            contentContainerStyle={{
-              justifyContent: "center",
-              alignItems: "center"
-            }}
-            style={{ flex: 1 }}
-          >
-            <View style={Styles.imageContainer}>
-              {this.state.photos.map((item, i) => this.renderImage(item, i))}
+        <ScrollView
+          contentContainerStyle={{
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <View style={Styles.imageContainer}>
+            {this.state.photos.map((item, i) => this.renderImage(item, i))}
+          </View>
+          <View style={Styles.afterLayer}>
+            <KeyboardAvoidingView
+              behavior="padding"
+              keyboardVerticalOffset={64}
+            >
+              <Text style={Styles.product_text}>Enter title:</Text>
+              <TextInput
+                style={GStyles.input}
+                underlineColorAndroid="transparent"
+                placeholder="Title"
+                placeholderTextColor="rgba(45, 45, 45, 0.3)"
+                returnKeyType="next"
+                onSubmitEditing={() => this.descriptionInput.focus()}
+                keyboardType="default"
+                autoCapitalize={"none"}
+                onChangeText={titleInput => this.setState({ titleInput })}
+                value={this.state.titleInput}
+                autoCorrect={false}
+              />
+              <Text style={Styles.product_text}>Enter Description:</Text>
+              <TextInput
+                style={[GStyles.input, Styles.description]}
+                underlineColorAndroid="transparent"
+                placeholder="Description of product"
+                multiline={true}
+                placeholderTextColor="rgba(45, 45, 45, 0.3)"
+                ref={input => {
+                  this.descriptionInput = input;
+                }}
+                onChangeText={descriptionInput =>
+                  this.setState({ descriptionInput })
+                }
+                value={this.state.descriptionInput}
+              />
+            </KeyboardAvoidingView>
+            <Text style={Styles.product_text}>Select Category:</Text>
+            <View style={GStyles.dropDownSelection_input}>
+              <Picker
+                items={this.state.items}
+                hideIcon
+                onValueChange={(selectedValue, itemIndex) =>
+                  this.setState({ productCategory: selectedValue })
+                }
+                placeholder={{
+                  label: "Select a category...",
+                  value: null
+                }}
+                value={this.state.productCategory}
+              />
             </View>
-            <View style={Styles.afterLayer}>
-              <KeyboardAvoidingView
-                behavior="padding"
-                keyboardVerticalOffset={64}
-              >
-                <Text style={Styles.product_text}>Enter title:</Text>
-                <TextInput
-                  style={GStyles.input}
-                  underlineColorAndroid="transparent"
-                  placeholder="Title"
-                  placeholderTextColor="rgba(45, 45, 45, 0.3)"
-                  returnKeyType="next"
-                  onSubmitEditing={() => this.descriptionInput.focus()}
-                  keyboardType="default"
-                  autoCapitalize={"none"}
-                  onChangeText={titleInput => this.setState({ titleInput })}
-                  value={this.state.titleInput}
-                  autoCorrect={false}
-                />
-                <Text style={Styles.product_text}>Enter Description:</Text>
-                <TextInput
-                  style={[GStyles.input, Styles.description]}
-                  underlineColorAndroid="transparent"
-                  placeholder="Description of product"
-                  multiline={true}
-                  placeholderTextColor="rgba(45, 45, 45, 0.3)"
-                  ref={input => {
-                    this.descriptionInput = input;
-                  }}
-                  onChangeText={descriptionInput =>
-                    this.setState({ descriptionInput })
-                  }
-                  value={this.state.descriptionInput}
-                />
-              </KeyboardAvoidingView>
-              <Text style={Styles.product_text}>Select Category:</Text>
-              <View style={GStyles.dropDownSelection_input}>
-                <Picker
-                  items={this.state.items}
-                  hideIcon
-                  onValueChange={(selectedValue, itemIndex) =>
-                    this.setState({ productCategory: selectedValue })
-                  }
-                  placeholder={{
-                    label: "Select a category...",
-                    value: null
-                  }}
-                  value={this.state.productCategory}
-                />
-              </View>
-              <Text style={Styles.product_text}>Select Sub-Category:</Text>
-              <View style={GStyles.dropDownSelection_input}>
-                <Picker
-                  items={this.state.items}
-                  hideIcon
-                  onValueChange={(itemValue, itemIndex) =>
-                    this.setState({ productSubCategory: itemValue })
-                  }
-                  placeholder={{
-                    label: "Select a sub category...",
-                    value: null
-                  }}
-                  value={this.state.productSubCategory}
-                />
-              </View>
-              <TouchableOpacity
-                onPress={this.onNext}
-                style={[Styles.btn, GStyles.buttonContainer]}
-              >
-                <Text style={GStyles.buttonText}>NEXT</Text>
-              </TouchableOpacity>
+            <Text style={Styles.product_text}>Select Sub-Category:</Text>
+            <View style={GStyles.dropDownSelection_input}>
+              <Picker
+                items={this.state.items}
+                hideIcon
+                onValueChange={(itemValue, itemIndex) =>
+                  this.setState({ productSubCategory: itemValue })
+                }
+                placeholder={{
+                  label: "Select a sub category...",
+                  value: null
+                }}
+                value={this.state.productSubCategory}
+              />
             </View>
-          </ScrollView>
-        </View>
+            <TouchableOpacity
+              onPress={this.onNext}
+              style={[Styles.btn, GStyles.buttonContainer]}
+            >
+              <Text style={GStyles.buttonText}>NEXT</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ marginBottom: 40 }} />
+        </ScrollView>
       </View>
     );
   }
