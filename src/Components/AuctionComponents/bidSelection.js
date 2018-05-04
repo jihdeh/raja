@@ -114,7 +114,7 @@ class BidSelection extends Component {
     if (this.validate()) {
       this.props.navigation.navigate("ProductOverview", {
         ...this.state,
-        ...this.props
+        ...this.props.navigation.state.params
       });
     }
   };

@@ -4,8 +4,10 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  RefreshControl
+  RefreshControl,
+  Image
 } from "react-native";
+import GStyles from "../Styles/GeneralStyle";
 
 const dummyData = [
   {
@@ -20,6 +22,20 @@ const fetchData = () =>
   new Promise((resolve, reject) => setTimeout(() => resolve(dummyData), 2000));
 
 class Notification extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerTitle: "Notifications",
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image
+            style={GStyles.icon}
+            source={require("../../assets/backArrow.png")}
+          />
+        </TouchableOpacity>
+      )
+    };
+  };
+
   constructor(props) {
     super(props);
     this.state = {
