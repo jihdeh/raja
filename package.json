@@ -8,6 +8,7 @@
     "immutable": "^3.8.2",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.10",
+    "moment": "^2.22.1",
     "native-base": "^2.3.10",
     "ramda": "^0.25.0",
     "react": "16.2.0",

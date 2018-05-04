@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import CheckBox from "react-native-checkbox";
 import { Icon } from "native-base";
+import moment from "moment/moment";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import Picker from "react-native-picker-select";
 import { connect } from "react-redux";
@@ -46,7 +47,7 @@ class BidSelection extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerLeft: (
-        <TouchableOpacity onPress={this.handleBack}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
             style={GStyles.icon}
             source={require("../../../assets/backArrow.png")}
@@ -54,10 +55,6 @@ class BidSelection extends Component {
         </TouchableOpacity>
       )
     };
-  };
-
-  handleBack = () => {
-    this.props.navigation.goBack();
   };
 
   onTypeChecked = (checked, type, field) => {
@@ -94,8 +91,14 @@ class BidSelection extends Component {
       deliveryMethod
     } = this.state;
 
-    if (!targetPrice.trim() || !fixedPrice.trim()) {
+    if (
+      !targetPrice.trim() ||
+      (selectedSellType == "auction" && +targetPrice === 0) ||
+      (selectedSellType == "auction" && isNaN(+targetPrice)) ||
+      (!fixedPrice.trim() || +fixedPrice === 0 || isNaN(+fixedPrice))
+    ) {
       this.props.displayError("Please enter price of item");
+      return false;
     }
 
     if (
@@ -173,6 +176,20 @@ class BidSelection extends Component {
                 }
                 value={this.state.targetPrice}
               />
+              {this.state.targetDate && (
+                <Text
+                  style={{
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    textAlign: "center"
+                  }}
+                >
+                  Auction will end on{" "}
+                  {moment(this.state.targetDate).format(
+                    "MMMM Do YYYY, h:mm:ss a"
+                  )}
+                </Text>
+              )}
               <TouchableOpacity onPress={this._showDateTimePicker}>
                 <View style={Styles.dateTimePickerButton}>
                   <Icon
@@ -240,7 +257,7 @@ class BidSelection extends Component {
                 }
                 placeholder={{
                   label: "Select a delivery method...",
-                  value: null
+                  value: "courier"
                 }}
                 value={this.state.deliveryMethod}
               />
