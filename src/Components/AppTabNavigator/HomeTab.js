@@ -3,6 +3,7 @@ import { View, Text, FlatList, Image, ScrollView } from "react-native";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 
+import Header from "../Header";
 import { Container, Content, Icon } from "native-base";
 import HotLists from "../HomeComponents/HotLists";
 import UserFeeds from "../HomeComponents/UserFeeds";
@@ -121,10 +122,13 @@ class HomeTab extends Component {
 
   render() {
     return (
-      <ScrollView>
-        <HotLists hotListsItems={hotListsItems} />
-        <UserFeeds userFeedsList={userFeedsList} />
-      </ScrollView>
+      <View>
+        <Header navigation={this.props.navigation} />
+        <ScrollView>
+          <HotLists hotListsItems={hotListsItems} />
+          <UserFeeds userFeedsList={userFeedsList} />
+        </ScrollView>
+      </View>
     );
   }
 }

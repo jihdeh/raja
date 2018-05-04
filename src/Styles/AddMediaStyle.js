@@ -2,6 +2,10 @@ import { StyleSheet, Dimensions } from "react-native";
 const width = Dimensions.get("window").width;
 
 const styles = StyleSheet.create({
+  mediaConatiner: {
+    backgroundColor: "#FFFFFF",
+    flex: 1
+  },
   imageContainer: {
     flex: 1,
     flexDirection: "row",

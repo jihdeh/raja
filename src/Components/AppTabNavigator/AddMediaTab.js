@@ -102,16 +102,19 @@ class AddMediaTab extends Component {
     }
 
     return (
-      <View style={{ flex: 1 }}>
+      <View style={Styles.mediaContainer}>
         <View style={GStyles.hotListHeader}>
           <Text>Sell Product</Text>
           <TouchableOpacity
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "flex-end"
+            }}
             onPress={() => this.setState({ imageBrowserOpen: true })}
           >
-            <Text>
-              <Icon name="ios-add-circle-outline" style={{ fontSize: 20 }} />
-              Add Image
-            </Text>
+            <Icon name="ios-add-circle-outline" style={{ fontSize: 20 }} />
+            <Text>Add Image</Text>
           </TouchableOpacity>
         </View>
         <View style={GStyles.container}>
@@ -161,7 +164,7 @@ class AddMediaTab extends Component {
                 />
               </KeyboardAvoidingView>
               <Text style={Styles.product_text}>Select Category:</Text>
-              <View style={Styles.categorySelection_input}>
+              <View style={GStyles.dropDownSelection_input}>
                 <Picker
                   items={this.state.items}
                   hideIcon
