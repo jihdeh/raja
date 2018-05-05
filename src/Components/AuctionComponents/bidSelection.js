@@ -9,8 +9,13 @@ import {
 } from "react-native";
 import CheckBox from "react-native-checkbox";
 import { Icon } from "native-base";
+import moment from "moment/moment";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import Picker from "react-native-picker-select";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+import { displayError } from "../../Actions/ErrorAction";
 
 import GStyles from "../../Styles/GeneralStyle";
 import Styles from "../../Styles/BidSelectionStyle";
@@ -21,6 +26,8 @@ class BidSelection extends Component {
     productQualityType: "new",
     fixedPrice: "0",
     targetPrice: "0",
+    targetDate: null,
+    productWeight: "0",
     isDateTimePickerVisible: false,
     deliveryMethod: "Courier",
     items: [
@@ -37,8 +44,17 @@ class BidSelection extends Component {
     ]
   };
 
-  handleBack = () => {
-    this.props.navigation.goBack();
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image
+            style={GStyles.icon}
+            source={require("../../../assets/backArrow.png")}
+          />
+        </TouchableOpacity>
+      )
+    };
   };
 
   onTypeChecked = (checked, type, field) => {
@@ -47,9 +63,9 @@ class BidSelection extends Component {
     });
   };
 
-  onPriceInputChange = (text, priceLabel) => {
+  onNumericInputChange = (text, typeLabel) => {
     this.setState({
-      [priceLabel]: text.replace(/[^0-9.]/g, "")
+      [typeLabel]: text.replace(/[^0-9.]/g, "")
     });
   };
 
@@ -59,10 +75,56 @@ class BidSelection extends Component {
 
   _handleDatePicked = date => {
     console.log("A date has been picked: ", date);
+    this.setState({
+      targetDate: date
+    });
     this._hideDateTimePicker();
   };
 
-  onNext = () => {};
+  validate() {
+    const {
+      targetDate,
+      targetPrice,
+      selectedSellType,
+      productQualityType,
+      fixedPrice,
+      deliveryMethod
+    } = this.state;
+
+    if (
+      selectedSellType == "auction" &&
+      (!targetPrice.trim() || +targetPrice === 0 || isNaN(+targetPrice))
+    ) {
+      this.props.displayError("Please enter target auction price of item");
+      return false;
+    } else if (
+      selectedSellType == "fixed" &&
+      (!fixedPrice.trim() || +fixedPrice === 0 || isNaN(+fixedPrice))
+    ) {
+      this.props.displayError("Please enter fixed price of item");
+      return false;
+    }
+
+    if (
+      !selectedSellType ||
+      !productQualityType ||
+      !deliveryMethod ||
+      (+targetPrice !== 0 && !targetDate)
+    ) {
+      this.props.displayError("All fields are required");
+      return false;
+    }
+    return true;
+  }
+
+  onNext = () => {
+    if (this.validate()) {
+      this.props.navigation.navigate("ProductOverview", {
+        ...this.state,
+        ...this.props.navigation.state.params
+      });
+    }
+  };
 
   render() {
     const { selectedSellType, productQualityType } = this.state;
@@ -99,7 +161,7 @@ class BidSelection extends Component {
                 keyboardType="numeric"
                 placeholderTextColor="rgba(45, 45, 45, 0.3)"
                 onChangeText={price =>
-                  this.onPriceInputChange(price, "fixedPrice")
+                  this.onNumericInputChange(price, "fixedPrice")
                 }
                 value={this.state.fixedPrice}
               />
@@ -111,12 +173,27 @@ class BidSelection extends Component {
                 style={GStyles.input}
                 underlineColorAndroid="transparent"
                 placeholder="Target Price"
+                keyboardType="numeric"
                 placeholderTextColor="rgba(45, 45, 45, 0.3)"
                 onChangeText={price =>
-                  this.onPriceInputChange(price, "targetPrice")
+                  this.onNumericInputChange(price, "targetPrice")
                 }
                 value={this.state.targetPrice}
               />
+              {this.state.targetDate && (
+                <Text
+                  style={{
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    textAlign: "center"
+                  }}
+                >
+                  Auction will end on{" "}
+                  {moment(this.state.targetDate).format(
+                    "MMMM Do YYYY, h:mm:ss a"
+                  )}
+                </Text>
+              )}
               <TouchableOpacity onPress={this._showDateTimePicker}>
                 <View style={Styles.dateTimePickerButton}>
                   <Icon
@@ -166,12 +243,13 @@ class BidSelection extends Component {
             <TextInput
               style={GStyles.input}
               underlineColorAndroid="transparent"
-              placeholder="Target Price"
+              placeholder="Product Weight"
+              keyboardType="numeric"
               placeholderTextColor="rgba(45, 45, 45, 0.3)"
-              onChangeText={price =>
-                this.onPriceInputChange(price, "targetPrice")
+              onChangeText={weight =>
+                this.onNumericInputChange(weight, "productWeight")
               }
-              value={this.state.targetPrice}
+              value={this.state.productWeight}
             />
             <Text style={Styles.product_text}>Delivery Method:</Text>
             <View style={GStyles.dropDownSelection_input}>
@@ -181,22 +259,13 @@ class BidSelection extends Component {
                 onValueChange={(method, index) =>
                   this.setState({ deliveryMethod: method })
                 }
-                placeholder={{
-                  label: "Select a delivery method...",
-                  value: null
-                }}
+                placeholder={{}}
                 value={this.state.deliveryMethod}
               />
             </View>
           </View>
 
           <View style={Styles.buttonActions}>
-            <TouchableOpacity onPress={this.handleBack}>
-              <Image
-                style={GStyles.icon}
-                source={require("../../../assets/backArrow.png")}
-              />
-            </TouchableOpacity>
             <TouchableOpacity
               onPress={this.onNext}
               style={[Styles.btn, GStyles.buttonContainer]}
@@ -209,5 +278,8 @@ class BidSelection extends Component {
     );
   }
 }
+const mapDispatchToProps = dispatch => ({
+  displayError: bindActionCreators(displayError, dispatch)
+});
 
-export default BidSelection;
+export default connect(null, mapDispatchToProps)(BidSelection);

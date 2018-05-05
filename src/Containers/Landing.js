@@ -18,19 +18,15 @@ import { Icon } from "native-base";
 import Login from "./Login";
 import Styles from "../Styles/LoginStyle";
 
-const displayHeader = {
-  headerLeft: <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />,
-  headerRight: (
-    <View style={Styles.headerRightContainer}>
-      <Icon style={Styles.headerRightIcon} name="ios-bookmark-outline" />
-      <Icon style={Styles.headerRightIcon} name="md-mail" />
-    </View>
-  )
-};
-
 class LandingPage extends Component {
   state = {
     isLoggedIn: ""
+  };
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      header: null
+    };
   };
 
   async componentWillMount() {

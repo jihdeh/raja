@@ -24,6 +24,19 @@ class SignUp extends Component {
     loading: false
   };
 
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Image
+            style={Styles.icon}
+            source={require("../../assets/backArrow.png")}
+          />
+        </TouchableOpacity>
+      )
+    };
+  };
+
   handleBack = () => {
     this.props.navigation.goBack();
   };
@@ -91,12 +104,6 @@ class SignUp extends Component {
   render() {
     return (
       <View style={Styles.container}>
-        <TouchableOpacity onPress={this.handleBack}>
-          <Image
-            style={Styles.icon}
-            source={require("../../assets/backArrow.png")}
-          />
-        </TouchableOpacity>
         <View style={Styles.messageView}>
           <Text style={Styles.grayMessage}>HI?</Text>
           <Text style={Styles.blackMessage}>There</Text>

@@ -7,6 +7,7 @@ import { Container, Content, Icon } from "native-base";
 import HotLists from "../HomeComponents/HotLists";
 import UserFeeds from "../HomeComponents/UserFeeds";
 import Styles from "../../Styles/HomeStyle";
+import GStyles from "../../Styles/GeneralStyle";
 
 const hotListsItems = [
   {
@@ -113,18 +114,36 @@ const userFeedsList = [
 ];
 
 class HomeTab extends Component {
-  static navigationOptions = {
-    tabBarIcon: ({ tintColor }) => (
-      <Icon name="ios-home" style={{ color: tintColor }} />
-    )
+  static navigationOptions = ({ navigation }) => {
+    const { params } = navigation.state;
+
+    hasParams = !params ? { header: null } : params;
+    return {
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="ios-home" style={{ color: tintColor }} />
+      ),
+      headerLeft: <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />,
+      headerRight: (
+        <View style={GStyles.headerRightContainer}>
+          <Icon style={GStyles.headerRightIcon} name="ios-bookmark-outline" />
+          <Icon
+            style={GStyles.headerRightIcon}
+            name="md-mail"
+            onPress={() => navigation.navigate("Notifications")}
+          />
+        </View>
+      )
+    };
   };
 
   render() {
     return (
-      <ScrollView>
-        <HotLists hotListsItems={hotListsItems} />
-        <UserFeeds userFeedsList={userFeedsList} />
-      </ScrollView>
+      <View>
+        <ScrollView>
+          <HotLists hotListsItems={hotListsItems} />
+          <UserFeeds userFeedsList={userFeedsList} />
+        </ScrollView>
+      </View>
     );
   }
 }

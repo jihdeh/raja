@@ -19,21 +19,10 @@ const styles = StyleSheet.create({
   description: {
     height: 50
   },
-  afterLayer: {
-    width: width / 1.2,
-    justifyContent: "center",
-    flex: 1,
-    marginTop: 20
-  },
-  inputIOS: {
-    fontSize: 16,
-    paddingTop: 13,
-    paddingHorizontal: 10,
-    paddingBottom: 12,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 4,
-    backgroundColor: "white"
+  productInformation: {
+    padding: 10,
+    justifyContent: "space-between",
+    flexDirection: "row"
   },
   product_text: {
     marginTop: 10,
@@ -41,6 +30,11 @@ const styles = StyleSheet.create({
   },
   btn: {
     marginBottom: 20
+  },
+  rightEnd: {
+    width: 250,
+    paddingLeft: 20,
+    justifyContent: "flex-end"
   }
 });
 
