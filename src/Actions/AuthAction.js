@@ -28,7 +28,7 @@ export const logout = () => dispatch => {
   });
 };
 
-export const facebookLogin = ({ access_token }) => dispatch => {
+export const facebookLogin = access_token => dispatch => {
   axios
     .post(`${BASE_URL}/auth/facebook`, { access_token })
     .then(({ data }) => {
