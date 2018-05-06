@@ -37,6 +37,14 @@ class SignUp extends Component {
     };
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errorMessage.toJS() && nextProps.errorMessage.toJS().error) {
+      this.setState({
+        loading: false
+      });
+    }
+  }
+
   handleBack = () => {
     this.props.navigation.goBack();
   };
@@ -170,6 +178,10 @@ class SignUp extends Component {
   }
 }
 
+const mapStateToProps = state => ({
+  errorMessage: state.get("errorMessage")
+});
+
 const mapDispatchToProps = dispatch => {
   return {
     onSignUp: bindActionCreators(createAccount, dispatch),
@@ -177,4 +189,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(SignUp);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
