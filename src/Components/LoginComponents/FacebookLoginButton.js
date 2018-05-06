@@ -18,8 +18,6 @@ class FacebookLoginButton extends Component {
       const response = await fetch(
         `https://graph.facebook.com/me?access_token=${token}`
       );
-      // console.log(await response.json());
-      // Alert.alert("Logged in!", `Hi ${(await response.json()).name}!`);
       this.props.onLogin(token);
     }
   }
