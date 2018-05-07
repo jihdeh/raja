@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   rightEnd: {
-    width: 250,
+    // width: 250,
     paddingLeft: 20,
     justifyContent: "flex-end"
   }

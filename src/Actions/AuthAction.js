@@ -5,6 +5,12 @@ import {
   IS_AUTHENTICATED,
   CREATE_ACCOUNT_SUCCESS
 } from "../Constants/ActionTypes";
+import toArray from "lodash/toArray";
+
+const errorHandler = errors =>
+  toArray(errors)
+    .map((errorMsg, key) => `${key + 1} ${errorMsg}`)
+    .join("\n");
 
 export const login = ({ email, password }) => dispatch => {
   axios
@@ -28,7 +34,7 @@ export const logout = () => dispatch => {
   });
 };
 
-export const facebookLogin = ({ access_token }) => dispatch => {
+export const facebookLogin = access_token => dispatch => {
   axios
     .post(`${BASE_URL}/auth/facebook`, { access_token })
     .then(({ data }) => {
@@ -57,7 +63,6 @@ export const createAccount = accountDetails => async dispatch => {
     })
     .catch(error => {
       const { data } = error.response;
-      console.log(data);
-      displayError(data.message)(dispatch);
+      displayError(errorHandler(data.errors))(dispatch);
     });
 };

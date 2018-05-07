@@ -1,8 +1,11 @@
 import React, { PropTypes, Component } from "react";
-import { TouchableOpacity, Text, Image } from "react-native";
+import { TouchableOpacity, Text, Image, Alert } from "react-native";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import Styles from "../../Styles/FacebookLoginButtonStyles";
+import { facebookLogin } from "../../Actions/AuthAction";
 
-export default class FacebookLoginButton extends Component {
+class FacebookLoginButton extends Component {
   async onClick() {
     const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
       "194433294293107",
@@ -15,7 +18,7 @@ export default class FacebookLoginButton extends Component {
       const response = await fetch(
         `https://graph.facebook.com/me?access_token=${token}`
       );
-      Alert.alert("Logged in!", `Hi ${(await response.json()).name}!`);
+      this.props.onLogin(token);
     }
   }
 
@@ -31,3 +34,9 @@ export default class FacebookLoginButton extends Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch => ({
+  onLogin: bindActionCreators(facebookLogin, dispatch)
+});
+
+export default connect(null, mapDispatchToProps)(FacebookLoginButton);
