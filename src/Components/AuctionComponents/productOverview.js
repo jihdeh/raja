@@ -1,6 +1,16 @@
 import React, { Component } from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  AsyncStorage
+} from "react-native";
 import moment from "moment/moment";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { createProduct } from "../../Actions/ProductAction";
 import Styles from "../../Styles/ProductOverview";
 import GStyles from "../../Styles/GeneralStyle";
 
@@ -23,33 +33,42 @@ class ProductOverview extends Component {
     return <Image style={Styles.image} source={{ uri: item.file }} key={i} />;
   }
 
+  onSubmit = async () => {
+    const { navigation } = this.props;
+    const { state } = navigation;
+    const { params } = state;
+    const token = await AsyncStorage.getItem("token");
+    console.log(token);
+
+    this.props.createProduct({ ...params }, token);
+  };
+
   render() {
     const { navigation } = this.props;
     const { state } = navigation;
     const { params } = state;
-    console.log(navigation.state.params);
     return (
       <ScrollView>
         <View style={GStyles.hotListHeader}>
           <Text>Product Image(s)</Text>
         </View>
         <View style={Styles.imageContainer}>
-          {params.photos.map((item, i) => this.renderImage(item, i))}
+          {params.images.map((item, i) => this.renderImage(item, i))}
         </View>
         <View style={GStyles.hotListHeader}>
           <Text>Product Information</Text>
         </View>
         <View style={Styles.productInformation}>
           <Text>Title:</Text>
-          <Text style={Styles.rightEnd}>{params.titleInput}</Text>
+          <Text style={Styles.rightEnd}>{params.name}</Text>
         </View>
         <View style={Styles.productInformation}>
           <Text>Description:</Text>
-          <Text style={Styles.rightEnd}>{params.descriptionInput}</Text>
+          <Text style={Styles.rightEnd}>{params.description}</Text>
         </View>
         <View style={Styles.productInformation}>
           <Text>Category:</Text>
-          <Text style={Styles.rightEnd}>{params.productCategory}</Text>
+          <Text style={Styles.rightEnd}>{params.category}</Text>
         </View>
         <View style={Styles.productInformation}>
           <Text>Sub Category:</Text>
@@ -57,7 +76,7 @@ class ProductOverview extends Component {
         </View>
         <View style={Styles.productInformation}>
           <Text>Product Condition:</Text>
-          <Text style={Styles.rightEnd}>{params.productQualityType}</Text>
+          <Text style={Styles.rightEnd}>{params.condition}</Text>
         </View>
         <View style={Styles.productInformation}>
           <Text>Product Weight:</Text>
@@ -66,12 +85,12 @@ class ProductOverview extends Component {
         <View style={Styles.productInformation}>
           <Text>Selling at:</Text>
           <Text style={Styles.rightEnd}>
-            ${params.selectedSellType === "fixed"
-              ? params.fixedPrice
+            ${params.saleFormat === "fixed"
+              ? params.salePrice
               : params.targetPrice}
           </Text>
         </View>
-        {params.selectedSellType === "auction" && (
+        {params.saleFormat === "auction" && (
           <View style={Styles.productInformation}>
             <Text>Auction Ends on:</Text>
             <Text style={Styles.rightEnd}>
@@ -83,7 +102,10 @@ class ProductOverview extends Component {
           <Text>Delivery Method:</Text>
           <Text style={Styles.rightEnd}>{params.deliveryMethod}</Text>
         </View>
-        <TouchableOpacity onPress={this.onNext} style={GStyles.buttonContainer}>
+        <TouchableOpacity
+          onPress={this.onSubmit}
+          style={GStyles.buttonContainer}
+        >
           <Text style={GStyles.buttonText}>SUBMIT</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -91,4 +113,12 @@ class ProductOverview extends Component {
   }
 }
 
-export default ProductOverview;
+const mapStateToProps = state => ({
+  product: state.get("product")
+});
+
+const mapDispatchToProps = dispatch => ({
+  createProduct: bindActionCreators(createProduct, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductOverview);

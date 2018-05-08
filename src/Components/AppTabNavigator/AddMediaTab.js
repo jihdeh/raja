@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { Icon } from "native-base";
 import Picker from "react-native-picker-select";
+import CheckBox from "react-native-checkbox";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -45,20 +46,22 @@ class AddMediaTab extends Component {
     super(props);
     this.state = {
       imageBrowserOpen: false,
-      photos: [],
+      images: [],
       gotoNext: false,
-      titleInput: "",
-      descriptionInput: "",
+      name: "",
+      description: "",
+      summary: "",
+      brand: "",
       items: [
         {
-          label: "Orange",
-          value: "orange",
-          key: "orange"
+          label: "Electronics & Gadgets",
+          value: "electronics",
+          key: "electronics"
         },
         {
-          label: "Blue",
-          value: "blue",
-          key: "blue"
+          label: "Clothings",
+          value: "clothings",
+          key: "clothings"
         }
       ]
     };
@@ -66,10 +69,10 @@ class AddMediaTab extends Component {
 
   imageBrowserCallback = callback => {
     callback
-      .then(photos => {
+      .then(images => {
         this.setState({
           imageBrowserOpen: false,
-          photos
+          images
         });
       })
       .catch(e => console.log(e));
@@ -81,20 +84,24 @@ class AddMediaTab extends Component {
 
   validate() {
     const {
-      photos,
-      titleInput,
-      descriptionInput,
-      productCategory,
-      productSubCategory
+      images,
+      name,
+      description,
+      category,
+      productSubCategory,
+      summary,
+      brand
     } = this.state;
-    if (!photos.length) {
+    if (!images.length) {
       this.props.displayError("Please upload images");
       return false;
     }
     if (
-      !titleInput.trim() ||
-      !descriptionInput.trim() ||
-      !productCategory ||
+      !name.trim() ||
+      !description.trim() ||
+      !summary.trim() ||
+      !brand.trim() ||
+      !category ||
       !productSubCategory
     ) {
       this.props.displayError("All fields are required");
@@ -136,27 +143,32 @@ class AddMediaTab extends Component {
           }}
         >
           <View style={Styles.imageContainer}>
-            {this.state.photos.map((item, i) => this.renderImage(item, i))}
+            {this.state.images.map((item, i) => this.renderImage(item, i))}
           </View>
           <View style={Styles.afterLayer}>
             <KeyboardAvoidingView
               behavior="padding"
               keyboardVerticalOffset={64}
             >
-              <Text style={Styles.product_text}>Enter title:</Text>
+              <Text style={Styles.product_text}>Enter Name of Product:</Text>
               <TextInput
                 style={GStyles.input}
                 underlineColorAndroid="transparent"
                 placeholder="Title"
                 placeholderTextColor="rgba(45, 45, 45, 0.3)"
                 returnKeyType="next"
-                onSubmitEditing={() => this.descriptionInput.focus()}
+                onSubmitEditing={() => this.description.focus()}
                 keyboardType="default"
                 autoCapitalize={"none"}
-                onChangeText={titleInput => this.setState({ titleInput })}
-                value={this.state.titleInput}
+                onChangeText={name => this.setState({ name })}
+                value={this.state.name}
                 autoCorrect={false}
               />
+            </KeyboardAvoidingView>
+            <KeyboardAvoidingView
+              behavior="padding"
+              keyboardVerticalOffset={64}
+            >
               <Text style={Styles.product_text}>Enter Description:</Text>
               <TextInput
                 style={[GStyles.input, Styles.description]}
@@ -165,12 +177,25 @@ class AddMediaTab extends Component {
                 multiline={true}
                 placeholderTextColor="rgba(45, 45, 45, 0.3)"
                 ref={input => {
-                  this.descriptionInput = input;
+                  this.description = input;
                 }}
-                onChangeText={descriptionInput =>
-                  this.setState({ descriptionInput })
-                }
-                value={this.state.descriptionInput}
+                onChangeText={description => this.setState({ description })}
+                value={this.state.description}
+              />
+            </KeyboardAvoidingView>
+            <KeyboardAvoidingView
+              behavior="padding"
+              keyboardVerticalOffset={64}
+            >
+              <Text style={Styles.product_text}>Enter Summary:</Text>
+              <TextInput
+                style={[GStyles.input, Styles.description]}
+                underlineColorAndroid="transparent"
+                placeholder="Description of product"
+                multiline={true}
+                placeholderTextColor="rgba(45, 45, 45, 0.3)"
+                onChangeText={summary => this.setState({ summary })}
+                value={this.state.summary}
               />
             </KeyboardAvoidingView>
             <Text style={Styles.product_text}>Select Category:</Text>
@@ -179,13 +204,13 @@ class AddMediaTab extends Component {
                 items={this.state.items}
                 hideIcon
                 onValueChange={(selectedValue, itemIndex) =>
-                  this.setState({ productCategory: selectedValue })
+                  this.setState({ category: selectedValue })
                 }
                 placeholder={{
                   label: "Select a category...",
                   value: null
                 }}
-                value={this.state.productCategory}
+                value={this.state.category}
               />
             </View>
             <Text style={Styles.product_text}>Select Sub-Category:</Text>
@@ -203,6 +228,38 @@ class AddMediaTab extends Component {
                 value={this.state.productSubCategory}
               />
             </View>
+
+            <KeyboardAvoidingView
+              behavior="padding"
+              keyboardVerticalOffset={64}
+            >
+              <Text style={Styles.product_text}>Quantity:</Text>
+              <TextInput
+                style={GStyles.input}
+                underlineColorAndroid="transparent"
+                placeholder="Quantity"
+                keyboardType="numeric"
+                placeholderTextColor="rgba(45, 45, 45, 0.3)"
+                onChangeText={quantity => this.setState({ quantity: quantity })}
+                value={this.state.quantity}
+              />
+            </KeyboardAvoidingView>
+            <KeyboardAvoidingView
+              behavior="padding"
+              keyboardVerticalOffset={64}
+            >
+              <Text style={Styles.product_text}>Brand:</Text>
+              <TextInput
+                style={GStyles.input}
+                underlineColorAndroid="transparent"
+                placeholder="brand"
+                keyboardType="numeric"
+                placeholderTextColor="rgba(45, 45, 45, 0.3)"
+                onChangeText={brand => this.setState({ brand: brand })}
+                value={this.state.brand}
+              />
+            </KeyboardAvoidingView>
+
             <TouchableOpacity
               onPress={this.onNext}
               style={[Styles.btn, GStyles.buttonContainer]}
