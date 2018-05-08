@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
-  ScrollView
+  ScrollView,
+  KeyboardAvoidingView
 } from "react-native";
 import CheckBox from "react-native-checkbox";
 import { Icon } from "native-base";
@@ -22,10 +23,11 @@ import Styles from "../../Styles/BidSelectionStyle";
 
 class BidSelection extends Component {
   state = {
-    selectedSellType: "fixed",
-    productQualityType: "new",
-    fixedPrice: "0",
+    saleFormat: "fixed",
+    condition: "new",
+    salePrice: "0",
     targetPrice: "0",
+    originalPrice: "0",
     targetDate: null,
     productWeight: "0",
     isDateTimePickerVisible: false,
@@ -85,29 +87,29 @@ class BidSelection extends Component {
     const {
       targetDate,
       targetPrice,
-      selectedSellType,
-      productQualityType,
-      fixedPrice,
+      saleFormat,
+      condition,
+      salePrice,
       deliveryMethod
     } = this.state;
 
     if (
-      selectedSellType == "auction" &&
+      saleFormat == "auction" &&
       (!targetPrice.trim() || +targetPrice === 0 || isNaN(+targetPrice))
     ) {
       this.props.displayError("Please enter target auction price of item");
       return false;
     } else if (
-      selectedSellType == "fixed" &&
-      (!fixedPrice.trim() || +fixedPrice === 0 || isNaN(+fixedPrice))
+      saleFormat == "fixed" &&
+      (!salePrice.trim() || +salePrice === 0 || isNaN(+salePrice))
     ) {
       this.props.displayError("Please enter fixed price of item");
       return false;
     }
 
     if (
-      !selectedSellType ||
-      !productQualityType ||
+      !saleFormat ||
+      !condition ||
       !deliveryMethod ||
       (+targetPrice !== 0 && !targetDate)
     ) {
@@ -127,7 +129,7 @@ class BidSelection extends Component {
   };
 
   render() {
-    const { selectedSellType, productQualityType } = this.state;
+    const { saleFormat, condition } = this.state;
     return (
       <View style={[GStyles.container, Styles.container]}>
         <ScrollView>
@@ -137,34 +139,62 @@ class BidSelection extends Component {
           <View style={Styles.checkSelections}>
             <CheckBox
               label="Fixed Price"
-              checked={selectedSellType === "fixed"}
+              checked={saleFormat === "fixed"}
               onChange={checked =>
-                this.onTypeChecked(checked, "fixed", "selectedSellType")
+                this.onTypeChecked(checked, "fixed", "saleFormat")
               }
             />
             <CheckBox
               label="Auction"
-              checked={selectedSellType === "auction"}
+              checked={saleFormat === "auction"}
               onChange={checked =>
-                this.onTypeChecked(checked, "auction", "selectedSellType")
+                this.onTypeChecked(checked, "auction", "saleFormat")
               }
             />
           </View>
 
-          {selectedSellType === "fixed" ? (
+          {saleFormat === "fixed" ? (
             <View style={Styles.priceInput}>
-              <Text style={Styles.product_text}>Enter Fixed Price ($):</Text>
+              <Text style={Styles.product_text}>Enter Sale Price ($):</Text>
               <TextInput
                 style={GStyles.input}
                 underlineColorAndroid="transparent"
-                placeholder="Fixed price"
+                placeholder="Sale price"
                 keyboardType="numeric"
                 placeholderTextColor="rgba(45, 45, 45, 0.3)"
                 onChangeText={price =>
-                  this.onNumericInputChange(price, "fixedPrice")
+                  this.onNumericInputChange(price, "salePrice")
                 }
-                value={this.state.fixedPrice}
+                value={this.state.salePrice}
               />
+              <Text style={Styles.product_text}>On Sale?:</Text>
+              <CheckBox
+                label="onSale"
+                checked={this.state.onSale}
+                onChange={checked =>
+                  this.setState({
+                    onSale: checked
+                  })
+                }
+              />
+              {this.state.onSale && (
+                <KeyboardAvoidingView>
+                  <Text style={Styles.product_text}>
+                    Enter Original Product Price($):
+                  </Text>
+                  <TextInput
+                    style={GStyles.input}
+                    underlineColorAndroid="transparent"
+                    placeholder="Original product price"
+                    keyboardType="numeric"
+                    placeholderTextColor="rgba(45, 45, 45, 0.3)"
+                    onChangeText={price =>
+                      this.onNumericInputChange(price, "originalPrice")
+                    }
+                    value={this.state.originalPrice}
+                  />
+                </KeyboardAvoidingView>
+              )}
             </View>
           ) : (
             <View style={Styles.priceInput}>
@@ -225,16 +255,16 @@ class BidSelection extends Component {
             <View style={Styles.checkSelections}>
               <CheckBox
                 label="New"
-                checked={productQualityType === "new"}
+                checked={condition === "new"}
                 onChange={checked =>
-                  this.onTypeChecked(checked, "new", "productQualityType")
+                  this.onTypeChecked(checked, "new", "condition")
                 }
               />
               <CheckBox
                 label="Used"
-                checked={productQualityType === "used"}
+                checked={condition === "used"}
                 onChange={checked =>
-                  this.onTypeChecked(checked, "used", "productQualityType")
+                  this.onTypeChecked(checked, "used", "condition")
                 }
               />
             </View>
