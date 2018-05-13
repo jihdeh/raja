@@ -124,7 +124,6 @@ class BidSelection extends Component {
     if (
       !saleFormat ||
       !condition ||
-      !deliveryMethod ||
       (+targetPrice !== 0 && !auctionEnd)
     ) {
       this.props.displayError("All fields are required");
@@ -134,12 +133,12 @@ class BidSelection extends Component {
   }
 
   onNext = () => {
-    // if (this.validate()) {
+    if (this.validate()) {
       this.props.navigation.navigate("ProductOverview", {
         ...this.state.product,
         ...this.props.navigation.state.params
       });
-    // }
+    }
   };
 
   render() {
