@@ -50,57 +50,113 @@ class ProductOverview extends Component {
     return (
       <ScrollView>
         <View style={GStyles.hotListHeader}>
-          <Text>Product Image(s)</Text>
+          <Text>Image(s)</Text>
         </View>
         <View style={Styles.imageContainer}>
           {params.images.map((item, i) => this.renderImage(item, i))}
         </View>
         <View style={GStyles.hotListHeader}>
-          <Text>Product Information</Text>
+          <Text>Information</Text>
         </View>
         <View style={Styles.productInformation}>
           <Text>Title:</Text>
           <Text style={Styles.rightEnd}>{params.name}</Text>
         </View>
         <View style={Styles.productInformation}>
+          <Text>Summary:</Text>
+          <Text style={Styles.rightEnd}>{params.summary}</Text>
+        </View>
+        <View style={Styles.productInformation}>
           <Text>Description:</Text>
           <Text style={Styles.rightEnd}>{params.description}</Text>
+        </View>
+        <View style={Styles.productInformation}>
+          <Text>Brand:</Text>
+          <Text style={Styles.rightEnd}>{params.brand || 'Generic' }</Text>
         </View>
         <View style={Styles.productInformation}>
           <Text>Category:</Text>
           <Text style={Styles.rightEnd}>{params.category}</Text>
         </View>
         <View style={Styles.productInformation}>
-          <Text>Sub Category:</Text>
-          <Text style={Styles.rightEnd}>{params.productSubCategory}</Text>
-        </View>
-        <View style={Styles.productInformation}>
-          <Text>Product Condition:</Text>
+          <Text>Condition:</Text>
           <Text style={Styles.rightEnd}>{params.condition}</Text>
         </View>
         <View style={Styles.productInformation}>
-          <Text>Product Weight:</Text>
-          <Text style={Styles.rightEnd}>{params.productWeight}kg</Text>
+          <Text>Weight:</Text>
+          <Text style={Styles.rightEnd}>{params.weight}kg</Text>
         </View>
         <View style={Styles.productInformation}>
-          <Text>Selling at:</Text>
+          <Text>Quantity:</Text>
+          <Text style={Styles.rightEnd}>{params.quantity}kg</Text>
+        </View>
+        <View style={Styles.productInformation}>
+          <Text>{params.saleFormat === "fixed" ? 
+            'Sale Price' : 'Target Price'}:</Text>
           <Text style={Styles.rightEnd}>
-            ${params.saleFormat === "fixed"
+            Rp{params.saleFormat === "fixed"
               ? params.salePrice
               : params.targetPrice}
           </Text>
         </View>
+        { params.saleFormat === "fixed" &&
+          <React.Fragment>
+            <View style={Styles.productInformation}>
+              <Text>On Sale:</Text>
+              <Text style={Styles.rightEnd}>
+                Yes
+              </Text>
+            </View>
+            { params.onSale && 
+              <View style={Styles.productInformation}>
+                <Text>Original Price:</Text>
+                <Text style={Styles.rightEnd}>
+                  {params.originalPrice}
+                </Text>
+              </View>
+            }
+          </React.Fragment>
+        }
+        
         {params.saleFormat === "auction" && (
-          <View style={Styles.productInformation}>
-            <Text>Auction Ends on:</Text>
-            <Text style={Styles.rightEnd}>
-              {moment(params.targetDate).format("MMMM Do YYYY, h:mm:ss a")}
-            </Text>
-          </View>
+          <React.Fragment>
+            <View style={Styles.productInformation}>
+              <Text>Auction Ends:</Text>
+              <Text style={Styles.rightEnd}>
+                {moment(params.auctionEnd).format("MMMM Do YYYY, h:mm a")}
+              </Text>
+            </View>
+
+            <View style={Styles.productInformation}>
+              <Text>Show Auction Target:</Text>
+              <Text style={Styles.rightEnd}>
+                {params.showAuctionTarget ? 'Yes': 'No'}
+              </Text>
+            </View>
+          </React.Fragment>
         )}
+        {
+          params.isBundle &&
+          <View style={Styles.productInformation}>
+            <Text>This is a bundle:</Text>
+            <Text style={Styles.rightEnd}>Yes</Text>
+          </View>
+        }
+        <View style={Styles.productInformation}>
+          <Text>Active:</Text>
+          <Text style={Styles.rightEnd}>{params.isActive ? 'Yes' : 'No'}</Text>
+        </View>
+        <View style={Styles.productInformation}>
+          <Text>In Stock:</Text>
+          <Text style={Styles.rightEnd}>{params.inStock ? 'Yes' : 'No'}</Text>
+        </View>
         <View style={Styles.productInformation}>
           <Text>Delivery Method:</Text>
-          <Text style={Styles.rightEnd}>{params.deliveryMethod}</Text>
+          <Text style={Styles.rightEnd}>
+            {params.courierDelivery ? 'Courier' : ''} 
+            {params.courierDelivery && params.selfDelivery ? ', ' : ''}
+            {params.selfDelivery  ?  'Self' : ''} 
+          </Text>
         </View>
         <TouchableOpacity
           onPress={this.onSubmit}

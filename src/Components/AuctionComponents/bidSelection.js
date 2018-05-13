@@ -23,16 +23,8 @@ import Styles from "../../Styles/BidSelectionStyle";
 
 class BidSelection extends Component {
   state = {
-    saleFormat: "fixed",
-    condition: "new",
-    salePrice: "0",
-    targetPrice: "0",
-    originalPrice: "0",
-    targetDate: null,
-    productWeight: "0",
     isDateTimePickerVisible: false,
-    deliveryMethod: "Courier",
-    items: [
+    deliveryOptions: [
       {
         label: "Courier",
         value: "courier",
@@ -43,7 +35,23 @@ class BidSelection extends Component {
         value: "pickUp",
         key: "pickUp"
       }
-    ]
+    ],
+    product: {
+      saleFormat: "fixed",
+      condition: "new",
+      salePrice: "0",
+      targetPrice: "0",
+      originalPrice: "0",
+      auctionEnd: null,
+      isBundle: false,
+      showAuctionTarget: false,
+      // onSale: false,
+      weight: "1",
+      isActive: true,
+      inStock: true,
+      courierDelivery: false,
+			selfDelivery: false,
+    }
   };
 
   static navigationOptions = ({ navigation }) => {
@@ -61,13 +69,16 @@ class BidSelection extends Component {
 
   onTypeChecked = (checked, type, field) => {
     this.setState({
-      [field]: type
+      product: { ...this.state.product, [field]: type}
     });
   };
 
   onNumericInputChange = (text, typeLabel) => {
     this.setState({
-      [typeLabel]: text.replace(/[^0-9.]/g, "")
+      product: { 
+        ...this.state.product,
+        [typeLabel]: text.replace(/[^0-9.]/g, "")
+      }
     });
   };
 
@@ -78,20 +89,23 @@ class BidSelection extends Component {
   _handleDatePicked = date => {
     console.log("A date has been picked: ", date);
     this.setState({
-      targetDate: date
+      product: { 
+        ...this.state.product,
+        auctionEnd: date
+      }
     });
     this._hideDateTimePicker();
   };
 
   validate() {
     const {
-      targetDate,
+      auctionEnd,
       targetPrice,
       saleFormat,
       condition,
       salePrice,
       deliveryMethod
-    } = this.state;
+    } = this.state.product;
 
     if (
       saleFormat == "auction" &&
@@ -111,7 +125,7 @@ class BidSelection extends Component {
       !saleFormat ||
       !condition ||
       !deliveryMethod ||
-      (+targetPrice !== 0 && !targetDate)
+      (+targetPrice !== 0 && !auctionEnd)
     ) {
       this.props.displayError("All fields are required");
       return false;
@@ -120,16 +134,22 @@ class BidSelection extends Component {
   }
 
   onNext = () => {
-    if (this.validate()) {
+    // if (this.validate()) {
       this.props.navigation.navigate("ProductOverview", {
-        ...this.state,
+        ...this.state.product,
         ...this.props.navigation.state.params
       });
-    }
+    // }
   };
 
   render() {
-    const { saleFormat, condition } = this.state;
+    const { 
+      saleFormat, condition, salePrice, originalPrice, 
+      targetPrice, auctionEnd, weight, deliveryMethod,
+      isBundle, showAuctionTarget, courierDelivery
+    } = this.state.product;
+    let onSale = this.state.product.onSale;
+
     return (
       <View style={[GStyles.container, Styles.container]}>
         <ScrollView>
@@ -155,7 +175,7 @@ class BidSelection extends Component {
 
           {saleFormat === "fixed" ? (
             <View style={Styles.priceInput}>
-              <Text style={Styles.product_text}>Enter Sale Price ($):</Text>
+              <Text style={Styles.product_text}>Enter Sale Price (Rp):</Text>
               <TextInput
                 style={GStyles.input}
                 underlineColorAndroid="transparent"
@@ -165,22 +185,39 @@ class BidSelection extends Component {
                 onChangeText={price =>
                   this.onNumericInputChange(price, "salePrice")
                 }
-                value={this.state.salePrice}
+                value={salePrice}
               />
-              <Text style={Styles.product_text}>On Sale?:</Text>
-              <CheckBox
-                label="onSale"
-                checked={this.state.onSale}
+              <Text style={Styles.product_text}>Conditions:</Text>
+              <View style={Styles.checkSelections}>
+                <CheckBox
+                  label="on sale"
+                  checked={this.state.product.onSale}
+                  onChange={checked => 
+                    this.setState({
+                      product: { 
+                        ...this.state.product, 
+                        onSale: !this.state.product.onSale 
+                      } 
+                    })
+                  }
+                />
+                <CheckBox
+                label="this is a bundle"
+                checked={this.state.product.isBundle}
                 onChange={checked =>
                   this.setState({
-                    onSale: checked
+                    product: { 
+                      ...this.state.product,
+                      isBundle: !this.state.product.isBundle 
+                    }
                   })
                 }
               />
-              {this.state.onSale && (
+              </View>
+              {onSale && (
                 <KeyboardAvoidingView>
                   <Text style={Styles.product_text}>
-                    Enter Original Product Price($):
+                    Enter Original Product Price(Rp):
                   </Text>
                   <TextInput
                     style={GStyles.input}
@@ -191,14 +228,14 @@ class BidSelection extends Component {
                     onChangeText={price =>
                       this.onNumericInputChange(price, "originalPrice")
                     }
-                    value={this.state.originalPrice}
+                    value={originalPrice}
                   />
                 </KeyboardAvoidingView>
               )}
             </View>
           ) : (
             <View style={Styles.priceInput}>
-              <Text style={Styles.product_text}>Enter Target Price ($):</Text>
+              <Text style={Styles.product_text}>Enter Target Price (Rp):</Text>
               <TextInput
                 style={GStyles.input}
                 underlineColorAndroid="transparent"
@@ -208,9 +245,9 @@ class BidSelection extends Component {
                 onChangeText={price =>
                   this.onNumericInputChange(price, "targetPrice")
                 }
-                value={this.state.targetPrice}
+                value={targetPrice}
               />
-              {this.state.targetDate && (
+              {auctionEnd && (
                 <Text
                   style={{
                     justifyContent: "center",
@@ -219,7 +256,7 @@ class BidSelection extends Component {
                   }}
                 >
                   Auction will end on{" "}
-                  {moment(this.state.targetDate).format(
+                  {moment(auctionEnd).format(
                     "MMMM Do YYYY, h:mm:ss a"
                   )}
                 </Text>
@@ -247,11 +284,23 @@ class BidSelection extends Component {
                 onCancel={this._hideDateTimePicker}
                 mode="datetime"
               />
+              <CheckBox
+                label="show target price in auction"
+                checked={this.state.product.showAuctionTarget}
+                onChange={checked =>
+                  this.setState({
+                    product: { 
+                      ...this.state.product,
+                      showAuctionTarget: !this.state.product.showAuctionTarget 
+                    }
+                  })
+                }
+              />
             </View>
           )}
           <View>
             <View style={Styles.breakLine} />
-            <Text style={Styles.product_text_header}>PRODUCT CONDITION?</Text>
+            <Text style={Styles.product_text_header}>PRODUCT CONDITION</Text>
             <View style={Styles.checkSelections}>
               <CheckBox
                 label="New"
@@ -267,9 +316,16 @@ class BidSelection extends Component {
                   this.onTypeChecked(checked, "used", "condition")
                 }
               />
+              <CheckBox
+                label="Refurbished"
+                checked={condition === "refurbished"}
+                onChange={checked =>
+                  this.onTypeChecked(checked, "refurbished", "condition")
+                }
+              />
             </View>
 
-            <Text style={Styles.product_text}>Weight of Item(kg):</Text>
+            <Text style={Styles.product_text}>Weight of Item(g):</Text>
             <TextInput
               style={GStyles.input}
               underlineColorAndroid="transparent"
@@ -277,23 +333,88 @@ class BidSelection extends Component {
               keyboardType="numeric"
               placeholderTextColor="rgba(45, 45, 45, 0.3)"
               onChangeText={weight =>
-                this.onNumericInputChange(weight, "productWeight")
+                this.onNumericInputChange(weight, "weight")
               }
-              value={this.state.productWeight}
+              value={weight}
             />
-            <Text style={Styles.product_text}>Delivery Method:</Text>
-            <View style={GStyles.dropDownSelection_input}>
-              <Picker
-                items={this.state.items}
-                hideIcon
-                onValueChange={(method, index) =>
-                  this.setState({ deliveryMethod: method })
+
+            <View style={Styles.breakLine} />
+            <Text style={Styles.product_text_header}>DELIVERY METHOD</Text>
+            <View style={Styles.checkSelections}>
+              <CheckBox
+                label="Self"
+                checked={this.state.product.selfDelivery}
+                onChange={checked =>
+                  this.setState({
+                    product: { 
+                      ...this.state.product,
+                      selfDelivery: !this.state.product.selfDelivery 
+                    }
+                  })
                 }
-                placeholder={{}}
-                value={this.state.deliveryMethod}
+              />
+              <CheckBox
+                label="Courier"
+                checked={this.state.product.courierDelivery}
+                onChange={checked =>
+                  this.setState({
+                    product: { 
+                      ...this.state.product,
+                      courierDelivery: !this.state.product.courierDelivery 
+                    }
+                  })
+                }
               />
             </View>
+            {
+              courierDelivery && 
+              <React.Fragment>
+                <Text style={Styles.product_text}>Delivery Method:</Text>
+                <View style={GStyles.dropDownSelection_input}>
+                  <Picker
+                    items={this.state.deliveryOptions}
+                    hideIcon
+                    onValueChange={(method, index) =>
+                      this.setState({ product: { 
+                        ...this.state.product, deliveryMethod: method 
+                      }})
+                    }
+                    placeholder={{}}
+                    value={deliveryMethod}
+                  />
+                </View>
+              </React.Fragment>
+            }
           </View>
+
+          <View style={Styles.breakLine} />
+            <Text style={Styles.product_text_header}>PRODUCT STATUS</Text>
+            <View style={Styles.checkSelections}>
+              <CheckBox
+                label="Active"
+                checked={this.state.product.isActive}
+                onChange={checked =>
+                  this.setState({
+                    product: { 
+                      ...this.state.product,
+                      isActive: !this.state.product.isActive 
+                    }
+                  })
+                }
+              />
+              <CheckBox
+                label="In Stock"
+                checked={this.state.product.inStock}
+                onChange={checked =>
+                  this.setState({
+                    product: { 
+                      ...this.state.product,
+                      inStock: !this.state.product.inStock 
+                    }
+                  })
+                }
+              />
+            </View>
 
           <View style={Styles.buttonActions}>
             <TouchableOpacity

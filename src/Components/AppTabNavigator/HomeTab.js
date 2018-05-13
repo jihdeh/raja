@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { View, Text, FlatList, Image, ScrollView } from "react-native";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { getCategories } from "../../Actions/SharedAction";
 
 import { Container, Content, Icon } from "native-base";
 import HotLists from "../HomeComponents/HotLists";
@@ -136,6 +137,10 @@ class HomeTab extends Component {
     };
   };
 
+  componentDidMount() {
+    this.props.getCategories();
+  }
+
   render() {
     return (
       <View>
@@ -149,7 +154,14 @@ class HomeTab extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state
+  user: state,
+  shared: state.get("shared")
 });
 
-export default connect(mapStateToProps)(HomeTab);
+const mapDispatchToProps = dispatch => {
+  return {
+    getCategories: bindActionCreators(getCategories, dispatch)
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeTab);

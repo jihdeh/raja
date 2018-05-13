@@ -7,6 +7,7 @@ const initialState = new Map();
 const ProductReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case PRODUCT_CREATED:
+      console.log('cccccccccccc');
       return set("product", payload, state);
     default:
       return state;
