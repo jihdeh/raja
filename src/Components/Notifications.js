@@ -20,33 +20,17 @@ const fetchData = () =>
   new Promise((resolve, reject) => setTimeout(() => resolve(dummyData), 2000));
 
 class Notification extends Component {
-  state = {
-    data: [
-      {
-        message: "Ben law bookmarked your item"
-      },
-      {
-        message: "Two of your new products have been purchased"
-      }
-    ]
-  };
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerTitle: "Notifications",
-      headerLeft: (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Image
-            style={GStyles.icon}
-            source={require("../../assets/backArrow.png")}
-          />
-        </TouchableOpacity>
-      )
-    };
-  };
-
   constructor(props) {
     super(props);
     this.state = {
+      data: [
+        {
+          message: "Ben law bookmarked your item"
+        },
+        {
+          message: "Two of your new products have been purchased"
+        }
+      ],
       refreshing: false
     };
   }
@@ -68,6 +52,8 @@ class Notification extends Component {
   }
 
   render() {
+    const { data } = this.state;
+
     return (
       <ScrollView
         style={{ flex: 1 }}

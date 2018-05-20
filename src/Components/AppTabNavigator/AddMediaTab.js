@@ -21,7 +21,10 @@ import ImageBrowser from "../ImageBrowser";
 
 import GStyles from "../../Styles/GeneralStyle";
 import Styles from "../../Styles/AddMediaStyle";
-import { findCategoryBySlug, findCategoryByName } from "../../utils/categoryHelpers";
+import {
+  findCategoryBySlug,
+  findCategoryByName
+} from "../../utils/categoryHelpers";
 
 class AddMediaTab extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -33,11 +36,7 @@ class AddMediaTab extends Component {
       headerRight: (
         <View style={GStyles.headerRightContainer}>
           <Icon style={GStyles.headerRightIcon} name="ios-bookmark-outline" />
-          <Icon
-            style={GStyles.headerRightIcon}
-            name="md-mail"
-            onPress={() => navigation.navigate("Notifications")}
-          />
+          <Icon style={GStyles.headerRightIcon} name="md-mail" />
         </View>
       )
     };
@@ -72,13 +71,12 @@ class AddMediaTab extends Component {
 
     // bind events
     this.handleCategoryChange1 = this.handleCategoryChange1.bind(this);
-		this.handleCategoryChange2 = this.handleCategoryChange2.bind(this);
-		this.handleCategoryChange3 = this.handleCategoryChange3.bind(this);
+    this.handleCategoryChange2 = this.handleCategoryChange2.bind(this);
+    this.handleCategoryChange3 = this.handleCategoryChange3.bind(this);
   }
 
   componentDidMount() {
     // if (!this.props.categories && !this.props.categoriesLoading) {
-
     // }
   }
 
@@ -131,62 +129,70 @@ class AddMediaTab extends Component {
   };
 
   handleCategoryChange1(selectedValue, itemIndex) {
-		this.handleCategoryChange(selectedValue, itemIndex, 1)
-	}
-	handleCategoryChange2(selectedValue, itemIndex) {
-		this.handleCategoryChange(selectedValue, itemIndex, 2);
-	}
-	handleCategoryChange3(selectedValue, itemIndex) {
-		this.handleCategoryChange(selectedValue, itemIndex, 3)
-	}
+    this.handleCategoryChange(selectedValue, itemIndex, 1);
+  }
+  handleCategoryChange2(selectedValue, itemIndex) {
+    this.handleCategoryChange(selectedValue, itemIndex, 2);
+  }
+  handleCategoryChange3(selectedValue, itemIndex) {
+    this.handleCategoryChange(selectedValue, itemIndex, 3);
+  }
 
   handleCategoryChange(selectedValue, itemIndex, level) {
     if (!selectedValue) {
       // clear child selections
       if (level === 1) {
         this.setState({
-          selectedCategory: null, 
+          selectedCategory: null,
           selectedSubCategory: null
-        }) 
+        });
       } else if (level === 2) {
         this.setState({
           selectedSubCategory: null
-        }) 
+        });
       }
-      this.setState({product: {...this.state.product, category: ''} });
+      this.setState({ product: { ...this.state.product, category: "" } });
       return false;
     }
-  
-    const categories = this.props.shared.toJS() ? this.props.shared.toJS().categories: [];
+
+    const categories = this.props.shared.toJS()
+      ? this.props.shared.toJS().categories
+      : [];
 
     const category = findCategoryByName(categories, selectedValue);
     if (!category) return;
 
-		if (level === 3 || !category.subs || !category.subs.length) {
-			this.setState({ product: {...this.state.product, category: category.name} })
-		} else {
-			this.setState({ product: {...this.state.product, category: ''} })
-		}
-		if (level === 1) { 
+    if (level === 3 || !category.subs || !category.subs.length) {
       this.setState({
-        selectedCategory: null, 
-        selectedSubCategory: null
-      }, 
-      // hack to force sub categories to reset
-      () => this.setState({selectedCategory: category}))
+        product: { ...this.state.product, category: category.name }
+      });
+    } else {
+      this.setState({ product: { ...this.state.product, category: "" } });
     }
-		if (level === 2) { 
-      this.setState({
-        selectedSubCategory: null
-      },  // hack to force sub categories to reset
-      () => this.setState({selectedSubCategory: category}))
+    if (level === 1) {
+      this.setState(
+        {
+          selectedCategory: null,
+          selectedSubCategory: null
+        },
+        // hack to force sub categories to reset
+        () => this.setState({ selectedCategory: category })
+      );
     }
-    
+    if (level === 2) {
+      this.setState(
+        {
+          selectedSubCategory: null
+        }, // hack to force sub categories to reset
+        () => this.setState({ selectedSubCategory: category })
+      );
+    }
   }
 
   render() {
-
-    const categories = this.props.shared.toJS() ? this.props.shared.toJS().categories: null;
+    const categories = this.props.shared.toJS()
+      ? this.props.shared.toJS().categories
+      : null;
     if (!categories) {
       return <Expo.AppLoading />;
     }
@@ -195,8 +201,12 @@ class AddMediaTab extends Component {
       return <ImageBrowser max={6} callback={this.imageBrowserCallback} />;
     }
 
-    const subItems = this.state.selectedCategory ? this.state.selectedCategory.subs : null;
-    const subSubItems = this.state.selectedSubCategory ? this.state.selectedSubCategory.subs : null;
+    const subItems = this.state.selectedCategory
+      ? this.state.selectedCategory.subs
+      : null;
+    const subSubItems = this.state.selectedSubCategory
+      ? this.state.selectedSubCategory.subs
+      : null;
 
     return (
       <View>
@@ -220,7 +230,9 @@ class AddMediaTab extends Component {
           }}
         >
           <View style={Styles.imageContainer}>
-            {this.state.product.images.map((item, i) => this.renderImage(item, i))}
+            {this.state.product.images.map((item, i) =>
+              this.renderImage(item, i)
+            )}
           </View>
           <View style={Styles.afterLayer}>
             <KeyboardAvoidingView
@@ -237,9 +249,11 @@ class AddMediaTab extends Component {
                 onSubmitEditing={() => this.description.focus()}
                 keyboardType="default"
                 autoCapitalize={"none"}
-                onChangeText={name => this.setState({ 
-                  product: { ...this.state.product, name }
-                })}
+                onChangeText={name =>
+                  this.setState({
+                    product: { ...this.state.product, name }
+                  })
+                }
                 value={this.state.product.name}
                 autoCorrect={false}
               />
@@ -258,9 +272,11 @@ class AddMediaTab extends Component {
                 ref={input => {
                   this.description = input;
                 }}
-                onChangeText={description => this.setState({ 
-                  product: { ...this.state.product, description }
-                })}
+                onChangeText={description =>
+                  this.setState({
+                    product: { ...this.state.product, description }
+                  })
+                }
                 value={this.state.product.description}
               />
             </KeyboardAvoidingView>
@@ -275,9 +291,11 @@ class AddMediaTab extends Component {
                 placeholder="Summary of product"
                 multiline={true}
                 placeholderTextColor="rgba(45, 45, 45, 0.3)"
-                onChangeText={summary => this.setState({ 
-                  product: { ...this.state.product, summary }
-                })}
+                onChangeText={summary =>
+                  this.setState({
+                    product: { ...this.state.product, summary }
+                  })
+                }
                 value={this.state.product.summary}
               />
             </KeyboardAvoidingView>
@@ -291,47 +309,54 @@ class AddMediaTab extends Component {
                   label: "Select a category...",
                   value: null
                 }}
-                value={this.state.selectedCategory ? 
-                  this.state.selectedCategory.name : this.state.product.category }
+                value={
+                  this.state.selectedCategory
+                    ? this.state.selectedCategory.name
+                    : this.state.product.category
+                }
               />
             </View>
-            {
-              subItems && subItems.length > 0  && 
-              <React.Fragment>
-                <Text style={Styles.product_text}>Select Sub-Category: </Text>
-                <View style={GStyles.dropDownSelection_input}>
-                  <Picker
-                    items={this.state.selectedCategory.subs}
-                    hideIcon
-                    onValueChange={this.handleCategoryChange2}
-                    placeholder={{
-                      label: "Select a sub category...",
-                      value: null
-                    }}
-                    value={this.state.selectedSubCategory ?
-                      this.state.selectedSubCategory.name : this.state.product.category } 
-                  />
-                </View>
-              </React.Fragment>
-            }
+            {subItems &&
+              subItems.length > 0 && (
+                <React.Fragment>
+                  <Text style={Styles.product_text}>Select Sub-Category: </Text>
+                  <View style={GStyles.dropDownSelection_input}>
+                    <Picker
+                      items={this.state.selectedCategory.subs}
+                      hideIcon
+                      onValueChange={this.handleCategoryChange2}
+                      placeholder={{
+                        label: "Select a sub category...",
+                        value: null
+                      }}
+                      value={
+                        this.state.selectedSubCategory
+                          ? this.state.selectedSubCategory.name
+                          : this.state.product.category
+                      }
+                    />
+                  </View>
+                </React.Fragment>
+              )}
 
-            { subSubItems && subSubItems.length > 0  &&
-              <React.Fragment>
-                <Text style={Styles.product_text}>Select Sub-Category:</Text>
-                <View style={GStyles.dropDownSelection_input}>
-                  <Picker
-                    items={this.state.selectedSubCategory.subs}
-                    hideIcon
-                    onValueChange={this.handleCategoryChange3}
-                    placeholder={{
-                      label: "Select a sub-sub category...",
-                      value: null
-                    }}
-                    value={ this.state.product.category } 
-                  />
-                </View>
-              </React.Fragment>
-            }
+            {subSubItems &&
+              subSubItems.length > 0 && (
+                <React.Fragment>
+                  <Text style={Styles.product_text}>Select Sub-Category:</Text>
+                  <View style={GStyles.dropDownSelection_input}>
+                    <Picker
+                      items={this.state.selectedSubCategory.subs}
+                      hideIcon
+                      onValueChange={this.handleCategoryChange3}
+                      placeholder={{
+                        label: "Select a sub-sub category...",
+                        value: null
+                      }}
+                      value={this.state.product.category}
+                    />
+                  </View>
+                </React.Fragment>
+              )}
 
             <KeyboardAvoidingView
               behavior="padding"
@@ -344,9 +369,11 @@ class AddMediaTab extends Component {
                 placeholder="Quantity"
                 keyboardType="numeric"
                 placeholderTextColor="rgba(45, 45, 45, 0.3)"
-                onChangeText={quantity => this.setState({ 
-                  product: { ...this.state.product, quantity }
-                })}
+                onChangeText={quantity =>
+                  this.setState({
+                    product: { ...this.state.product, quantity }
+                  })
+                }
                 value={this.state.product.quantity}
               />
             </KeyboardAvoidingView>
@@ -361,9 +388,11 @@ class AddMediaTab extends Component {
                 placeholder="Brand"
                 keyboardType="default"
                 placeholderTextColor="rgba(45, 45, 45, 0.3)"
-                onChangeText={brand => this.setState({ 
-                  product: { ...this.state.product, brand }
-                })}
+                onChangeText={brand =>
+                  this.setState({
+                    product: { ...this.state.product, brand }
+                  })
+                }
                 value={this.state.product.brand}
               />
             </KeyboardAvoidingView>
@@ -371,7 +400,7 @@ class AddMediaTab extends Component {
             <KeyboardAvoidingView
               behavior="padding"
               keyboardVerticalOffset={64}
-              >
+            >
               <Text style={Styles.product_text}>Sku:</Text>
               <TextInput
                 style={GStyles.input}
@@ -379,9 +408,11 @@ class AddMediaTab extends Component {
                 placeholder="Sku"
                 keyboardType="default"
                 placeholderTextColor="rgba(45, 45, 45, 0.3)"
-                onChangeText={sku => this.setState({ 
-                  product: { ...this.state.product, sku }
-                })}
+                onChangeText={sku =>
+                  this.setState({
+                    product: { ...this.state.product, sku }
+                  })
+                }
                 value={this.state.product.sku}
               />
             </KeyboardAvoidingView>
@@ -402,8 +433,8 @@ class AddMediaTab extends Component {
 
 const mapStateToProps = state => ({
   shared: state.get("shared")
-})
-  
+});
+
 const mapDispatchToProps = dispatch => ({
   displayError: bindActionCreators(displayError, dispatch)
 });

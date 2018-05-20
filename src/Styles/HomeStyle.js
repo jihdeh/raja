@@ -7,7 +7,8 @@ const styles = StyleSheet.create({
   },
 
   saleTitle: {
-    width: 150
+    width: 150,
+    fontWeight: "bold"
   },
 
   saleAmount: {
@@ -32,6 +33,12 @@ const styles = StyleSheet.create({
     opacity: 2,
     marginTop: 10,
     marginBottom: 5
+  },
+
+  noAvailableText: {
+    margin: 10,
+    padding: 10,
+    textAlign: "center"
   },
 
   userFeedContainer: {

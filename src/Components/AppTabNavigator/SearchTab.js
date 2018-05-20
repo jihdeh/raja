@@ -23,11 +23,7 @@ class SearchTab extends Component {
       headerRight: (
         <View style={GStyles.headerRightContainer}>
           <Icon style={GStyles.headerRightIcon} name="ios-bookmark-outline" />
-          <Icon
-            style={GStyles.headerRightIcon}
-            name="md-mail"
-            onPress={() => navigation.navigate("Notifications")}
-          />
+          <Icon style={GStyles.headerRightIcon} name="md-mail" />
         </View>
       )
     };

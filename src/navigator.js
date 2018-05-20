@@ -4,11 +4,12 @@ import { TabNavigator, StackNavigator } from "react-navigation";
 import HomeTab from "./Components/AppTabNavigator/HomeTab";
 import SearchTab from "./Components/AppTabNavigator/SearchTab";
 import AddMediaTab from "./Components/AppTabNavigator/AddMediaTab";
-import LikesTab from "./Components/AppTabNavigator/LikesTab";
+import NotificationsTab from "./Components/AppTabNavigator/NotificationsTab";
 import ProfileTab from "./Components/AppTabNavigator/ProfileTab";
 import BidSelection from "./Components/AuctionComponents/bidSelection";
-import Notifications from "./Components/Notifications";
 import ProductOverview from "./Components/AuctionComponents/productOverview";
+
+import ProductInfo from "./Components/HomeComponents/ProductInfo";
 
 import LandingScreen from "./Containers/Landing";
 import LoginScreen from "./Containers/Login";
@@ -25,8 +26,8 @@ const AppTabNavigator = TabNavigator(
     AddMediaTab: {
       screen: AddMediaTab
     },
-    LikesTab: {
-      screen: LikesTab
+    NotificationsTab: {
+      screen: NotificationsTab
     },
     ProfileTab: {
       screen: ProfileTab
@@ -60,11 +61,11 @@ const AppNavigator = StackNavigator({
   Home: {
     screen: AppTabNavigator
   },
-  Notifications: {
-    screen: Notifications
-  },
   ProductOverview: {
     screen: ProductOverview
+  },
+  ProductInfo: {
+    screen: ProductInfo
   }
 });
 

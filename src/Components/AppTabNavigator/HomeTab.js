@@ -3,6 +3,7 @@ import { View, Text, FlatList, Image, ScrollView } from "react-native";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { getCategories } from "../../Actions/SharedAction";
+import { getProducts } from "../../Actions/ProductAction";
 
 import { Container, Content, Icon } from "native-base";
 import HotLists from "../HomeComponents/HotLists";
@@ -127,11 +128,7 @@ class HomeTab extends Component {
       headerRight: (
         <View style={GStyles.headerRightContainer}>
           <Icon style={GStyles.headerRightIcon} name="ios-bookmark-outline" />
-          <Icon
-            style={GStyles.headerRightIcon}
-            name="md-mail"
-            onPress={() => navigation.navigate("Notifications")}
-          />
+          <Icon style={GStyles.headerRightIcon} name="md-mail" />
         </View>
       )
     };
@@ -139,14 +136,25 @@ class HomeTab extends Component {
 
   componentDidMount() {
     this.props.getCategories();
+    this.props
+      .getProducts("onSale")
+      .then(() => this.props.getProducts("isTrending"))
+      .then(() => this.props.getProducts("isFeatured"));
   }
 
   render() {
+    const { navigation, products } = this.props;
+    const hasFetchedProducts = products && products.toJS();
+    console.log(hasFetchedProducts);
+
     return (
       <View>
         <ScrollView>
-          <HotLists hotListsItems={hotListsItems} />
-          <UserFeeds userFeedsList={userFeedsList} />
+          <HotLists
+            hotListsItems={hasFetchedProducts}
+            navigation={navigation}
+          />
+          <UserFeeds userFeedsList={userFeedsList} navigation={navigation} />
         </ScrollView>
       </View>
     );
@@ -154,13 +162,14 @@ class HomeTab extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state,
-  shared: state.get("shared")
+  shared: state.get("shared"),
+  products: state.get("product")
 });
 
 const mapDispatchToProps = dispatch => {
   return {
-    getCategories: bindActionCreators(getCategories, dispatch)
+    getCategories: bindActionCreators(getCategories, dispatch),
+    getProducts: bindActionCreators(getProducts, dispatch)
   };
 };
 
