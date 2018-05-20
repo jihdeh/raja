@@ -11,51 +11,6 @@ import UserFeeds from "../HomeComponents/UserFeeds";
 import Styles from "../../Styles/HomeStyle";
 import GStyles from "../../Styles/GeneralStyle";
 
-const hotListsItems = [
-  {
-    id: 1,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Lhasa_scene.jpg/200px-Lhasa_scene.jpg",
-    title: "McLauren Stops Caux",
-    amount: "$1200"
-  },
-  {
-    id: 2,
-    image:
-      "https://render.fineartamerica.com/images/images-new-artwork/images/artworkimages/medium/1/the-inexplicable-ignition-of-time-expanding-into-free-space-phase-two-number-18-m-mellon.jpg",
-    title: "Gucci Rompers",
-    amount: "$200"
-  },
-  {
-    id: 3,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Lhasa_scene.jpg/200px-Lhasa_scene.jpg",
-    title: "Versace coveralls",
-    amount: "$1092"
-  },
-  {
-    id: 4,
-    image:
-      "https://render.fineartamerica.com/images/images-new-artwork/images/artworkimages/medium/1/the-inexplicable-ignition-of-time-expanding-into-free-space-phase-two-number-18-m-mellon.jpg",
-    title: "McLauren Stops Caux Elements",
-    amount: "$300"
-  },
-  {
-    id: 5,
-    image:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Lhasa_scene.jpg/200px-Lhasa_scene.jpg",
-    title: "McLauren Stops Caux",
-    amount: "$1029"
-  },
-  {
-    id: 6,
-    image:
-      "https://render.fineartamerica.com/images/images-new-artwork/images/artworkimages/medium/1/the-inexplicable-ignition-of-time-expanding-into-free-space-phase-two-number-18-m-mellon.jpg",
-    title: "McLauren Stops Caux",
-    amount: "$120"
-  }
-];
-
 const userFeedsList = [
   {
     id: 1,
@@ -145,7 +100,6 @@ class HomeTab extends Component {
   render() {
     const { navigation, products } = this.props;
     const hasFetchedProducts = products && products.toJS();
-    console.log(hasFetchedProducts);
 
     return (
       <View>
