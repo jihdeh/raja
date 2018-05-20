@@ -2,7 +2,9 @@ import axios from "axios";
 import { BASE_URL } from "../Constants/BaseUrl";
 import { displayError } from "./ErrorAction";
 import {
-  CATEGORIES_FETCHED, CATEGORIES_LOADING
+  CATEGORIES_FETCHED,
+  CATEGORIES_LOADING,
+  FETCH_BOOKMARKS
 } from "../Constants/ActionTypes";
 import toArray from "lodash/toArray";
 import { transformData } from "../utils/categoryHelpers";
@@ -13,7 +15,7 @@ const errorHandler = errors =>
     .join("\n");
 
 export const getCategories = () => dispatch => {
-	dispatch({ type: CATEGORIES_LOADING });
+  dispatch({ type: CATEGORIES_LOADING });
   axios
     .get(`${BASE_URL}/categories`)
     .then(({ data }) => {
@@ -27,3 +29,20 @@ export const getCategories = () => dispatch => {
       displayError(data.message)(dispatch);
     });
 };
+
+export const getBookmarks = () => {
+  axios
+    .get(`${BASE_URL}/bookmarks`)
+    .then(({ data }) => {
+      dispatch({
+        type: FETCH_BOOKMARKS,
+        payload: data
+      });
+    })
+    .catch(error => {
+      const { data } = error.response;
+      displayError(data.message)(dispatch);
+    });
+};
+
+export const bookmarkItem = () => dispatch => {};
