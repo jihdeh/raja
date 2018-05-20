@@ -1,20 +1,30 @@
 import React, { Component } from "react";
 import {
   View,
+  ScrollView,
   Text,
   Image,
   TouchableHighlight,
-  StyleSheet
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  Button
 } from "react-native";
+import moment from "moment/moment";
+import { Icon } from "native-base";
 import Carousel from "react-native-snap-carousel";
-import { sliderWidth, itemWidth } from "../../Styles/SliderEntry.style";
 import SliderEntry from "../../Components/SliderEntry";
-import styles, { colors } from "../../Styles/SliderEntry.index";
 
+import { sliderWidth, itemWidth } from "../../Styles/SliderEntry.style";
+import styles, { colors } from "../../Styles/SliderEntry.index";
 import Styles from "../../Styles/HomeStyle";
+import GStyles from "../../Styles/GeneralStyle";
 import PStyles from "../../Styles/ProductStyle";
 
 class ProductInfo extends Component {
+  state = {
+    comment: ""
+  };
   static navigationOptions = ({ navigation }) => {
     const { state } = navigation;
     const { params } = state;
@@ -32,6 +42,14 @@ class ProductInfo extends Component {
     return <SliderEntry data={item} even={(index + 1) % 2 === 0} />;
   }
 
+  _submitComment() {
+    // console.log(target.value);
+  }
+
+  _buyProduct() {
+    //trigger buy
+  }
+
   render() {
     const isTinder = "tinder";
     const { navigation } = this.props;
@@ -40,7 +58,7 @@ class ProductInfo extends Component {
     const { item } = params;
     console.log(item);
     return (
-      <View style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }}>
         <View style={Styles.profileContainer}>
           <TouchableHighlight style={Styles.imageContainer}>
             <Image
@@ -50,7 +68,10 @@ class ProductInfo extends Component {
             />
           </TouchableHighlight>
           <View style={PStyles.textWrapper}>
-            <Text style={PStyles.profileName}>{item.owner.displayName}</Text>
+            <View style={{ flex: 1, flexDirection: "column", margin: 10 }}>
+              <Text>{item.owner.displayName}</Text>
+              <Text>Location | 100% rating</Text>
+            </View>
             {item.owner.isFollowing ? (
               <TouchableHighlight>
                 <Text style={PStyles.followBtn}>Unfollow</Text>
@@ -61,9 +82,6 @@ class ProductInfo extends Component {
               </TouchableHighlight>
             )}
           </View>
-        </View>
-        <View>
-          <Text>Location | 100% rating</Text>
         </View>
         <View
           style={[
@@ -90,7 +108,89 @@ class ProductInfo extends Component {
             loop={true}
           />
         </View>
-      </View>
+        <View
+          style={{
+            margin: 10
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between"
+            }}
+          >
+            <Text style={{ paddingTop: 10 }}>{item.name.toUpperCase()}</Text>
+            <Icon name="ios-bookmark-outline" />
+          </View>
+          {item.onSale ? (
+            <Text>
+              Price "On SALE": Rp{item.salePrice}{" "}
+              <Text
+                style={{
+                  textDecorationLine: "line-through",
+                  textDecorationStyle: "solid"
+                }}
+              >
+                Rp{item.originalPrice}
+              </Text>
+            </Text>
+          ) : (
+            <Text>Price : Rp{item.originalPrice}</Text>
+          )}
+
+          <View style={PStyles.hr} />
+
+          <View>
+            <Text>Description:</Text>
+            <Text style={PStyles.productInfoMore}> {item.description}</Text>
+          </View>
+
+          <View style={{ flex: 1 }}>
+            <Text>Information:</Text>
+            <View style={PStyles.productInfoMore}>
+              <View style={PStyles.productInfoMoreX}>
+                <Text>Uploaded:</Text>
+                <Text>{moment(item.createdAt).format("MMMM Do YYYY")}</Text>
+              </View>
+              <View style={PStyles.productInfoMoreX}>
+                <Text>Condition:</Text>
+                <Text>{item.condition}</Text>
+              </View>
+
+              <View style={PStyles.productInfoMoreX}>
+                <Text>Weight:</Text>
+                <Text>{item.weight}kg</Text>
+              </View>
+
+              <View style={PStyles.productInfoMoreX}>
+                <Text>Delivery:</Text>
+                <Text>Location to </Text>
+              </View>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={this._buyProduct}
+            style={[Styles.btn, GStyles.buttonContainer]}
+          >
+            <Text style={GStyles.buttonText}>BUY</Text>
+          </TouchableOpacity>
+          <View style={{ marginTop: 20 }}>
+            <Text>Comments</Text>
+            <TextInput
+              multiline={true}
+              numberOfLines={4}
+              style={PStyles.commentInput}
+              onChangeText={comment => this.setState({ comment })}
+              value={this.state.comment}
+            />
+            <Button title="Post" onPress={this._submitComment} />
+          </View>
+          <View style={PStyles.hr} />
+          <View style={{ marginTop: 15 }}>
+            <Text>No comments yet</Text>
+          </View>
+        </View>
+      </ScrollView>
     );
   }
 }
