@@ -78,7 +78,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10
   },
 
-  itemForSaleContainer: {},
   itemForSaleImage: {
     marginTop: 8,
     width: "100%",
