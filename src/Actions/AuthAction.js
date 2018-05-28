@@ -16,7 +16,6 @@ export const login = ({ email, password }) => dispatch => {
   axios
     .post(`${BASE_URL}/auth/login`, { email, password })
     .then(({ data }) => {
-      console.log(data);
       dispatch({
         type: IS_AUTHENTICATED,
         payload: data

@@ -11,6 +11,7 @@ import {
   FlatList,
   ScrollView
 } from "react-native";
+import jwtDecode from "jwt-decode";
 import get from "lodash/get";
 import { Icon } from "native-base";
 import { connect } from "react-redux";
@@ -20,27 +21,65 @@ import GStyles from "../../Styles/GeneralStyle";
 import Styles from "../../Styles/ProfileStyle";
 import HStyles from "../../Styles/HomeStyle";
 
-const _keyExtractor = (item, index) => item.id;
+class RightHeader extends Component {
+  state = {
+    onSettingGearClicked: false
+  };
 
+  onGearClick = () => {
+    this.setState({ onSettingGearClicked: !this.state.onSettingGearClicked });
+    return;
+  };
+
+  render() {
+    return (
+      <View style={GStyles.headerRightContainer}>
+        <TouchableOpacity onPress={() => this.onGearClick()}>
+          <Icon style={GStyles.headerRightIcon} name="md-settings" />
+          {this.state.onSettingGearClicked && (
+            <View style={Styles.settingsOption}>
+              <Text style={Styles.settingsOptionText}>Profile</Text>
+              <Text style={Styles.settingsOptionText}>Logout</Text>
+            </View>
+          )}
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
+
+const _keyExtractor = (item, index) => item.id;
 class ProfileTab extends Component {
   static navigationOptions = ({ navigation }) => {
+    let x = false;
     return {
       tabBarIcon: ({ tintColor }) => (
         <Icon name="person" style={{ color: tintColor }} />
       ),
-      headerLeft: <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />,
-      headerRight: (
-        <View style={GStyles.headerRightContainer}>
-          <Icon style={GStyles.headerRightIcon} name="ios-bookmark-outline" />
-          <Icon style={GStyles.headerRightIcon} name="md-mail" />
-        </View>
-      )
+      headerLeft: (
+        <Text style={{ paddingLeft: 10 }}>
+          {get(navigation, "state.params.username") &&
+            get(navigation, "state.params.username").toUpperCase()}
+        </Text>
+      ),
+      headerRight: <RightHeader />
     };
   };
 
   state = {
     searchInput: ""
   };
+
+  async componentWillMount() {
+    const { navigation } = this.props;
+    const value = await AsyncStorage.getItem("token");
+    const decoded = jwtDecode(value);
+    if (decoded && !get(navigation, "state.params.username")) {
+      this.props.navigation.setParams({
+        username: decoded.username
+      });
+    }
+  }
 
   onLogout = () => {
     AsyncStorage.clear();

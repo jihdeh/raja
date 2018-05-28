@@ -35,18 +35,19 @@ const styles = StyleSheet.create({
   },
   profileSetting: {
     flex: 1,
-    position: "absolute",
-    top: 60,
-    right: 30,
-    alignSelf: "flex-end"
+    position: "relative",
+    bottom: 80,
+    left: 50,
+    alignSelf: "center"
   },
   settingBtn: {
     borderWidth: 2,
-    width: width / 1.3,
+    alignSelf: "center",
+    width: width / 2,
     paddingTop: 5,
     paddingBottom: 5,
-    paddingLeft: 75,
-    paddingRight: 75,
+    alignSelf: "center",
+    alignItems: "center",
     borderColor: "rgba(0,0,0,0.2)",
     borderRadius: 5
   },
@@ -69,7 +70,6 @@ const styles = StyleSheet.create({
     color: "rgb(45, 45, 45)"
   },
   searchInputIcon: {
-    // display: "flex",
     padding: 10
   },
   searchSection: {
@@ -80,6 +80,21 @@ const styles = StyleSheet.create({
   listView: {
     flexDirection: "row",
     flexWrap: "wrap"
+  },
+  settingsOption: {
+    width: 150,
+    position: "absolute",
+    backgroundColor: "#ffffff",
+    padding: 10,
+    top: 30,
+    right: 20,
+    borderColor: "rgba(0,0,0,0.2)",
+    borderRadius: 5,
+    borderWidth: 1
+  },
+  settingsOptionText: {
+    fontSize: 15,
+    fontWeight: "500"
   }
 });
 

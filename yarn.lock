@@ -3575,6 +3575,12 @@ react-native-maps@0.19.0:
   version "0.19.0"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.19.0.tgz#ce94fad1cf360e335cb4338a68c95f791e869074"
 
+react-native-material-menu@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-material-menu/-/react-native-material-menu-0.3.1.tgz#f0298b768e13deb824ee757aaf28fd5f59df699a"
+  dependencies:
+    prop-types "^15.6.0"
+
 react-native-modal-datetime-picker@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/react-native-modal-datetime-picker/-/react-native-modal-datetime-picker-5.1.0.tgz#6e183531170881c2ff5b0742d132060f828e2b77"
