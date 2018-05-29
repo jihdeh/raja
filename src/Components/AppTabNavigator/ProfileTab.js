@@ -51,7 +51,6 @@ class RightHeader extends Component {
 const _keyExtractor = (item, index) => item.id;
 class ProfileTab extends Component {
   static navigationOptions = ({ navigation }) => {
-    let x = false;
     return {
       tabBarIcon: ({ tintColor }) => (
         <Icon name="person" style={{ color: tintColor }} />
@@ -159,7 +158,7 @@ class ProfileTab extends Component {
             </TouchableOpacity>
           </View>
           <View style={Styles.profileUser}>
-            <Text>Username</Text>
+            <Text>{get(navigation, "state.params.username")}</Text>
             <Text>
               <Icon name="ios-pin-outline" style={{ paddingLeft: 10 }} />{" "}
               Location

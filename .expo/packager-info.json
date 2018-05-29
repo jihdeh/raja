@@ -1,8 +1,8 @@
 {
-  "expoServerPort": 19000,
-  "packagerPort": 19001,
-  "packagerPid": 9639,
-  "expoServerNgrokUrl": "https://av-jaw.jihdeh.juli.exp.direct",
-  "packagerNgrokUrl": "https://packager.av-jaw.jihdeh.juli.exp.direct",
-  "ngrokPid": 9651
+  "expoServerPort": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }
