@@ -3,7 +3,8 @@ import {
   PRODUCT_CREATED,
   PRODUCT_ONSALE,
   PRODUCT_TRENDING,
-  PRODUCT_FEATURED
+  PRODUCT_FEATURED,
+  PROFILE_PRODUCTS
 } from "../Constants/ActionTypes";
 import { set } from "../utils/functional-immutable";
 
@@ -19,6 +20,8 @@ const ProductReducer = (state = initialState, { type, payload }) => {
       return set("productTrending", payload, state);
     case PRODUCT_FEATURED:
       return set("productFeatured", payload, state);
+    case PROFILE_PRODUCTS:
+      return set("profileProducts", payload, state);
     default:
       return state;
   }

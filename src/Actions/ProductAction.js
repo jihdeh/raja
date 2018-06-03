@@ -6,7 +6,8 @@ import {
   PRODUCT_CREATED,
   PRODUCT_ONSALE,
   PRODUCT_TRENDING,
-  PRODUCT_FEATURED
+  PRODUCT_FEATURED,
+  PROFILE_PRODUCTS
 } from "../Constants/ActionTypes";
 
 const errorHandler = errors =>
@@ -72,6 +73,22 @@ export const getProducts = type => async dispatch => {
     .get(`${BASE_URL}/products?${type}=true`)
     .then(response => {
       dispatch({ type: dispatchType, payload: response.data });
+    })
+    .catch(({ response }) => {
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
+export const getUserProducts = userId => async dispatch => {
+  axios
+    .get(`${BASE_URL}/${userId}/products`)
+    .then(({ data }) => {
+      console.log("---da", data);
+      dispatch({ type: PROFILE_PRODUCTS, payload: data });
     })
     .catch(({ response }) => {
       if (response.data.errors) {

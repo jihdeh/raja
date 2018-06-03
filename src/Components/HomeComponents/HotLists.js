@@ -8,7 +8,6 @@ const _keyExtractor = (item, index) => item.id;
 class HotLists extends Component {
   renderItem = item => {
     const { navigation } = this.props;
-
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate("ProductInfo", { item })}
@@ -19,7 +18,9 @@ class HotLists extends Component {
             source={{ uri: get(item, "images[0].url") }}
           />
           <Text style={Styles.saleTitle}>{item.name.toUpperCase()}</Text>
-          <Text style={Styles.saleAmount}>{item.salePrice}</Text>
+          {item.saleFormat !== "auction" && (
+            <Text style={Styles.saleAmount}>{item.salePrice}</Text>
+          )}
         </View>
       </TouchableOpacity>
     );

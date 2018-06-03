@@ -17,6 +17,7 @@ import { Icon } from "native-base";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { logout } from "../../Actions/AuthAction";
+import { getUserProducts } from "../../Actions/ProductAction";
 import GStyles from "../../Styles/GeneralStyle";
 import Styles from "../../Styles/ProfileStyle";
 import HStyles from "../../Styles/HomeStyle";
@@ -70,13 +71,14 @@ class ProfileTab extends Component {
   };
 
   async componentWillMount() {
-    const { navigation } = this.props;
+    const { navigation, getUserProducts } = this.props;
     const value = await AsyncStorage.getItem("token");
     const decoded = jwtDecode(value);
     if (decoded && !get(navigation, "state.params.username")) {
-      this.props.navigation.setParams({
+      navigation.setParams({
         username: decoded.username
       });
+      getUserProducts(decoded.id);
     }
   }
 
@@ -117,7 +119,9 @@ class ProfileTab extends Component {
               source={{ uri: get(item, "images[0].url") }}
             />
             <Text style={HStyles.saleTitle}>{item.name.toUpperCase()}</Text>
-            <Text style={HStyles.saleAmount}>{item.salePrice}</Text>
+            {item.saleFormat !== "auction" && (
+              <Text style={Styles.saleAmount}>{item.salePrice}</Text>
+            )}
           </View>
         </TouchableOpacity>
       </View>
@@ -125,8 +129,9 @@ class ProfileTab extends Component {
   };
 
   render() {
-    const { products } = this.props;
+    const { navigation, products } = this.props;
     const hotListsItems = products && products.toJS();
+    console.log(hotListsItems, "---");
 
     return (
       <View>
@@ -215,7 +220,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  logout: bindActionCreators(logout, dispatch)
+  logout: bindActionCreators(logout, dispatch),
+  getUserProducts: bindActionCreators(getUserProducts, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfileTab);
