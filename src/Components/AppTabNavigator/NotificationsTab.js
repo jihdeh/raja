@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { View, Text, StyleSheet } from "react-native";
-
 import { Icon } from "native-base";
 import Notifications from "../Notifications";
 import GStyles from "../../Styles/GeneralStyle";
@@ -29,12 +28,5 @@ class NotificationsTab extends Component {
     );
   }
 }
-export default NotificationsTab;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});
+export default NotificationsTab;

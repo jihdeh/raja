@@ -17,40 +17,18 @@ import { Icon } from "native-base";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { logout } from "../../Actions/AuthAction";
+import RightHeader from "../ProfileRightHeader";
 import { getUserProducts } from "../../Actions/ProductAction";
 import GStyles from "../../Styles/GeneralStyle";
 import Styles from "../../Styles/ProfileStyle";
 import HStyles from "../../Styles/HomeStyle";
 
-class RightHeader extends Component {
-  state = {
-    onSettingGearClicked: false
-  };
-
-  onGearClick = () => {
-    this.setState({ onSettingGearClicked: !this.state.onSettingGearClicked });
-    return;
-  };
-
-  render() {
-    return (
-      <View style={GStyles.headerRightContainer}>
-        <TouchableOpacity onPress={() => this.onGearClick()}>
-          <Icon style={GStyles.headerRightIcon} name="md-settings" />
-          {this.state.onSettingGearClicked && (
-            <View style={Styles.settingsOption}>
-              <Text style={Styles.settingsOptionText}>Profile</Text>
-              <Text style={Styles.settingsOptionText}>Logout</Text>
-            </View>
-          )}
-        </TouchableOpacity>
-      </View>
-    );
-  }
-}
-
 const _keyExtractor = (item, index) => item.id;
 class ProfileTab extends Component {
+  state = {
+    searchInput: ""
+  };
+
   static navigationOptions = ({ navigation }) => {
     return {
       tabBarIcon: ({ tintColor }) => (
@@ -62,12 +40,8 @@ class ProfileTab extends Component {
             get(navigation, "state.params.username").toUpperCase()}
         </Text>
       ),
-      headerRight: <RightHeader />
+      headerRight: <RightHeader navigation={navigation} />
     };
-  };
-
-  state = {
-    searchInput: ""
   };
 
   async componentWillMount() {
@@ -78,7 +52,7 @@ class ProfileTab extends Component {
       navigation.setParams({
         username: decoded.username
       });
-      getUserProducts(decoded.id);
+      getUserProducts(decoded.id, value);
     }
   }
 
@@ -99,10 +73,6 @@ class ProfileTab extends Component {
         }}
       />
     );
-  };
-
-  onSettingsBtn = () => {
-    console.log("button press");
   };
 
   renderItem = item => {
@@ -131,8 +101,7 @@ class ProfileTab extends Component {
   render() {
     const { navigation, products } = this.props;
     const hotListsItems = products && products.toJS();
-    console.log(hotListsItems, "---");
-
+    console.log(this.props);
     return (
       <View>
         <ScrollView>
@@ -156,7 +125,7 @@ class ProfileTab extends Component {
           </View>
           <View style={Styles.profileSetting}>
             <TouchableOpacity
-              onPress={this.onSettingsBtn}
+              onPress={() => navigation.navigate("SettingsScreen")}
               style={Styles.settingBtn}
             >
               <Text style={Styles.settingBtnText}>Settings</Text>
@@ -206,9 +175,6 @@ class ProfileTab extends Component {
               </View>
             )}
           </View>
-          <TouchableOpacity onPress={this.onLogout}>
-            <Text>Logout</Text>
-          </TouchableOpacity>
         </ScrollView>
       </View>
     );

@@ -8,11 +8,16 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
-  Button
+  Button,
+  AsyncStorage
 } from "react-native";
+import jwtDecode from "jwt-decode";
 import moment from "moment/moment";
 import { Icon } from "native-base";
 import Carousel from "react-native-snap-carousel";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { getBookmarks, bookmarkProduct } from "../../Actions/SharedAction";
 import SliderEntry from "../../Components/SliderEntry";
 
 import { sliderWidth, itemWidth } from "../../Styles/SliderEntry.style";
@@ -34,6 +39,15 @@ class ProductInfo extends Component {
     };
   };
 
+  async componentWillMount() {
+    const { getBookmarks } = this.props;
+    const value = await AsyncStorage.getItem("token");
+    const decoded = jwtDecode(value);
+    if (decoded) {
+      getBookmarks(value);
+    }
+  }
+
   _renderLightItem({ item, index }) {
     return <SliderEntry data={item} even={false} />;
   }
@@ -50,13 +64,23 @@ class ProductInfo extends Component {
     //trigger buy
   }
 
+  _bookmarkProduct = async productSlug => {
+    const value = await AsyncStorage.getItem("token");
+    const decoded = jwtDecode(value);
+    if (decoded) {
+      this.props.bookmarkProduct(productSlug, value);
+    }
+  };
+
   render() {
     const isTinder = "tinder";
     const { navigation } = this.props;
     const { state } = navigation;
     const { params } = state;
     const { item } = params;
-    console.log(item);
+
+    console.log(this.props.shared);
+
     return (
       <ScrollView style={{ flex: 1 }}>
         <View style={Styles.profileContainer}>
@@ -120,7 +144,9 @@ class ProductInfo extends Component {
             }}
           >
             <Text style={{ paddingTop: 10 }}>{item.name.toUpperCase()}</Text>
-            <Icon name="ios-bookmark-outline" />
+            <TouchableOpacity onPress={() => this._bookmarkProduct(item.slug)}>
+              <Icon name="ios-bookmark-outline" />
+            </TouchableOpacity>
           </View>
           {item.onSale ? (
             <Text>
@@ -195,4 +221,13 @@ class ProductInfo extends Component {
   }
 }
 
-export default ProductInfo;
+const mapStateToProps = state => ({
+  shared: state.get("shared").toJS()
+});
+
+const mapDispatchToProps = dispatch => ({
+  getBookmarks: bindActionCreators(getBookmarks, dispatch),
+  bookmarkProduct: bindActionCreators(bookmarkProduct, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductInfo);

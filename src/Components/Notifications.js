@@ -5,9 +5,15 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
-  Image
+  Image,
+  AsyncStorage
 } from "react-native";
+import jwtDecode from "jwt-decode";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import Pusher from "pusher-js/react-native";
+import { getNotifications } from "../Actions/SharedAction";
+
 import GStyles from "../Styles/GeneralStyle";
 
 const socket = new Pusher("0a8c0a7646c00d9e3227", {
@@ -35,13 +41,19 @@ class Notification extends Component {
     };
   }
 
-  componentWillMount() {
+  async componentWillMount() {
+    const value = await AsyncStorage.getItem("token");
     channel.bind("new-bid", data => {
       console.log(data.message);
       this.setState({
         data: [...this.state.data, data.message]
       });
     });
+
+    const decoded = jwtDecode(value);
+    if (decoded) {
+      this.props.getNotifications(value);
+    }
   }
 
   _onRefresh() {
@@ -53,6 +65,8 @@ class Notification extends Component {
 
   render() {
     const { data } = this.state;
+    const { shared: { notifications } } = this.props;
+    console.log(notifications);
 
     return (
       <ScrollView
@@ -92,4 +106,12 @@ class Notification extends Component {
   }
 }
 
-export default Notification;
+const mapStateToProps = state => ({
+  shared: state.get("shared").toJS()
+});
+
+const mapDispatchToProps = dispatch => ({
+  getNotifications: bindActionCreators(getNotifications, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Notification);

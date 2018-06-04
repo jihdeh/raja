@@ -83,9 +83,13 @@ export const getProducts = type => async dispatch => {
     });
 };
 
-export const getUserProducts = userId => async dispatch => {
+export const getUserProducts = (userId, token) => async dispatch => {
   axios
-    .get(`${BASE_URL}/${userId}/products`)
+    .get(`${BASE_URL}/products?user=${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     .then(({ data }) => {
       console.log("---da", data);
       dispatch({ type: PROFILE_PRODUCTS, payload: data });

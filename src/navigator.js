@@ -14,6 +14,7 @@ import ProductInfo from "./Components/HomeComponents/ProductInfo";
 import LandingScreen from "./Containers/Landing";
 import LoginScreen from "./Containers/Login";
 import SignUpScreen from "./Containers/SignUp";
+import SettingsScreen from "./Containers/Settings";
 
 const AppTabNavigator = TabNavigator(
   {
@@ -58,6 +59,7 @@ const AppNavigator = StackNavigator({
   Login: { screen: LoginScreen },
   SignUp: { screen: SignUpScreen },
   BidSelection: { screen: BidSelection },
+  SettingsScreen: { screen: SettingsScreen },
   Home: {
     screen: AppTabNavigator
   },

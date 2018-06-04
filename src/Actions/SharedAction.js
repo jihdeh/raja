@@ -4,7 +4,8 @@ import { displayError } from "./ErrorAction";
 import {
   CATEGORIES_FETCHED,
   CATEGORIES_LOADING,
-  FETCH_BOOKMARKS
+  FETCH_BOOKMARKS,
+  FETCH_NOTIFICATIONS
 } from "../Constants/ActionTypes";
 import toArray from "lodash/toArray";
 import { transformData } from "../utils/categoryHelpers";
@@ -24,25 +25,79 @@ export const getCategories = () => dispatch => {
         payload: transformData(data)
       });
     })
-    .catch(error => {
-      const { data } = error.response;
-      displayError(data.message)(dispatch);
+    .catch(({ response }) => {
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
     });
 };
 
-export const getBookmarks = () => {
+export const getBookmarks = token => dispatch => {
   axios
-    .get(`${BASE_URL}/bookmarks`)
+    .get(`${BASE_URL}/user/bookmarks`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     .then(({ data }) => {
+      console.log(data);
       dispatch({
         type: FETCH_BOOKMARKS,
         payload: data
       });
     })
-    .catch(error => {
-      const { data } = error.response;
-      displayError(data.message)(dispatch);
+    .catch(({ response }) => {
+      console.log(response);
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
     });
 };
 
-export const bookmarkItem = () => dispatch => {};
+export const bookmarkProduct = (productSlug, token) => dispatch => {
+  // api/v1/:productSlug/bookmark
+  axios
+    .post(`${BASE_URL}/${productSlug}/bookmark`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(({ data }) => {
+      console.log(data);
+      getBookmarks();
+    })
+    .catch(({ response }) => {
+      console.log(response);
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
+export const getNotifications = token => dispatch => {
+  axios
+    .get(`${BASE_URL}/user/notifications`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(({ data }) => {
+      dispatch({
+        type: FETCH_NOTIFICATIONS,
+        payload: data
+      });
+    })
+    .catch(({ response }) => {
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
