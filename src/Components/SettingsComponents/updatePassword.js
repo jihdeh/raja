@@ -1,26 +1,57 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent } from 'react'
 import {
   View,
   Text,
   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity
-} from "react-native";
-import GStyles from "../../Styles/GeneralStyle";
-import Styles from "../../Styles/SettingStyle";
+} from 'react-native'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { updatePassword } from '../../Actions/AuthAction'
+import { displayError } from '../../Actions/ErrorAction'
+import GStyles from '../../Styles/GeneralStyle'
+import Styles from '../../Styles/SettingStyle'
 
 class UpdatePassword extends PureComponent {
   state = {
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: ""
-  };
+    password: '',
+    newPassword: '',
+    confirmPassword: ''
+  }
 
   onChange = (field, value) => {
     this.setState({
       [field]: value
-    });
-  };
+    })
+  }
+
+  validatePass = () => {
+    const { confirmPassword, newPassword, password } = this.state
+    const trimmedConfirmPassword = confirmPassword.trim()
+    const trimmednewPassword = newPassword.trim()
+    const trimmedpassword = password.trim()
+    if (!trimmednewPassword || !trimmedConfirmPassword || !trimmedpassword) {
+      this.props.displayError('Fields cannot be blank')
+      return false
+    }
+
+    if (trimmednewPassword !== confirmPassword) {
+      this.props.displayError('Passwords do not match')
+      return false
+    }
+
+    return true
+  }
+
+  onUpdateProfile = () => {
+    const { confirmPassword, newPassword, password } = this.state
+    if (!this.validatePass()) return
+    this.props.updatePassword({
+      newPassword,
+      password
+    })
+  }
 
   render() {
     return (
@@ -34,11 +65,9 @@ class UpdatePassword extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={"none"}
-            onChangeText={currentPassword =>
-              this.onChange("currentPassword", currentPassword)
-            }
-            value={this.state.currentPassword}
+            autoCapitalize={'none'}
+            onChangeText={password => this.onChange('password', password)}
+            value={this.state.password}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -51,9 +80,9 @@ class UpdatePassword extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={"none"}
+            autoCapitalize={'none'}
             onChangeText={newPassword =>
-              this.onChange("newPassword", newPassword)
+              this.onChange('newPassword', newPassword)
             }
             value={this.state.newPassword}
             autoCorrect={false}
@@ -68,23 +97,32 @@ class UpdatePassword extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={"none"}
+            autoCapitalize={'none'}
             onChangeText={confirmPassword =>
-              this.onChange("confirmPassword", confirmPassword)
+              this.onChange('confirmPassword', confirmPassword)
             }
             value={this.state.confirmPassword}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
         <TouchableOpacity
-          onPress={this.onNext}
+          onPress={this.onUpdateProfile}
           style={[Styles.btn, GStyles.buttonContainer]}
         >
           <Text style={GStyles.buttonText}>CHANGE PASSWORD</Text>
         </TouchableOpacity>
       </View>
-    );
+    )
   }
 }
 
-export default UpdatePassword;
+const mapStateToProps = state => ({
+  user: state.get('auth').toJS()
+})
+
+const mapDispatchToProps = dispatch => ({
+  updatePassword: bindActionCreators(updatePassword, dispatch),
+  displayError: bindActionCreators(displayError, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(UpdatePassword)

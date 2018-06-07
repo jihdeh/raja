@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   View,
   Text,
@@ -6,38 +6,51 @@ import {
   Image,
   TouchableHighlight,
   TouchableOpacity
-} from "react-native";
-import Styles from "../../Styles/HomeStyle";
+} from 'react-native'
+import get from 'lodash/get'
+import Styles from '../../Styles/HomeStyle'
 
-const _keyExtractor = (feed, index) => feed.id;
+const _keyExtractor = (feed, index) => feed.id
 
-const renderItem = ({ profile, itemForSale }, navigation) => (
+const renderItem = (profile, navigation) => (
   <View style={Styles.userFeedContainer}>
     <TouchableOpacity
       style={Styles.profileContainer}
-      onPress={() => navigation.navigate("ProfileTab")}
+      onPress={() =>
+        navigation.navigate('ProfileTab', {
+          following: { ...profile },
+          username: profile.username,
+          followingProfile: true
+        })
+      }
     >
       <TouchableHighlight style={Styles.imageContainer}>
         <Image
           style={Styles.profileImage}
-          source={{ uri: profile.image }}
+          source={{ uri: profile.photo }}
           resizeMode="cover"
         />
       </TouchableHighlight>
       <View style={Styles.textWrapper}>
-        <Text style={Styles.profileName}>{profile.name}</Text>
+        <Text style={Styles.profileName}>{profile.username}</Text>
       </View>
     </TouchableOpacity>
     <View style={Styles.itemForSaleContainer}>
       <Image
         style={Styles.itemForSaleImage}
-        source={{ uri: itemForSale.image }}
+        source={{
+          uri:
+            get(profile, 'image') ||
+            'https://i.pinimg.com/736x/69/8d/97/698d97fb72fa05f36f63b9c66402d367--sorority-house-decor-sorority-houses.jpg'
+        }}
       />
-      <Text style={Styles.saleTitle}>{itemForSale.title}</Text>
-      <Text style={Styles.saleAmount}>{itemForSale.amount}</Text>
+      <Text style={Styles.saleTitle}>
+        {get(profile, 'title') || 'House decor on fleek'}
+      </Text>
+      <Text style={Styles.saleAmount}>{get(profile, 'amount') || '$20'}</Text>
     </View>
   </View>
-);
+)
 
 const UserFeeds = ({ userFeedsList, navigation }) => (
   <View>
@@ -51,6 +64,6 @@ const UserFeeds = ({ userFeedsList, navigation }) => (
       renderItem={({ item }) => renderItem(item, navigation)}
     />
   </View>
-);
+)
 
-export default UserFeeds;
+export default UserFeeds

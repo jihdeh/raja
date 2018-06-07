@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   View,
   Text,
@@ -7,66 +7,75 @@ import {
   RefreshControl,
   Image,
   AsyncStorage
-} from "react-native";
-import jwtDecode from "jwt-decode";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import Pusher from "pusher-js/react-native";
-import { getNotifications } from "../Actions/SharedAction";
+} from 'react-native'
+import jwtDecode from 'jwt-decode'
+import { connect } from 'react-redux'
+import get from 'lodash/get'
+import moment from 'moment/moment'
+import { bindActionCreators } from 'redux'
+import Pusher from 'pusher-js/react-native'
+import { getNotifications } from '../Actions/SharedAction'
 
-import GStyles from "../Styles/GeneralStyle";
+import GStyles from '../Styles/GeneralStyle'
 
-const socket = new Pusher("0a8c0a7646c00d9e3227", {
-  cluster: "eu"
-});
+const socket = new Pusher('0a8c0a7646c00d9e3227', {
+  cluster: 'eu'
+})
 
-const channel = socket.subscribe("auction-bid");
+Pusher.logToConsole = true
+const channel = socket.subscribe('auction-bid')
+channel.bind('new-bid', data => {
+  console.log(data.message, '----notififier')
+  // this.setState({
+  //   data: [...this.state.data, data.message]
+  // })
+})
 
-const fetchData = () =>
-  new Promise((resolve, reject) => setTimeout(() => resolve(dummyData), 2000));
+socket.connection.bind('error', function(err) {
+  console.log(err)
+  if (err.error.data.code === 4004) {
+    log('Over limit!')
+  }
+})
 
+console.log(socket)
 class Notification extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      data: [
-        {
-          message: "Ben law bookmarked your item"
-        },
-        {
-          message: "Two of your new products have been purchased"
-        }
-      ],
+      notifications: [],
       refreshing: false
-    };
+    }
   }
 
-  async componentWillMount() {
-    const value = await AsyncStorage.getItem("token");
-    channel.bind("new-bid", data => {
-      console.log(data.message);
+  componentWillMount() {
+    channel.bind('new-bid', data => {
+      console.log(data.message, '----notififier')
       this.setState({
         data: [...this.state.data, data.message]
-      });
-    });
+      })
+    })
+    this.props.getNotifications()
+  }
 
-    const decoded = jwtDecode(value);
-    if (decoded) {
-      this.props.getNotifications(value);
+  componentWillReceiveProps(nextProps) {
+    const { shared: { notifications } } = nextProps
+    if (get(notifications, 'length') !== this.state.notifications) {
+      this.setState({
+        notifications: notifications
+      })
     }
   }
 
   _onRefresh() {
-    this.setState({ refreshing: true });
-    fetchData().then(() => {
-      this.setState({ refreshing: false });
-    });
+    this.setState({ refreshing: true })
+    this.props.getNotifications().then(() => {
+      this.setState({ refreshing: false })
+    })
   }
 
   render() {
-    const { data } = this.state;
-    const { shared: { notifications } } = this.props;
-    console.log(notifications);
+    const { notifications } = this.state
 
     return (
       <ScrollView
@@ -78,23 +87,25 @@ class Notification extends Component {
           />
         }
       >
-        {data.length ? (
-          data.reverse().map((notification, key) => {
+        {get(notifications, 'length') ? (
+          notifications.reverse().map((notification, key) => {
             return (
               <View
                 key={key}
                 style={{
                   borderBottomWidth: 1,
-                  borderBottomColor: "#d6d7d8",
-                  padding: 10
+                  borderBottomColor: '#d6d7d8',
+                  padding: 10,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between'
                 }}
               >
-                <Text>
-                  {notification.message} -{" "}
-                  <Text style={{ fontSize: 10 }}>3w ago</Text>
+                <Text>{notification.actor} followed you </Text>
+                <Text style={{ fontSize: 10 }}>
+                  {moment(notification.created_at).fromNow(true)}
                 </Text>
               </View>
-            );
+            )
           })
         ) : (
           <View>
@@ -102,16 +113,16 @@ class Notification extends Component {
           </View>
         )}
       </ScrollView>
-    );
+    )
   }
 }
 
 const mapStateToProps = state => ({
-  shared: state.get("shared").toJS()
-});
+  shared: state.get('shared').toJS()
+})
 
 const mapDispatchToProps = dispatch => ({
   getNotifications: bindActionCreators(getNotifications, dispatch)
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(Notification);
+export default connect(mapStateToProps, mapDispatchToProps)(Notification)

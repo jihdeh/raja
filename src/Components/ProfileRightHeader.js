@@ -1,27 +1,35 @@
-import React, { Component } from "react";
-import { View, Text, TouchableOpacity, AsyncStorage } from "react-native";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { Icon } from "native-base";
-import { logout } from "../Actions/AuthAction";
-import GStyles from "../Styles/GeneralStyle";
-import Styles from "../Styles/ProfileStyle";
+import React, { Component } from 'react'
+import { View, Text, TouchableOpacity, AsyncStorage } from 'react-native'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { Icon } from 'native-base'
+import { logout } from '../Actions/AuthAction'
+import GStyles from '../Styles/GeneralStyle'
+import Styles from '../Styles/ProfileStyle'
 
 class RightHeader extends Component {
   state = {
     onSettingGearClicked: false
-  };
+  }
 
   onGearClick = () => {
-    this.setState({ onSettingGearClicked: !this.state.onSettingGearClicked });
-    return;
-  };
+    this.setState({ onSettingGearClicked: !this.state.onSettingGearClicked })
+    return
+  }
+
+  onProfileClick = () => {
+    const { navigation, user: { userExtended } } = this.props
+    navigation.setParams({
+      followingProfile: false,
+      username: userExtended.username
+    })
+  }
 
   onLogout = () => {
-    AsyncStorage.clear();
-    this.props.logout();
-    this.props.navigation.navigate("Landing");
-  };
+    AsyncStorage.clear()
+    this.props.logout()
+    this.props.navigation.navigate('Landing')
+  }
 
   render() {
     return (
@@ -30,7 +38,9 @@ class RightHeader extends Component {
           <Icon style={GStyles.headerRightIcon} name="md-settings" />
           {this.state.onSettingGearClicked && (
             <View style={Styles.settingsOption}>
-              <Text style={Styles.settingsOptionText}>Profile</Text>
+              <TouchableOpacity onPress={this.onProfileClick}>
+                <Text style={Styles.settingsOptionText}>Profile</Text>
+              </TouchableOpacity>
               <TouchableOpacity onPress={this.onLogout}>
                 <Text style={Styles.settingsOptionText}>Logout</Text>
               </TouchableOpacity>
@@ -38,12 +48,16 @@ class RightHeader extends Component {
           )}
         </TouchableOpacity>
       </View>
-    );
+    )
   }
 }
 
+const mapStateToProps = state => ({
+  user: state.get('auth').toJS()
+})
+
 const mapDispatchToProps = dispatch => ({
   logout: bindActionCreators(logout, dispatch)
-});
+})
 
-export default connect(null, mapDispatchToProps)(RightHeader);
+export default connect(mapStateToProps, mapDispatchToProps)(RightHeader)

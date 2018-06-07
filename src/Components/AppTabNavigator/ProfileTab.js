@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from 'react'
 import {
   View,
   Text,
@@ -10,24 +10,22 @@ import {
   TextInput,
   FlatList,
   ScrollView
-} from "react-native";
-import jwtDecode from "jwt-decode";
-import get from "lodash/get";
-import { Icon } from "native-base";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { logout } from "../../Actions/AuthAction";
-import RightHeader from "../ProfileRightHeader";
-import { getUserProducts } from "../../Actions/ProductAction";
-import GStyles from "../../Styles/GeneralStyle";
-import Styles from "../../Styles/ProfileStyle";
-import HStyles from "../../Styles/HomeStyle";
+} from 'react-native'
+import jwtDecode from 'jwt-decode'
+import get from 'lodash/get'
+import { Icon } from 'native-base'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { logout, getFollowingUserProfile } from '../../Actions/AuthAction'
+import RightHeader from '../ProfileRightHeader'
+import ProfileView from '../ProfileView'
+import { getUserProducts } from '../../Actions/ProductAction'
 
-const _keyExtractor = (item, index) => item.id;
-class ProfileTab extends Component {
-  state = {
-    searchInput: ""
-  };
+class ProfileTab extends PureComponent {
+  constructor(props) {
+    super(props)
+    this.hasLoaded = null
+  }
 
   static navigationOptions = ({ navigation }) => {
     return {
@@ -36,158 +34,112 @@ class ProfileTab extends Component {
       ),
       headerLeft: (
         <Text style={{ paddingLeft: 10 }}>
-          {get(navigation, "state.params.username") &&
-            get(navigation, "state.params.username").toUpperCase()}
+          {get(navigation, 'state.params.username') &&
+            get(navigation, 'state.params.username').toUpperCase()}
         </Text>
       ),
       headerRight: <RightHeader navigation={navigation} />
-    };
-  };
-
-  async componentWillMount() {
-    const { navigation, getUserProducts } = this.props;
-    const value = await AsyncStorage.getItem("token");
-    const decoded = jwtDecode(value);
-    if (decoded && !get(navigation, "state.params.username")) {
-      navigation.setParams({
-        username: decoded.username
-      });
-      getUserProducts(decoded.id, value);
     }
   }
 
-  onLogout = () => {
-    AsyncStorage.clear();
-    this.props.logout();
-    this.props.navigation.navigate("Landing");
-  };
+  async componentWillMount() {
+    const { navigation, getUserProducts } = this.props
+    const value = await AsyncStorage.getItem('token')
+    const decoded = jwtDecode(value)
+    if (decoded && !get(navigation, 'state.params.username')) {
+      navigation.setParams({
+        username: decoded.username
+      })
+    }
+  }
 
-  renderImage = () => {
-    return (
-      <Image
-        style={Styles.profileImage}
-        resizeMode="cover"
-        source={{
-          uri:
-            "https://vignette.wikia.nocookie.net/gumball/images/f/fc/Gumball.png/revision/latest?cb=20140110222931&path-prefix=pl"
-        }}
-      />
-    );
-  };
+  loadProfileProducts(id, type) {
+    const {
+      navigation,
+      getUserProducts,
+      user: { userExtended },
+      getFollowingUserProfile
+    } = this.props
+    const { state: { params } } = navigation
+    getUserProducts(id, type)
+    getFollowingUserProfile(id)
+    return
+  }
 
-  renderItem = item => {
-    const { navigation } = this.props;
+  pullAddress(addresses, type) {
+    if (type === 'following') {
+      return addresses
+    }
+    return addresses.find(user => user.isDefault)
+  }
 
-    return (
-      <View style={HStyles.userFeedContainer}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("ProductInfo", { item })}
-        >
-          <View style={HStyles.listsContainer}>
-            <Image
-              style={HStyles.itemForSaleImage}
-              source={{ uri: get(item, "images[0].url") }}
-            />
-            <Text style={HStyles.saleTitle}>{item.name.toUpperCase()}</Text>
-            {item.saleFormat !== "auction" && (
-              <Text style={Styles.saleAmount}>{item.salePrice}</Text>
-            )}
-          </View>
-        </TouchableOpacity>
-      </View>
-    );
-  };
+  async pullProducts() {
+    const { navigation, products, user: { userExtended } } = this.props
+    const { state: { params } } = navigation
+    const hotListsItems = products
+
+    get(params, 'followingProfile') &&
+    get(params, 'username') !== userExtended.username
+      ? (!this.hasLoaded || this.hasLoaded !== get(params, 'username')) &&
+        this.loadProfileProducts(get(params, 'following.id'), 'following')
+      : !get(hotListsItems, 'profileProducts.products.length') &&
+        this.loadProfileProducts(get(userExtended, 'id'))
+  }
 
   render() {
-    const { navigation, products } = this.props;
-    const hotListsItems = products && products.toJS();
-    console.log(this.props);
+    const {
+      navigation,
+      products,
+      user: { userExtended, followingUserExtended },
+      shared
+    } = this.props
+    const { state: { params } } = navigation
+    const hotListsItems = products
+
+    this.pullProducts().then(() => (this.hasLoaded = get(params, 'username')))
+
+    const findDefaultAddress = !get(params, 'followingProfile')
+      ? get(userExtended, 'addresses') &&
+        this.pullAddress(userExtended.addresses)
+      : get(params.following, 'location') &&
+        this.pullAddress(params.following.location, 'following')
+
     return (
       <View>
-        <ScrollView>
-          <View style={Styles.profileHeader}>
-            <View>{this.renderImage()}</View>
-            <View style={Styles.profileInfoLayer}>
-              <View style={Styles.profileInfo}>
-                <Text style={Styles.profileInfoCount}>2</Text>
-                <Text>Listings</Text>
-              </View>
-
-              <View style={Styles.profileInfo}>
-                <Text style={Styles.profileInfoCount}>12</Text>
-                <Text>Followers</Text>
-              </View>
-              <View style={Styles.profileInfo}>
-                <Text style={Styles.profileInfoCount}>100%</Text>
-                <Text>Rating</Text>
-              </View>
-            </View>
-          </View>
-          <View style={Styles.profileSetting}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("SettingsScreen")}
-              style={Styles.settingBtn}
-            >
-              <Text style={Styles.settingBtnText}>Settings</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={Styles.profileUser}>
-            <Text>{get(navigation, "state.params.username")}</Text>
-            <Text>
-              <Icon name="ios-pin-outline" style={{ paddingLeft: 10 }} />{" "}
-              Location
-            </Text>
-          </View>
-          <View style={Styles.searchSection}>
-            <TextInput
-              style={Styles.searchInput}
-              underlineColorAndroid="transparent"
-              placeholder="Search"
-              placeholderTextColor="rgba(45, 45, 45, 0.3)"
-              returnKeyType="search"
-              onChangeText={searchInput => this.setState({ searchInput })}
-              value={this.state.searchInput}
-            />
-            <Icon
-              style={Styles.searchInputIcon}
-              name="ios-search"
-              size={20}
-              color="#000"
-            />
-          </View>
-          <View>
-            {get(hotListsItems, "productOnSale.products.length") ? (
-              <FlatList
-                numColumns={2}
-                data={get(hotListsItems, "productOnSale.products")}
-                keyExtractor={_keyExtractor}
-                renderItem={({ item }) => this.renderItem(item)}
-              />
-            ) : (
-              <View>
-                {!get(hotListsItems, "productOnSale.products") ? (
-                  <Text style={HStyles.noAvailableText}> Loading...</Text>
-                ) : (
-                  <Text style={HStyles.noAvailableText}>
-                    We're sorry, no products for this user.
-                  </Text>
-                )}
-              </View>
-            )}
-          </View>
-        </ScrollView>
+        {get(params, 'followingProfile') ? (
+          <ProfileView
+            navigation={navigation}
+            username={params.following.username}
+            hotListsItems={get(hotListsItems, 'followingProfileProducts')}
+            address={get(findDefaultAddress, 'address')}
+          />
+        ) : (
+          <ProfileView
+            navigation={navigation}
+            username={userExtended.username}
+            followers={get(shared, 'followers')}
+            hotListsItems={get(hotListsItems, 'profileProducts')}
+            address={get(findDefaultAddress, 'address')}
+          />
+        )}
       </View>
-    );
+    )
   }
 }
 
 const mapStateToProps = state => ({
-  products: state.get("product")
-});
+  products: state.get('product').toJS(),
+  user: state.get('auth').toJS(),
+  shared: state.get('shared').toJS()
+})
 
 const mapDispatchToProps = dispatch => ({
   logout: bindActionCreators(logout, dispatch),
+  getFollowingUserProfile: bindActionCreators(
+    getFollowingUserProfile,
+    dispatch
+  ),
   getUserProducts: bindActionCreators(getUserProducts, dispatch)
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileTab);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileTab)

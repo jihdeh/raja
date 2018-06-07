@@ -14,8 +14,8 @@ import Styles from '../../Styles/SettingStyle'
 
 class EditProfile extends PureComponent {
   state = {
-    firstname: '',
-    lastname: '',
+    firstName: '',
+    lastName: '',
     email: '',
     username: '',
     phone: ''
@@ -27,11 +27,15 @@ class EditProfile extends PureComponent {
     })
   }
 
-  onSubmit = () => {
-    this.props.updateProfile({})
+  onUpdateProfile = () => {
+    const { user: { userExtended } } = this.props
+    const moldObj = Object.assign({ ...this.state }, { ...userExtended })
+    this.props.updateProfile(moldObj)
   }
 
   render() {
+    const { user: { userExtended } } = this.props
+
     return (
       <View style={{ margin: 10 }}>
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
@@ -44,8 +48,8 @@ class EditProfile extends PureComponent {
             returnKeyType="next"
             keyboardType="default"
             autoCapitalize={'none'}
-            onChangeText={firstname => this.onChange('firstname', firstname)}
-            value={this.state.firstname}
+            onChangeText={firstName => this.onChange('firstName', firstName)}
+            value={this.state.firstName || userExtended.firstName}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -59,8 +63,8 @@ class EditProfile extends PureComponent {
             returnKeyType="next"
             keyboardType="default"
             autoCapitalize={'none'}
-            onChangeText={lastname => this.onChange('lastname', lastname)}
-            value={this.state.lastname}
+            onChangeText={lastName => this.onChange('lastName', lastName)}
+            value={this.state.lastName || userExtended.lastName}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -75,7 +79,7 @@ class EditProfile extends PureComponent {
             keyboardType="default"
             autoCapitalize={'none'}
             onChangeText={email => this.onChange('email', email)}
-            value={this.state.email}
+            value={this.state.email || userExtended.email}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -90,7 +94,7 @@ class EditProfile extends PureComponent {
             keyboardType="default"
             autoCapitalize={'none'}
             onChangeText={username => this.onChange('username', username)}
-            value={this.state.username}
+            value={this.state.username || userExtended.username}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -109,7 +113,7 @@ class EditProfile extends PureComponent {
           />
         </KeyboardAvoidingView>
         <TouchableOpacity
-          onPress={this.onNext}
+          onPress={this.onUpdateProfile}
           style={[Styles.btn, GStyles.buttonContainer]}
         >
           <Text style={GStyles.buttonText}>UPDATE PROFILE</Text>
@@ -120,7 +124,7 @@ class EditProfile extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  user: state.get('auth')
+  user: state.get('auth').toJS()
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   AsyncStorage,
   Button,
@@ -8,57 +8,60 @@ import {
   TouchableOpacity,
   View,
   KeyboardAvoidingView
-} from "react-native";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { login } from "../../Actions/AuthAction";
-import { displayError } from "../../Actions/ErrorAction";
+} from 'react-native'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { login } from '../../Actions/AuthAction'
+import { displayError } from '../../Actions/ErrorAction'
 
-import Styles from "../../Styles/LoginStyle";
+import Styles from '../../Styles/LoginStyle'
 
 class LoginInput extends Component {
   state = {
-    emailInput: "",
-    passwordInput: "",
+    emailInput: '',
+    passwordInput: '',
     loading: null
-  };
+  }
 
   validateEmail = email => {
-    var emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return emailPattern.test(email.toLowerCase());
-  };
+    var emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return emailPattern.test(email.toLowerCase())
+  }
 
   onLogin = e => {
-    let emailInput = this.state.emailInput.trim();
-    let passwordInput = this.state.passwordInput.trim();
-    e.preventDefault();
-    const hasFilledInputs = !emailInput || !passwordInput;
-    const isEmailValid = this.validateEmail(emailInput);
+    let emailInput = this.state.emailInput.trim()
+    let passwordInput = this.state.passwordInput.trim()
+    e.preventDefault()
+    const hasFilledInputs = !emailInput || !passwordInput
+    const isEmailValid = this.validateEmail(emailInput)
     if (hasFilledInputs) {
-      this.props.displayError("Both the email and password must be entered!");
-      return;
+      this.props.displayError('Both the email and password must be entered!')
+      return
     }
     if (!isEmailValid) {
-      this.props.displayError("A valid email address is required.");
-      return;
+      this.props.displayError('A valid email address is required.')
+      return
     }
 
     this.setState({
       loading: true
-    });
+    })
 
-    this.props.login({
-      email: emailInput,
-      password: passwordInput
-    });
-  };
+    this.props.login(
+      {
+        email: emailInput,
+        password: passwordInput
+      },
+      this.props.navigation.navigate
+    )
+  }
 
   handleBack = () => {
-    this.props.navigation.goBack();
-  };
+    this.props.navigation.goBack()
+  }
 
   render() {
-    const { navigation } = this.props;
+    const { navigation } = this.props
 
     return (
       <KeyboardAvoidingView
@@ -87,7 +90,7 @@ class LoginInput extends Component {
           secureTextEntry
           returnKeyType="go"
           ref={input => {
-            this.passwordInput = input;
+            this.passwordInput = input
           }}
           onChangeText={passwordInput => this.setState({ passwordInput })}
           value={this.state.passwordInput}
@@ -97,26 +100,26 @@ class LoginInput extends Component {
           <Text style={Styles.buttonText}>LOGIN</Text>
         </TouchableOpacity>
         <View style={Styles.linkBox}>
-          <Text onPress={() => navigation.navigate("SignUp")}>
+          <Text onPress={() => navigation.navigate('SignUp')}>
             Create Account
           </Text>
-          <Text onPress={() => navigation.navigate("ResetPassword")}>
+          <Text onPress={() => navigation.navigate('ResetPassword')}>
             Forgot password?
           </Text>
         </View>
         {this.state.loading && (
-          <View style={{ display: "flex" }}>
+          <View style={{ display: 'flex' }}>
             <Text>Loading....</Text>
           </View>
         )}
       </KeyboardAvoidingView>
-    );
+    )
   }
 }
 
 const mapDispatchToProps = dispatch => ({
   login: bindActionCreators(login, dispatch),
   displayError: bindActionCreators(displayError, dispatch)
-});
+})
 
-export default connect(null, mapDispatchToProps)(LoginInput);
+export default connect(null, mapDispatchToProps)(LoginInput)
