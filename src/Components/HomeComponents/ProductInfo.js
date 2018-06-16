@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   View,
   ScrollView,
@@ -10,14 +10,14 @@ import {
   TextInput,
   Button,
   AsyncStorage
-} from 'react-native';
-import jwtDecode from 'jwt-decode';
-import moment from 'moment/moment';
-import { Icon } from 'native-base';
-import get from 'lodash/get';
-import Carousel from 'react-native-snap-carousel';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+} from "react-native";
+import jwtDecode from "jwt-decode";
+import moment from "moment/moment";
+import { Icon } from "native-base";
+import get from "lodash/get";
+import Carousel from "react-native-snap-carousel";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import {
   getBookmarks,
   bookmarkProduct,
@@ -26,18 +26,18 @@ import {
   unFollowUser,
   successHandler,
   getFollowings
-} from '../../Actions/SharedAction';
-import SliderEntry from '../../Components/SliderEntry';
+} from "../../Actions/SharedAction";
+import SliderEntry from "../../Components/SliderEntry";
 
-import { sliderWidth, itemWidth } from '../../Styles/SliderEntry.style';
-import styles, { colors } from '../../Styles/SliderEntry.index';
-import Styles from '../../Styles/HomeStyle';
-import GStyles from '../../Styles/GeneralStyle';
-import PStyles from '../../Styles/ProductStyle';
+import { sliderWidth, itemWidth } from "../../Styles/SliderEntry.style";
+import styles, { colors } from "../../Styles/SliderEntry.index";
+import Styles from "../../Styles/HomeStyle";
+import GStyles from "../../Styles/GeneralStyle";
+import PStyles from "../../Styles/ProductStyle";
 
 class ProductInfo extends Component {
   state = {
-    comment: '',
+    comment: "",
     isLoading: false,
     isFollowing: false,
     followTrigger: false,
@@ -111,6 +111,8 @@ class ProductInfo extends Component {
 
   _buyProduct() {
     //trigger buy
+    const { navigation } = this.props;
+    navigation.navigate("CartScreen");
   }
 
   _followUser(id) {
@@ -138,7 +140,7 @@ class ProductInfo extends Component {
   };
 
   render() {
-    const isTinder = 'tinder';
+    const isTinder = "tinder";
     const { navigation } = this.props;
     const { isBookmarked } = this.state;
     const { state } = navigation;
@@ -156,10 +158,10 @@ class ProductInfo extends Component {
             />
           </TouchableHighlight>
           <View style={PStyles.textWrapper}>
-            <View style={{ flex: 1, flexDirection: 'column', margin: 10 }}>
+            <View style={{ flex: 1, flexDirection: "column", margin: 10 }}>
               <Text>{item.owner.displayName}</Text>
               <Text>
-                {get(item, 'owner.location.address') || 'No Location'} |{' '}
+                {get(item, "owner.location.address") || "No Location"} |{" "}
                 {item.meta.averageRating}% rating
               </Text>
             </View>
@@ -199,7 +201,7 @@ class ProductInfo extends Component {
             itemWidth={itemWidth}
             containerCustomStyle={styles.slider}
             contentContainerCustomStyle={styles.sliderContentContainer}
-            layout={'default'}
+            layout={"default"}
             loop={true}
           />
         </View>
@@ -210,8 +212,8 @@ class ProductInfo extends Component {
         >
           <View
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between'
+              flexDirection: "row",
+              justifyContent: "space-between"
             }}
           >
             <Text style={{ paddingTop: 10 }}>{item.name.toUpperCase()}</Text>
@@ -229,11 +231,11 @@ class ProductInfo extends Component {
           </View>
           {item.onSale ? (
             <Text>
-              Price "On SALE": Rp{item.salePrice}{' '}
+              Price "On SALE": Rp{item.salePrice}{" "}
               <Text
                 style={{
-                  textDecorationLine: 'line-through',
-                  textDecorationStyle: 'solid'
+                  textDecorationLine: "line-through",
+                  textDecorationStyle: "solid"
                 }}
               >
                 Rp{item.originalPrice}
@@ -255,7 +257,7 @@ class ProductInfo extends Component {
             <View style={PStyles.productInfoMore}>
               <View style={PStyles.productInfoMoreX}>
                 <Text>Uploaded:</Text>
-                <Text>{moment(item.createdAt).format('MMMM Do YYYY')}</Text>
+                <Text>{moment(item.createdAt).format("MMMM Do YYYY")}</Text>
               </View>
               <View style={PStyles.productInfoMoreX}>
                 <Text>Condition:</Text>
@@ -274,7 +276,7 @@ class ProductInfo extends Component {
             </View>
           </View>
           <TouchableOpacity
-            onPress={this._buyProduct}
+            onPress={() => this._buyProduct()}
             style={[Styles.btn, GStyles.buttonContainer]}
           >
             <Text style={GStyles.buttonText}>BUY</Text>
@@ -301,7 +303,7 @@ class ProductInfo extends Component {
 }
 
 const mapStateToProps = state => ({
-  shared: state.get('shared').toJS()
+  shared: state.get("shared").toJS()
 });
 
 const mapDispatchToProps = dispatch => ({

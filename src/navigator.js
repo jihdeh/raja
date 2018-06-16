@@ -1,21 +1,22 @@
-import { Platform } from 'react-native';
-import { TabNavigator, StackNavigator } from 'react-navigation';
+import { Platform } from "react-native";
+import { TabNavigator, StackNavigator } from "react-navigation";
 
-import HomeTab from './Components/AppTabNavigator/HomeTab';
-import SearchTab from './Components/AppTabNavigator/SearchTab';
-import AddMediaTab from './Components/AppTabNavigator/AddMediaTab';
-import NotificationsTab from './Components/AppTabNavigator/NotificationsTab';
-import ProfileTab from './Components/AppTabNavigator/ProfileTab';
-import BidSelection from './Components/AuctionComponents/bidSelection';
-import ProductOverview from './Components/AuctionComponents/productOverview';
+import HomeTab from "./Components/AppTabNavigator/HomeTab";
+import SearchTab from "./Components/AppTabNavigator/SearchTab";
+import AddMediaTab from "./Components/AppTabNavigator/AddMediaTab";
+import NotificationsTab from "./Components/AppTabNavigator/NotificationsTab";
+import ProfileTab from "./Components/AppTabNavigator/ProfileTab";
+import BidSelection from "./Components/AuctionComponents/bidSelection";
+import ProductOverview from "./Components/AuctionComponents/productOverview";
 
-import ProductInfo from './Components/HomeComponents/ProductInfo';
+import ProductInfo from "./Components/HomeComponents/ProductInfo";
 
-import LandingScreen from './Containers/Landing';
-import BookmarkScreen from './Containers/Bookmarks';
-import LoginScreen from './Containers/Login';
-import SignUpScreen from './Containers/SignUp';
-import SettingsScreen from './Containers/Settings';
+import LandingScreen from "./Containers/Landing";
+import BookmarkScreen from "./Containers/Bookmarks";
+import LoginScreen from "./Containers/Login";
+import SignUpScreen from "./Containers/SignUp";
+import SettingsScreen from "./Containers/Settings";
+import CartScreen from "./Containers/Cart";
 
 const AppTabNavigator = TabNavigator(
   {
@@ -38,17 +39,17 @@ const AppTabNavigator = TabNavigator(
   {
     animationEnabled: true,
     swipeEnabled: true,
-    tabBarPosition: 'bottom',
+    tabBarPosition: "bottom",
     tabBarOptions: {
       style: {
         ...Platform.select({
           android: {
-            backgroundColor: 'white'
+            backgroundColor: "white"
           }
         })
       },
-      activeTintColor: '#000',
-      inactiveTintColor: '#d1cece',
+      activeTintColor: "#000",
+      inactiveTintColor: "#d1cece",
       showLabel: false,
       showIcon: true
     }
@@ -62,6 +63,7 @@ const AppNavigator = StackNavigator({
   BidSelection: { screen: BidSelection },
   BookmarkScreen: { screen: BookmarkScreen },
   SettingsScreen: { screen: SettingsScreen },
+  CartScreen: { screen: CartScreen },
   Home: {
     screen: AppTabNavigator
   },

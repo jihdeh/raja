@@ -61,7 +61,6 @@ class ProfileTab extends PureComponent {
       getFollowingUserProfile
     } = this.props;
     const { state: { params } } = navigation;
-    console.log(id);
     getUserProducts(id, type);
     getFollowingUserProfile(id);
     return;
@@ -78,14 +77,6 @@ class ProfileTab extends PureComponent {
     const { navigation, products, user: { userExtended } } = this.props;
     const { state: { params } } = navigation;
     const hotListsItems = products;
-
-    console.log(
-      "--",
-      get(hotListsItems, "followingProfileProducts"),
-      this.hasLoaded,
-      get(params, "username"),
-      get(hotListsItems, "profileProducts.items.length")
-    );
 
     get(params, "followingProfile") &&
     get(params, "username") !== get(userExtended, "username")

@@ -123,7 +123,6 @@ export const getLoggedUserProfile = token => async dispatch => {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(async ({ data }) => {
-      console.log(data, "loggeduserprofile");
       await dispatch({
         type: LOGGED_USER_PROFILE,
         payload: data
