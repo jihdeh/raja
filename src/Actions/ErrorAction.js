@@ -1,7 +1,7 @@
 import {
   CLEAR_ERROR_MESSAGE,
   DISPLAY_ERROR_MESSAGE
-} from "../Constants/ActionTypes";
+} from '../Constants/ActionTypes';
 
 export const displayError = errorMessage => dispatch => {
   dispatch({

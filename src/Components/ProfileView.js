@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -10,28 +10,28 @@ import {
   TextInput,
   FlatList,
   ScrollView
-} from 'react-native'
-import jwtDecode from 'jwt-decode'
-import get from 'lodash/get'
-import { Icon } from 'native-base'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { logout } from '../Actions/AuthAction'
-import GStyles from '../Styles/GeneralStyle'
-import Styles from '../Styles/ProfileStyle'
-import HStyles from '../Styles/HomeStyle'
+} from 'react-native';
+import jwtDecode from 'jwt-decode';
+import get from 'lodash/get';
+import { Icon } from 'native-base';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { logout } from '../Actions/AuthAction';
+import GStyles from '../Styles/GeneralStyle';
+import Styles from '../Styles/ProfileStyle';
+import HStyles from '../Styles/HomeStyle';
 
-const _keyExtractor = (item, index) => item.id
+const _keyExtractor = (item, index) => item.id;
 class ProfileView extends Component {
   state = {
     searchInput: ''
-  }
+  };
 
   onLogout = () => {
-    AsyncStorage.clear()
-    this.props.logout()
-    this.props.navigation.navigate('Landing')
-  }
+    AsyncStorage.clear();
+    this.props.logout();
+    this.props.navigation.navigate('Landing');
+  };
 
   renderImage = () => {
     return (
@@ -43,11 +43,11 @@ class ProfileView extends Component {
             'https://vignette.wikia.nocookie.net/gumball/images/f/fc/Gumball.png/revision/latest?cb=20140110222931&path-prefix=pl'
         }}
       />
-    )
-  }
+    );
+  };
 
   renderItem = item => {
-    const { navigation } = this.props
+    const { navigation } = this.props;
 
     return (
       <View style={HStyles.userFeedContainer}>
@@ -66,8 +66,8 @@ class ProfileView extends Component {
           </View>
         </TouchableOpacity>
       </View>
-    )
-  }
+    );
+  };
 
   render() {
     const {
@@ -76,7 +76,7 @@ class ProfileView extends Component {
       address,
       username,
       followers
-    } = this.props
+    } = this.props;
 
     return (
       <View>
@@ -86,7 +86,7 @@ class ProfileView extends Component {
             <View style={Styles.profileInfoLayer}>
               <View style={Styles.profileInfo}>
                 <Text style={Styles.profileInfoCount}>
-                  {get(hotListsItems, 'products.length')}
+                  {get(hotListsItems, 'items.length')}
                 </Text>
                 <Text>Listings</Text>
               </View>
@@ -139,16 +139,16 @@ class ProfileView extends Component {
             />
           </View>
           <View>
-            {get(hotListsItems, 'products.length') ? (
+            {get(hotListsItems, 'items.length') ? (
               <FlatList
                 numColumns={2}
-                data={get(hotListsItems, 'products')}
+                data={get(hotListsItems, 'items')}
                 keyExtractor={_keyExtractor}
                 renderItem={({ item }) => this.renderItem(item)}
               />
             ) : (
               <View>
-                {!get(hotListsItems, 'products') ? (
+                {!get(hotListsItems, 'items') ? (
                   <Text style={HStyles.noAvailableText}> Loading...</Text>
                 ) : (
                   <Text style={HStyles.noAvailableText}>
@@ -160,7 +160,7 @@ class ProfileView extends Component {
           </View>
         </ScrollView>
       </View>
-    )
+    );
   }
 }
 
@@ -168,10 +168,10 @@ const mapStateToProps = state => ({
   products: state.get('product'),
   user: state.get('auth').toJS(),
   shared: state.get('shared').toJS()
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   logout: bindActionCreators(logout, dispatch)
-})
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileView)
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileView);

@@ -1,71 +1,162 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent, Fragment } from 'react';
 import {
   View,
   Text,
   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity
-} from 'react-native'
-import CheckBox from 'react-native-checkbox'
-import Picker from 'react-native-picker-select'
-import get from 'lodash/get'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+} from 'react-native';
+import CheckBox from 'react-native-checkbox';
+import Picker from 'react-native-picker-select';
+import get from 'lodash/get';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import {
   getProvince,
   getCity,
   getSubdistrict
-} from '../../Actions/LocationAction'
-import GStyles from '../../Styles/GeneralStyle'
-import Styles from '../../Styles/SettingStyle'
+} from '../../Actions/LocationAction';
+import { updateProfile } from '../../Actions/AuthAction';
+import { displayError } from '../../Actions/ErrorAction';
+import GStyles from '../../Styles/GeneralStyle';
+import Styles from '../../Styles/SettingStyle';
 
 class UpdateAddress extends PureComponent {
   state = {
-    firstname: '',
-    lastname: '',
+    firstName: '',
+    lastName: '',
     address: '',
     province: [],
     city: undefined,
     subdistrict: undefined,
-    selectedProvince: 'SELECT',
-    selectedCity: 'SELECT',
-    selectedSubdistrict: 'SELECT',
-    phonenumber: '',
-    setDefault: false
-  }
+    provinceId: 'SELECT',
+    cityName: 'SELECT',
+    subDistrictId: 'SELECT',
+    provinceName: '',
+    cityId: '',
+    subDistrictName: '',
+    phone: '',
+    isDefault: false
+  };
 
   componentWillMount() {
-    const { getProvince, getCity } = this.props
-    getProvince().then(() => getCity())
+    const { getProvince, getCity } = this.props;
+    getProvince().then(() => getCity());
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      get(nextProps.user, 'updateProfile.addresses.length') >
+      get(this.props.user, 'userExtended.addresses.length')
+    ) {
+      this.setState({
+        firstName: '',
+        lastName: '',
+        address: '',
+        province: [],
+        city: undefined,
+        subdistrict: undefined,
+        provinceId: 'SELECT',
+        cityName: 'SELECT',
+        subDistrictId: 'SELECT',
+        provinceName: '',
+        cityId: '',
+        subDistrictName: '',
+        phone: '',
+        isDefault: false
+      });
+    }
   }
 
   onChange = (field, value) => {
     this.setState({
       [field]: value
-    })
+    });
+  };
+
+  async resetPromise(field, field2) {
+    const fields = field2
+      ? { [field]: undefined, [field2]: undefined }
+      : { [field]: undefined };
+    await this.setState({
+      ...fields
+    });
+    return true;
   }
 
-  onLocationChange(selection, nextList) {
-    this.setState({
-      city: nextList.filter(list => list.province_id === selection),
-      selectedProvince: selection
-    })
-  }
-
-  onCityChange(selection, nextList) {
-    const { getSubdistrict } = this.props
-    getSubdistrict(selection).then(res => {
-      console.log(res)
+  onLocationChange({ id, name }, nextList) {
+    this.resetPromise('city', 'subdistrict').then(() => {
       this.setState({
-        subdistrict: res.filter(list => list.city_id === selection),
-        selectedCity: selection
-      })
-    })
+        city: nextList.filter(list => list.province_id === id),
+        provinceName: name,
+        provinceId: id
+      });
+    });
   }
+
+  onCityChange({ id, name }, nextList) {
+    const { getSubdistrict } = this.props;
+    getSubdistrict(id).then(res => {
+      this.resetPromise('subdistrict').then(() => {
+        this.setState({
+          subdistrict: res.filter(list => list.city_id === id),
+          cityId: name,
+          cityName: id
+        });
+      });
+    });
+  }
+
+  subdistrictChange({ id, name }) {
+    this.setState({
+      subDistrictId: id,
+      subDistrictName: name
+    });
+  }
+
+  onSubmit = () => {
+    const {
+      firstName,
+      lastName,
+      provinceId,
+      cityId,
+      phone,
+      subDistrictId,
+      subDistrictName,
+      cityName,
+      provinceName,
+      isDefault
+    } = this.state;
+    if (
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !this.state.address.trim() ||
+      !provinceId ||
+      !cityId ||
+      !phone ||
+      !subDistrictId
+    ) {
+      this.props.displayError('All fields are required');
+      return;
+    }
+    const address = {
+      firstName,
+      lastName,
+      address: this.state.address,
+      provinceId,
+      cityId,
+      subDistrictName,
+      cityName,
+      provinceName,
+      phone,
+      subDistrictId,
+      isDefault
+    };
+    this.props.updateProfile({ address });
+  };
 
   render() {
-    const { location: { loadedCity, loadedProvince } } = this.props
-    console.log(this.state, '--s')
+    const { location: { loadedCity, loadedProvince } } = this.props;
 
     return (
       <View style={{ margin: 10 }}>
@@ -79,8 +170,8 @@ class UpdateAddress extends PureComponent {
             returnKeyType="next"
             keyboardType="default"
             autoCapitalize={'none'}
-            onChangeText={firstname => this.onChange('firstname', firstname)}
-            value={this.state.firstname}
+            onChangeText={firstName => this.onChange('firstName', firstName)}
+            value={this.state.firstName}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -94,8 +185,8 @@ class UpdateAddress extends PureComponent {
             returnKeyType="next"
             keyboardType="default"
             autoCapitalize={'none'}
-            onChangeText={lastname => this.onChange('lastname', lastname)}
-            value={this.state.lastname}
+            onChangeText={lastName => this.onChange('lastName', lastName)}
+            value={this.state.lastName}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -109,8 +200,8 @@ class UpdateAddress extends PureComponent {
             returnKeyType="next"
             keyboardType="default"
             autoCapitalize={'none'}
-            onChangeText={email => this.onChange('email', email)}
-            value={this.state.email}
+            onChangeText={address => this.onChange('address', address)}
+            value={this.state.address}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -123,10 +214,8 @@ class UpdateAddress extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="go"
             keyboardType="numeric"
-            onChangeText={phonenumber =>
-              this.onChange('phonenumber', phonenumber)
-            }
-            value={this.state.phonenumber}
+            onChangeText={phone => this.onChange('phone', phone)}
+            value={this.state.phone}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -142,18 +231,18 @@ class UpdateAddress extends PureComponent {
                     this.onLocationChange(province, loadedCity)
                   }
                   placeholder={{ label: 'SELECT' }}
-                  value={this.state.selectedProvince}
+                  value={this.state.provinceId}
                 />
               )}
             </View>
           </Fragment>
         </KeyboardAvoidingView>
 
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
-          <Fragment>
-            <Text style={Styles.label_text}>CITY:</Text>
-            <View style={GStyles.dropDownSelection_input}>
-              {get(this.state, 'city') && (
+        {get(this.state, 'city') && (
+          <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
+            <Fragment>
+              <Text style={Styles.label_text}>CITY:</Text>
+              <View style={GStyles.dropDownSelection_input}>
                 <Picker
                   items={this.state.city}
                   hideIcon
@@ -161,63 +250,65 @@ class UpdateAddress extends PureComponent {
                     this.onCityChange(city, loadedCity)
                   }
                   placeholder={{ label: 'SELECT' }}
-                  value={this.state.selectedCity}
+                  value={this.state.cityName}
                 />
-              )}
-            </View>
-          </Fragment>
-        </KeyboardAvoidingView>
+              </View>
+            </Fragment>
+          </KeyboardAvoidingView>
+        )}
 
-        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
-          <Fragment>
-            <Text style={Styles.label_text}>CITY:</Text>
-            <View style={GStyles.dropDownSelection_input}>
-              {get(this.state, 'subdistrict') && (
+        {get(this.state, 'subdistrict') && (
+          <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
+            <Fragment>
+              <Text style={Styles.label_text}>SUBDISTRICT:</Text>
+              <View style={GStyles.dropDownSelection_input}>
                 <Picker
                   items={this.state.subdistrict}
                   hideIcon
                   onValueChange={(subdistrict, index) =>
-                    this.setState({
-                      selectedSubdistrict: subdistrict
-                    })
+                    this.subdistrictChange(subdistrict)
                   }
                   placeholder={{ label: 'SELECT' }}
-                  value={this.state.selectedSubdistrict}
+                  value={this.state.subDistrictId}
                 />
-              )}
-            </View>
-          </Fragment>
-        </KeyboardAvoidingView>
+              </View>
+            </Fragment>
+          </KeyboardAvoidingView>
+        )}
         <View style={Styles.checkSelections}>
           <CheckBox
             label="SET AS DEFAULT"
-            checked={this.state.setDefault}
+            checked={this.state.isDefault}
             onChange={checked =>
               this.setState({
-                setDefault: !this.state.setDefault
+                isDefault: !this.state.isDefault
               })
             }
           />
         </View>
 
         <TouchableOpacity
-          onPress={this.onNext}
+          onPress={this.onSubmit}
           style={[Styles.btn, GStyles.buttonContainer]}
         >
           <Text style={GStyles.buttonText}>SAVE ADDRESS</Text>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 }
 const mapStateToProps = state => ({
-  location: state.get('location').toJS()
-})
+  location: state.get('location').toJS(),
+  user: state.get('auth').toJS(),
+  error: state.get('errorMessage').toJS()
+});
 
 const mapDispatchToProps = dispatch => ({
   getProvince: bindActionCreators(getProvince, dispatch),
   getSubdistrict: bindActionCreators(getSubdistrict, dispatch),
-  getCity: bindActionCreators(getCity, dispatch)
-})
+  getCity: bindActionCreators(getCity, dispatch),
+  updateProfile: bindActionCreators(updateProfile, dispatch),
+  displayError: bindActionCreators(displayError, dispatch)
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpdateAddress)
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateAddress);

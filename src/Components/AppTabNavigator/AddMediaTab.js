@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,22 +9,22 @@ import {
   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity
-} from "react-native";
-import { Icon } from "native-base";
-import Picker from "react-native-picker-select";
-import CheckBox from "react-native-checkbox";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+} from 'react-native';
+import { Icon } from 'native-base';
+import Picker from 'react-native-picker-select';
+import CheckBox from 'react-native-checkbox';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import { displayError } from "../../Actions/ErrorAction";
-import ImageBrowser from "../ImageBrowser";
+import { displayError } from '../../Actions/ErrorAction';
+import ImageBrowser from '../ImageBrowser';
 
-import GStyles from "../../Styles/GeneralStyle";
-import Styles from "../../Styles/AddMediaStyle";
+import GStyles from '../../Styles/GeneralStyle';
+import Styles from '../../Styles/AddMediaStyle';
 import {
   findCategoryBySlug,
   findCategoryByName
-} from "../../utils/categoryHelpers";
+} from '../../utils/categoryHelpers';
 
 class AddMediaTab extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -35,7 +35,11 @@ class AddMediaTab extends Component {
       headerLeft: <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />,
       headerRight: (
         <View style={GStyles.headerRightContainer}>
-          <Icon style={GStyles.headerRightIcon} name="ios-bookmark-outline" />
+          <Icon
+            onPress={() => navigation.navigate('BookmarkScreen')}
+            style={GStyles.headerRightIcon}
+            name="ios-bookmark-outline"
+          />
           <Icon style={GStyles.headerRightIcon} name="md-mail" />
         </View>
       )
@@ -48,24 +52,24 @@ class AddMediaTab extends Component {
       imageBrowserOpen: false,
       categoryOptions: [
         {
-          label: "Electronics & Gadgets",
-          value: "electronics",
-          key: "electronics"
+          label: 'Electronics & Gadgets',
+          value: 'electronics',
+          key: 'electronics'
         },
         {
-          label: "Clothings",
-          value: "clothings",
-          key: "clothings"
+          label: 'Clothings',
+          value: 'clothings',
+          key: 'clothings'
         }
       ],
       gotoNext: false,
       product: {
         images: [],
-        name: "",
-        description: "",
-        summary: "",
-        brand: "",
-        sku: ""
+        name: '',
+        description: '',
+        summary: '',
+        brand: '',
+        sku: ''
       }
     };
 
@@ -106,7 +110,7 @@ class AddMediaTab extends Component {
       sku
     } = this.state.product;
     if (!images.length) {
-      this.props.displayError("Please upload images");
+      this.props.displayError('Please upload images');
       return false;
     }
     if (
@@ -116,7 +120,7 @@ class AddMediaTab extends Component {
       !brand.trim() ||
       !category
     ) {
-      this.props.displayError("All fields are required");
+      this.props.displayError('All fields are required');
       return false;
     }
     return true;
@@ -124,7 +128,7 @@ class AddMediaTab extends Component {
 
   onNext = () => {
     if (this.validate()) {
-      this.props.navigation.navigate("BidSelection", { ...this.state.product });
+      this.props.navigation.navigate('BidSelection', { ...this.state.product });
     }
   };
 
@@ -151,7 +155,7 @@ class AddMediaTab extends Component {
           selectedSubCategory: null
         });
       }
-      this.setState({ product: { ...this.state.product, category: "" } });
+      this.setState({ product: { ...this.state.product, category: '' } });
       return false;
     }
 
@@ -167,7 +171,7 @@ class AddMediaTab extends Component {
         product: { ...this.state.product, category: category.name }
       });
     } else {
-      this.setState({ product: { ...this.state.product, category: "" } });
+      this.setState({ product: { ...this.state.product, category: '' } });
     }
     if (level === 1) {
       this.setState(
@@ -214,8 +218,8 @@ class AddMediaTab extends Component {
           <Text>Sell Product</Text>
           <TouchableOpacity
             style={{
-              flexDirection: "row",
-              justifyContent: "flex-end"
+              flexDirection: 'row',
+              justifyContent: 'flex-end'
             }}
             onPress={() => this.setState({ imageBrowserOpen: true })}
           >
@@ -225,8 +229,8 @@ class AddMediaTab extends Component {
         </View>
         <ScrollView
           contentContainerStyle={{
-            justifyContent: "center",
-            alignItems: "center"
+            justifyContent: 'center',
+            alignItems: 'center'
           }}
         >
           <View style={Styles.imageContainer}>
@@ -248,7 +252,7 @@ class AddMediaTab extends Component {
                 returnKeyType="next"
                 onSubmitEditing={() => this.description.focus()}
                 keyboardType="default"
-                autoCapitalize={"none"}
+                autoCapitalize={'none'}
                 onChangeText={name =>
                   this.setState({
                     product: { ...this.state.product, name }
@@ -306,7 +310,7 @@ class AddMediaTab extends Component {
                 hideIcon
                 onValueChange={this.handleCategoryChange1}
                 placeholder={{
-                  label: "Select a category...",
+                  label: 'Select a category...',
                   value: null
                 }}
                 value={
@@ -326,7 +330,7 @@ class AddMediaTab extends Component {
                       hideIcon
                       onValueChange={this.handleCategoryChange2}
                       placeholder={{
-                        label: "Select a sub category...",
+                        label: 'Select a sub category...',
                         value: null
                       }}
                       value={
@@ -349,7 +353,7 @@ class AddMediaTab extends Component {
                       hideIcon
                       onValueChange={this.handleCategoryChange3}
                       placeholder={{
-                        label: "Select a sub-sub category...",
+                        label: 'Select a sub-sub category...',
                         value: null
                       }}
                       value={this.state.product.category}
@@ -432,7 +436,7 @@ class AddMediaTab extends Component {
 }
 
 const mapStateToProps = state => ({
-  shared: state.get("shared")
+  shared: state.get('shared')
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import {
   View,
   ScrollView,
@@ -10,87 +10,103 @@ import {
   TextInput,
   Button,
   AsyncStorage
-} from 'react-native'
-import jwtDecode from 'jwt-decode'
-import moment from 'moment/moment'
-import { Icon } from 'native-base'
-import get from 'lodash/get'
-import Carousel from 'react-native-snap-carousel'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
+} from 'react-native';
+import jwtDecode from 'jwt-decode';
+import moment from 'moment/moment';
+import { Icon } from 'native-base';
+import get from 'lodash/get';
+import Carousel from 'react-native-snap-carousel';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import {
   getBookmarks,
   bookmarkProduct,
+  unBookmarkProduct,
   followUser,
   unFollowUser,
   successHandler,
   getFollowings
-} from '../../Actions/SharedAction'
-import SliderEntry from '../../Components/SliderEntry'
+} from '../../Actions/SharedAction';
+import SliderEntry from '../../Components/SliderEntry';
 
-import { sliderWidth, itemWidth } from '../../Styles/SliderEntry.style'
-import styles, { colors } from '../../Styles/SliderEntry.index'
-import Styles from '../../Styles/HomeStyle'
-import GStyles from '../../Styles/GeneralStyle'
-import PStyles from '../../Styles/ProductStyle'
+import { sliderWidth, itemWidth } from '../../Styles/SliderEntry.style';
+import styles, { colors } from '../../Styles/SliderEntry.index';
+import Styles from '../../Styles/HomeStyle';
+import GStyles from '../../Styles/GeneralStyle';
+import PStyles from '../../Styles/ProductStyle';
 
 class ProductInfo extends Component {
   state = {
     comment: '',
     isLoading: false,
     isFollowing: false,
-    followTrigger: false
-  }
+    followTrigger: false,
+    isBookmarked: false
+  };
   static navigationOptions = ({ navigation }) => {
-    const { state } = navigation
-    const { params } = state
-    const { item } = params
+    const { state } = navigation;
+    const { params } = state;
+    const { item } = params;
     return {
       headerTitle: item.name
-    }
-  }
+    };
+  };
 
   async componentWillMount() {
-    const { getBookmarks, navigation } = this.props
-    const { state } = navigation
-    const { params } = state
-    const { item } = params
+    const { getBookmarks, navigation } = this.props;
+    const { state } = navigation;
+    const { params } = state;
+    const { item } = params;
     if (item.owner.isFollowing) {
       this.setState({
         isFollowing: true
-      })
+      });
     }
-    getBookmarks()
+    getBookmarks();
   }
 
   componentWillReceiveProps(nextProps) {
     const {
       successHandler,
       shared: { requestSuccess },
-      getFollowings
-    } = nextProps
+      getFollowings,
+      navigation,
+      shared: { bookmark }
+    } = nextProps;
+
+    const { state } = navigation;
+    const { params } = state;
+    const { item } = params;
 
     if (requestSuccess && this.state.followTrigger) {
       this.setState({
         isLoading: false,
         followTrigger: false,
         isFollowing: !this.state.isFollowing
-      })
-      successHandler(null, false).then(() => getFollowings())
+      });
+      successHandler(null, false).then(() => getFollowings());
     }
-    return
+    this._isBookmark(item, bookmark);
+    return;
   }
 
   _renderLightItem({ item, index }) {
-    return <SliderEntry data={item} even={false} />
+    return <SliderEntry data={item} even={false} />;
   }
 
   _renderItem({ item, index }) {
-    return <SliderEntry data={item} even={(index + 1) % 2 === 0} />
+    return <SliderEntry data={item} even={(index + 1) % 2 === 0} />;
   }
 
   _submitComment() {
     // console.log(target.value);
+  }
+
+  _isBookmark(item, bookmark) {
+    const isBookmarked = bookmark && bookmark.find(bm => bm.id == item.id);
+    this.setState({
+      isBookmarked
+    });
   }
 
   _buyProduct() {
@@ -101,28 +117,33 @@ class ProductInfo extends Component {
     this.setState({
       isLoading: true,
       followTrigger: true
-    })
-    this.props.followUser(id)
+    });
+    this.props.followUser(id);
   }
 
   _unFollowUser(id) {
     this.setState({
       isLoading: true,
       followTrigger: true
-    })
-    this.props.unFollowUser(id)
+    });
+    this.props.unFollowUser(id);
   }
 
-  _bookmarkProduct = productSlug => {
-    this.props.bookmarkProduct(productSlug)
-  }
+  _bookmarkProduct = productID => {
+    this.props.bookmarkProduct(productID);
+  };
+
+  _unBookmarkProduct = productID => {
+    this.props.unBookmarkProduct(productID);
+  };
 
   render() {
-    const isTinder = 'tinder'
-    const { navigation } = this.props
-    const { state } = navigation
-    const { params } = state
-    const { item } = params
+    const isTinder = 'tinder';
+    const { navigation } = this.props;
+    const { isBookmarked } = this.state;
+    const { state } = navigation;
+    const { params } = state;
+    const { item } = params;
 
     return (
       <ScrollView style={{ flex: 1 }}>
@@ -194,9 +215,17 @@ class ProductInfo extends Component {
             }}
           >
             <Text style={{ paddingTop: 10 }}>{item.name.toUpperCase()}</Text>
-            <TouchableOpacity onPress={() => this._bookmarkProduct(item.slug)}>
-              <Icon name="ios-bookmark-outline" />
-            </TouchableOpacity>
+            {isBookmarked ? (
+              <TouchableOpacity
+                onPress={() => this._unBookmarkProduct(item.id)}
+              >
+                <Icon name="md-bookmark" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity onPress={() => this._bookmarkProduct(item.id)}>
+                <Icon name="ios-bookmark-outline" />
+              </TouchableOpacity>
+            )}
           </View>
           {item.onSale ? (
             <Text>
@@ -267,13 +296,13 @@ class ProductInfo extends Component {
           </View>
         </View>
       </ScrollView>
-    )
+    );
   }
 }
 
 const mapStateToProps = state => ({
   shared: state.get('shared').toJS()
-})
+});
 
 const mapDispatchToProps = dispatch => ({
   getBookmarks: bindActionCreators(getBookmarks, dispatch),
@@ -281,7 +310,8 @@ const mapDispatchToProps = dispatch => ({
   unFollowUser: bindActionCreators(unFollowUser, dispatch),
   getFollowings: bindActionCreators(getFollowings, dispatch),
   successHandler: bindActionCreators(successHandler, dispatch),
-  bookmarkProduct: bindActionCreators(bookmarkProduct, dispatch)
-})
+  bookmarkProduct: bindActionCreators(bookmarkProduct, dispatch),
+  unBookmarkProduct: bindActionCreators(unBookmarkProduct, dispatch)
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductInfo)
+export default connect(mapStateToProps, mapDispatchToProps)(ProductInfo);

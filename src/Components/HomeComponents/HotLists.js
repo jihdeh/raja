@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import get from "lodash/get";
-import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
-import Styles from "../../Styles/HomeStyle";
+import React, { Component } from 'react';
+import get from 'lodash/get';
+import { View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
+import Styles from '../../Styles/HomeStyle';
 
 const _keyExtractor = (item, index) => item.id;
 
@@ -10,15 +10,15 @@ class HotLists extends Component {
     const { navigation } = this.props;
     return (
       <TouchableOpacity
-        onPress={() => navigation.navigate("ProductInfo", { item })}
+        onPress={() => navigation.navigate('ProductInfo', { item })}
       >
         <View style={Styles.listsContainer}>
           <Image
             style={Styles.saleImage}
-            source={{ uri: get(item, "images[0].url") }}
+            source={{ uri: get(item, 'images[0].url') }}
           />
           <Text style={Styles.saleTitle}>{item.name.toUpperCase()}</Text>
-          {item.saleFormat !== "auction" && (
+          {item.saleFormat !== 'auction' && (
             <Text style={Styles.saleAmount}>{item.salePrice}</Text>
           )}
         </View>
@@ -33,16 +33,16 @@ class HotLists extends Component {
           <Text>Editor's Pick</Text>
           <Text>View All</Text>
         </View>
-        {get(hotListsItems, "productFeatured.products.length") ? (
+        {get(hotListsItems, 'productFeatured.items.length') ? (
           <FlatList
             horizontal
-            data={get(hotListsItems, "productFeatured.products")}
+            data={get(hotListsItems, 'productFeatured.items')}
             keyExtractor={_keyExtractor}
             renderItem={({ item }) => this.renderItem(item)}
           />
         ) : (
           <View>
-            {!get(hotListsItems, "productOnSale.products") ? (
+            {!get(hotListsItems, 'productOnSale.items') ? (
               <Text style={Styles.noAvailableText}> Loading...</Text>
             ) : (
               <Text style={Styles.noAvailableText}>
@@ -55,16 +55,16 @@ class HotLists extends Component {
           <Text>On Sale</Text>
           <Text>View All</Text>
         </View>
-        {get(hotListsItems, "productOnSale.products.length") ? (
+        {get(hotListsItems, 'productOnSale.items.length') ? (
           <FlatList
             horizontal
-            data={get(hotListsItems, "productOnSale.products")}
+            data={get(hotListsItems, 'productOnSale.items')}
             keyExtractor={_keyExtractor}
             renderItem={({ item }) => this.renderItem(item)}
           />
         ) : (
           <View>
-            {!get(hotListsItems, "productOnSale.products") ? (
+            {!get(hotListsItems, 'productOnSale.items') ? (
               <Text style={Styles.noAvailableText}> Loading...</Text>
             ) : (
               <Text style={Styles.noAvailableText}>

@@ -1,16 +1,16 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TextInput,
   TouchableOpacity
-} from "react-native";
-import Styles from "../../Styles/SearchStyle";
-import GStyles from "../../Styles/GeneralStyle";
-import DummyProductList from "../../utils/dummySearchCategoryJson";
+} from 'react-native';
+import Styles from '../../Styles/SearchStyle';
+import GStyles from '../../Styles/GeneralStyle';
+import DummyProductList from '../../utils/dummySearchCategoryJson';
 
-import { Icon } from "native-base";
+import { Icon } from 'native-base';
 
 class SearchTab extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -22,7 +22,11 @@ class SearchTab extends Component {
       headerLeft: <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />,
       headerRight: (
         <View style={GStyles.headerRightContainer}>
-          <Icon style={GStyles.headerRightIcon} name="ios-bookmark-outline" />
+          <Icon
+            onPress={() => navigation.navigate('BookmarkScreen')}
+            style={GStyles.headerRightIcon}
+            name="ios-bookmark-outline"
+          />
           <Icon style={GStyles.headerRightIcon} name="md-mail" />
         </View>
       )
@@ -36,9 +40,9 @@ class SearchTab extends Component {
   }
 
   state = {
-    searchInput: "",
+    searchInput: '',
     searchResultCount: 0,
-    selectedTab: "product" //product && profile
+    selectedTab: 'product' //product && profile
   };
 
   renderList(list, key) {
@@ -68,20 +72,20 @@ class SearchTab extends Component {
       <View>
         <View style={Styles.suggestionContainer}>
           <TouchableOpacity
-            style={selectedTab === "product" && Styles.suggestionHeaderWrapper}
+            style={selectedTab === 'product' && Styles.suggestionHeaderWrapper}
             onPress={() =>
               this.setState({
-                selectedTab: "product"
+                selectedTab: 'product'
               })
             }
           >
             <Text style={Styles.suggestionHeader}>Products</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={selectedTab === "profile" && Styles.suggestionHeaderWrapper}
+            style={selectedTab === 'profile' && Styles.suggestionHeaderWrapper}
             onPress={() =>
               this.setState({
-                selectedTab: "profile"
+                selectedTab: 'profile'
               })
             }
           >
@@ -92,7 +96,7 @@ class SearchTab extends Component {
           <Text style={Styles.suggestionText}>SUGGESTIONS (...)</Text>
         </View>
         <View>
-          {selectedTab === "product"
+          {selectedTab === 'product'
             ? products.map(({ products }, key) =>
                 this.renderSuggestionList(products)
               )
@@ -105,7 +109,7 @@ class SearchTab extends Component {
   renderSuggestionList(suggestions) {
     const { selectedTab, searchInput } = this.state;
     const cleanInput = searchInput.trim().toLowerCase();
-    if (selectedTab === "product") {
+    if (selectedTab === 'product') {
       const result = suggestions.filter(
         (product, key) => product.name.toLowerCase().indexOf(cleanInput) > -1
       );
@@ -113,7 +117,7 @@ class SearchTab extends Component {
       return result.map((product, key) => (
         <Text key={key}>{product.name}</Text>
       ));
-    } else if (selectedTab == "profile") {
+    } else if (selectedTab == 'profile') {
       const result = suggestions.filter(
         (profile, key) => profile.name.toLowerCase().indexOf(cleanInput) > -1
       );

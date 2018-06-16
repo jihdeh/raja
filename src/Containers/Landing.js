@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import {
   Animated,
   Image,
@@ -9,55 +9,54 @@ import {
   View,
   AsyncStorage,
   TouchableOpacity
-} from 'react-native'
-import get from 'lodash/get'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { Icon } from 'native-base'
+} from "react-native";
+import get from "lodash/get";
+import jwtDecode from "jwt-decode";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { logout } from "../Actions/AuthAction";
+import { Icon } from "native-base";
 
-import Login from './Login'
-import Styles from '../Styles/LoginStyle'
+import Login from "./Login";
+import Styles from "../Styles/LoginStyle";
 
 class LandingPage extends Component {
-  state = {
-    isLoggedIn: ''
-  }
-
   static navigationOptions = ({ navigation }) => {
     return {
       header: null
-    }
-  }
+    };
+  };
 
   async componentWillMount() {
-    const value = await AsyncStorage.getItem('token')
+    const value = await AsyncStorage.getItem("token");
+    const verifyJwt = value && jwtDecode(value);
+    console.log(verifyJwt);
+    if (verifyJwt && verifyJwt.exp < Date.now() / 1000 && value) {
+      // do something
+      console.log("exp");
+      AsyncStorage.clear();
+      this.props.logout().then(() => {
+        this.props.navigation.navigate("Landing");
+      });
+      return;
+    }
     if (value) {
-      this.setState({
-        isLoggedIn: value
-      })
-      this.props.navigation.navigate('Home')
-    } else {
-      this.setState({
-        isLoggedIn: false
-      })
+      this.props.navigation.navigate("Home");
+      return;
     }
   }
 
   componentWillReceiveProps(props) {
-    const { auth } = props
-    const { user: isAuthenticated } = auth.toJS()
-    if (get(isAuthenticated, 'token')) {
-      AsyncStorage.getItem('token').then(value => {
+    const { auth } = props;
+    const { user: isAuthenticated } = auth.toJS();
+    if (get(isAuthenticated, "token")) {
+      AsyncStorage.getItem("token").then(value => {
         if (!value) {
-          AsyncStorage.setItem('token', isAuthenticated.token)
+          AsyncStorage.setItem("token", isAuthenticated.token);
         }
-      })
+      });
     }
-
-    this.setState({
-      isLoggedIn: get(isAuthenticated, 'token')
-    })
-    return
+    return;
   }
 
   render() {
@@ -67,35 +66,39 @@ class LandingPage extends Component {
           style={Styles.logo}
           source={{
             uri:
-              'https://airshp.com/wp-content/uploads/AL1-LogoSuite2016-v3_MARK-688x688.png'
+              "https://airshp.com/wp-content/uploads/AL1-LogoSuite2016-v3_MARK-688x688.png"
           }}
         />
         <View>
           <Login {...this.props} />
         </View>
       </KeyboardAvoidingView>
-    )
+    );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: "#fff"
   },
   logoContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center"
   },
   logo: {
     width: 150,
     height: 150
   }
-})
+});
 
 const mapStateToProps = state => ({
-  auth: state.get('auth')
-})
+  auth: state.get("auth")
+});
 
-export default connect(mapStateToProps)(LandingPage)
+const mapDispatchToProps = dispatch => ({
+  logout: bindActionCreators(logout, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
