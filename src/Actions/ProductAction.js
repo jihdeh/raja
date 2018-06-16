@@ -81,8 +81,6 @@ export const getProducts = type => async dispatch => {
       dispatch({ type: dispatchType, payload: response.data });
     })
     .catch(({ response }) => {
-      console.log("-asasas", response);
-
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
       } else {
