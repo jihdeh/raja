@@ -90,7 +90,6 @@ export const getProducts = type => async dispatch => {
 };
 
 export const getUserProducts = (userId, type) => async dispatch => {
-  console.log(userId);
   axios
     .get(`${BASE_URL}/products?user=${userId}`)
     .then(({ data }) => {
@@ -101,8 +100,6 @@ export const getUserProducts = (userId, type) => async dispatch => {
       dispatch({ type: PROFILE_PRODUCTS, payload: data });
     })
     .catch(({ response }) => {
-      console.log("-asasas", response);
-
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
       } else {
