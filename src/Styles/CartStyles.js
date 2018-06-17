@@ -81,9 +81,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   detailOne: {
-    marginBottom: 10,
+    marginBottom: 9,
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    padding: 1
   },
   topCont: {
     marginBottom: 10
@@ -100,11 +101,11 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 3,
     borderColor: "rgba(0,0,0,.2)",
-    margin: 1,
+    marginLeft: 2,
+    marginTop: 1,
     color: "#ff5252",
     fontWeight: "bold",
-    fontSize: 12,
-    marginLeft: 0
+    fontSize: 12
   },
   btnTitleTxt: {
     fontWeight: "bold",
