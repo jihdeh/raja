@@ -1,8 +1,8 @@
 {
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 2197,
-  "expoServerNgrokUrl": "https://vk-puv.johnanisere.raja.exp.direct",
-  "packagerNgrokUrl": "https://packager.vk-puv.johnanisere.raja.exp.direct",
-  "ngrokPid": 2208
+  "packagerPid": 4500,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null
 }
