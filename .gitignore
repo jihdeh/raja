@@ -1,4 +1,5 @@
 node_modules/
+.expo/packager-info.json
 
 .expo
 .expo/*
