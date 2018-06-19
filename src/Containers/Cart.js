@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -6,20 +6,22 @@ import {
   Image,
   TouchableOpacity,
   TextInput
-} from "react-native";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import get from "lodash/get";
-import { getBookmarks } from "../Actions/SharedAction";
-import Item from "../Components/Cart/Item";
+} from 'react-native';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import get from 'lodash/get';
+import { getBookmarks } from '../Actions/SharedAction';
+import Item from '../Components/Cart/Item';
 
-import GStyles from "../Styles/GeneralStyle";
-import HStyles from "../Styles/HomeStyle";
-import Styles from "../Styles/BookmarkStyle";
-import CStyles from "../Styles/CartStyles";
+import GStyles from '../Styles/GeneralStyle';
+import HStyles from '../Styles/HomeStyle';
+import Styles from '../Styles/BookmarkStyle';
+import CStyles from '../Styles/CartStyles';
 
 class Cart extends Component {
   render() {
+    const { navigation } = this.props;
+
     return (
       <View style={CStyles.cartContainer}>
         <View style={CStyles.cartItems}>
@@ -33,7 +35,10 @@ class Cart extends Component {
             <Text style={CStyles.btnTitleTxt}>Subtotal(2 items)</Text>
             <Text style={CStyles.btnTitleTxtTwo}>$440.00</Text>
           </View>
-          <TouchableOpacity style={CStyles.cartBtn}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CheckoutScreen')}
+            style={CStyles.cartBtn}
+          >
             <Text style={CStyles.myTxt}>Checkout</Text>
           </TouchableOpacity>
         </View>
