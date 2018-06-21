@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   Text,
@@ -6,22 +6,19 @@ import {
   Image,
   TouchableOpacity,
   TextInput
-} from "react-native";
-import FStyles from "../../Styles/CheckoutStyle";
+} from 'react-native';
+import FStyles from '../../Styles/CheckoutStyle';
 
-const Item = () => (
+const Item = ({ cartItem }) => (
   <View style={FStyles.itemCont}>
     <View style={FStyles.imageCont}>
-      <Image
-        source={require("../../../assets/feed_images/2.jpg")}
-        style={FStyles.imageItem}
-      />
+      <Image source={{ uri: cartItem.image }} style={FStyles.imageItem} />
     </View>
     <View style={FStyles.detailCont}>
-      <Text style={FStyles.toplbl}>Peach Simply</Text>
+      <Text style={FStyles.toplbl}>{cartItem.name}</Text>
+      <Text style={FStyles.lbl}>{cartItem.sellerName}</Text>
       <View style={FStyles.lblCont}>
-        <Text style={FStyles.lbl}>Size 5</Text>
-        <Text style={FStyles.lbl}>Quantity 1</Text>
+        <Text style={FStyles.lbl}>Quantity {cartItem.quantity}</Text>
       </View>
     </View>
   </View>

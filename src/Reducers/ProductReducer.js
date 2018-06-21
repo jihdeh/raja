@@ -5,7 +5,10 @@ import {
   PRODUCT_TRENDING,
   PRODUCT_FEATURED,
   PROFILE_PRODUCTS,
-  FOLLOWING_PROFILE_PRODUCTS
+  FOLLOWING_PROFILE_PRODUCTS,
+  FETCH_CART,
+  ADD_TO_CART,
+  BID_FOR_PRODUCT
 } from '../Constants/ActionTypes';
 import { set } from '../utils/functional-immutable';
 
@@ -25,6 +28,12 @@ const ProductReducer = (state = initialState, { type, payload }) => {
       return set('profileProducts', payload, state);
     case FOLLOWING_PROFILE_PRODUCTS:
       return set('followingProfileProducts', payload, state);
+    case FETCH_CART:
+      return set('getCart', payload, state);
+    case ADD_TO_CART:
+      return set('addToCart', payload, state);
+    case BID_FOR_PRODUCT:
+      return set('bidForProduct', payload, state);
     default:
       return state;
   }

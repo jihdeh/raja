@@ -34,3 +34,4 @@ export const FETCH_SUBDISTRICT = 'FETCH_SUBDISTRICT';
 
 export const FETCH_CART = 'FETCH_CART';
 export const ADD_TO_CART = 'ADD_TO_CART';
+export const BID_FOR_PRODUCT = 'BID_FOR_PRODUCT';

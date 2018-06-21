@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   ScrollView,
@@ -10,14 +10,14 @@ import {
   TextInput,
   Button,
   AsyncStorage
-} from "react-native";
-import jwtDecode from "jwt-decode";
-import moment from "moment/moment";
-import { Icon } from "native-base";
-import get from "lodash/get";
-import Carousel from "react-native-snap-carousel";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+} from 'react-native';
+import jwtDecode from 'jwt-decode';
+import moment from 'moment/moment';
+import { Icon } from 'native-base';
+import get from 'lodash/get';
+import Carousel from 'react-native-snap-carousel';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import {
   getBookmarks,
   bookmarkProduct,
@@ -26,18 +26,19 @@ import {
   unFollowUser,
   successHandler,
   getFollowings
-} from "../../Actions/SharedAction";
-import SliderEntry from "../../Components/SliderEntry";
+} from '../../Actions/SharedAction';
+import { getCartItem, addToCart } from '../../Actions/ProductAction';
+import SliderEntry from '../../Components/SliderEntry';
 
-import { sliderWidth, itemWidth } from "../../Styles/SliderEntry.style";
-import styles, { colors } from "../../Styles/SliderEntry.index";
-import Styles from "../../Styles/HomeStyle";
-import GStyles from "../../Styles/GeneralStyle";
-import PStyles from "../../Styles/ProductStyle";
+import { sliderWidth, itemWidth } from '../../Styles/SliderEntry.style';
+import styles, { colors } from '../../Styles/SliderEntry.index';
+import Styles from '../../Styles/HomeStyle';
+import GStyles from '../../Styles/GeneralStyle';
+import PStyles from '../../Styles/ProductStyle';
 
 class ProductInfo extends Component {
   state = {
-    comment: "",
+    comment: '',
     isLoading: false,
     isFollowing: false,
     followTrigger: false,
@@ -86,7 +87,8 @@ class ProductInfo extends Component {
       });
       successHandler(null, false).then(() => getFollowings());
     }
-    this._isBookmark(item, bookmark);
+    const hasBookmark = bookmark && bookmark;
+    this._isBookmark(item, hasBookmark);
     return;
   }
 
@@ -102,17 +104,19 @@ class ProductInfo extends Component {
     // console.log(target.value);
   }
 
-  _isBookmark(item, bookmark) {
-    const isBookmarked = bookmark && bookmark.find(bm => bm.id == item.id);
+  _isBookmark(item, { items }) {
+    console.log(items);
+    const isBookmarked = items && items.find(bm => bm.id == item.id);
     this.setState({
       isBookmarked
     });
   }
 
-  _buyProduct() {
+  _buyProduct({ id: productId }) {
     //trigger buy
-    const { navigation } = this.props;
-    navigation.navigate("CartScreen");
+    const { navigation, addToCart, product: { getCart } } = this.props;
+    addToCart(getCart.id, productId);
+    navigation.navigate('CartScreen');
   }
 
   _followUser(id) {
@@ -140,12 +144,15 @@ class ProductInfo extends Component {
   };
 
   render() {
-    const isTinder = "tinder";
-    const { navigation } = this.props;
+    const isTinder = 'tinder';
+    const { navigation, product } = this.props;
     const { isBookmarked } = this.state;
     const { state } = navigation;
     const { params } = state;
     const { item } = params;
+    const isInCart =
+      get(product, 'getCart') &&
+      get(product, 'getCart.items').find(p => p.id === item.id);
 
     return (
       <ScrollView style={{ flex: 1 }}>
@@ -158,10 +165,10 @@ class ProductInfo extends Component {
             />
           </TouchableHighlight>
           <View style={PStyles.textWrapper}>
-            <View style={{ flex: 1, flexDirection: "column", margin: 10 }}>
+            <View style={{ flex: 1, flexDirection: 'column', margin: 10 }}>
               <Text>{item.owner.displayName}</Text>
               <Text>
-                {get(item, "owner.location.address") || "No Location"} |{" "}
+                {get(item, 'owner.location.address') || 'No Location'} |{' '}
                 {item.meta.averageRating}% rating
               </Text>
             </View>
@@ -201,7 +208,7 @@ class ProductInfo extends Component {
             itemWidth={itemWidth}
             containerCustomStyle={styles.slider}
             contentContainerCustomStyle={styles.sliderContentContainer}
-            layout={"default"}
+            layout={'default'}
             loop={true}
           />
         </View>
@@ -212,8 +219,8 @@ class ProductInfo extends Component {
         >
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between"
+              flexDirection: 'row',
+              justifyContent: 'space-between'
             }}
           >
             <Text style={{ paddingTop: 10 }}>{item.name.toUpperCase()}</Text>
@@ -231,11 +238,11 @@ class ProductInfo extends Component {
           </View>
           {item.onSale ? (
             <Text>
-              Price "On SALE": Rp{item.salePrice}{" "}
+              Price "On SALE": Rp{item.salePrice}{' '}
               <Text
                 style={{
-                  textDecorationLine: "line-through",
-                  textDecorationStyle: "solid"
+                  textDecorationLine: 'line-through',
+                  textDecorationStyle: 'solid'
                 }}
               >
                 Rp{item.originalPrice}
@@ -257,7 +264,7 @@ class ProductInfo extends Component {
             <View style={PStyles.productInfoMore}>
               <View style={PStyles.productInfoMoreX}>
                 <Text>Uploaded:</Text>
-                <Text>{moment(item.createdAt).format("MMMM Do YYYY")}</Text>
+                <Text>{moment(item.createdAt).format('MMMM Do YYYY')}</Text>
               </View>
               <View style={PStyles.productInfoMoreX}>
                 <Text>Condition:</Text>
@@ -271,16 +278,20 @@ class ProductInfo extends Component {
 
               <View style={PStyles.productInfoMoreX}>
                 <Text>Delivery:</Text>
-                <Text>Location to </Text>
+                <Text>{item.owner.location.cityName} to </Text>
               </View>
             </View>
           </View>
-          <TouchableOpacity
-            onPress={() => this._buyProduct()}
-            style={[Styles.btn, GStyles.buttonContainer]}
-          >
-            <Text style={GStyles.buttonText}>BUY</Text>
-          </TouchableOpacity>
+          {!item.auction && (
+            <TouchableOpacity
+              onPress={() => this._buyProduct(item)}
+              style={[Styles.btn, GStyles.buttonContainer]}
+            >
+              <Text style={GStyles.buttonText}>
+                {isInCart ? 'UPDATE CART' : 'ADD TO CART'}
+              </Text>
+            </TouchableOpacity>
+          )}
           <View style={{ marginTop: 20 }}>
             <Text>Comments</Text>
             <TextInput
@@ -303,7 +314,8 @@ class ProductInfo extends Component {
 }
 
 const mapStateToProps = state => ({
-  shared: state.get("shared").toJS()
+  shared: state.get('shared').toJS(),
+  product: state.get('product').toJS()
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -311,6 +323,8 @@ const mapDispatchToProps = dispatch => ({
   followUser: bindActionCreators(followUser, dispatch),
   unFollowUser: bindActionCreators(unFollowUser, dispatch),
   getFollowings: bindActionCreators(getFollowings, dispatch),
+  getCartItem: bindActionCreators(getCartItem, dispatch),
+  addToCart: bindActionCreators(addToCart, dispatch),
   successHandler: bindActionCreators(successHandler, dispatch),
   bookmarkProduct: bindActionCreators(bookmarkProduct, dispatch),
   unBookmarkProduct: bindActionCreators(unBookmarkProduct, dispatch)

@@ -100,8 +100,8 @@ class UpdateAddress extends PureComponent {
       this.resetPromise('subdistrict').then(() => {
         this.setState({
           subdistrict: res.filter(list => list.city_id === id),
-          cityId: name,
-          cityName: id
+          cityId: id,
+          cityName: name
         });
       });
     });

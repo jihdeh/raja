@@ -1,6 +1,6 @@
-import axios from "axios";
-import { BASE_URL } from "../Constants/BaseUrl";
-import { displayError } from "./ErrorAction";
+import axios from 'axios';
+import { BASE_URL } from '../Constants/BaseUrl';
+import { displayError } from './ErrorAction';
 import {
   CATEGORIES_FETCHED,
   CATEGORIES_LOADING,
@@ -10,16 +10,14 @@ import {
   FETCH_USER_FOLLOWINGS,
   FOLLOW_USER,
   UNFOLLOW_USER,
-  REQUEST_SUCCESS,
-  FETCH_CART,
-  ADD_TO_CART
-} from "../Constants/ActionTypes";
-import { AsyncStorage } from "react-native";
-import toArray from "lodash/toArray";
-import { transformData } from "../utils/categoryHelpers";
+  REQUEST_SUCCESS
+} from '../Constants/ActionTypes';
+import { AsyncStorage } from 'react-native';
+import toArray from 'lodash/toArray';
+import { transformData } from '../utils/categoryHelpers';
 
-AsyncStorage.getItem("token").then(
-  token => (axios.defaults.headers.common["Authorization"] = `Bearer ${token}`)
+AsyncStorage.getItem('token').then(
+  token => (axios.defaults.headers.common['Authorization'] = `Bearer ${token}`)
 );
 
 export const successHandler = (type, payload) => async dispatch => {
@@ -32,7 +30,7 @@ export const successHandler = (type, payload) => async dispatch => {
 const errorHandler = errors =>
   toArray(errors)
     .map((errorMsg, key) => `${key + 1} ${errorMsg}`)
-    .join("\n");
+    .join('\n');
 
 export const getCategories = () => dispatch => {
   dispatch({ type: CATEGORIES_LOADING });
@@ -131,8 +129,6 @@ export const getFollowers = token => dispatch => {
       });
     })
     .catch(({ response }) => {
-      console.log("--getfoollers", response);
-
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
       } else {
@@ -179,42 +175,6 @@ export const unFollowUser = userId => dispatch => {
     .delete(`${BASE_URL}/user/${userId}/unfollow`)
     .then(({ data }) => {
       successHandler(REQUEST_SUCCESS, true)(dispatch);
-    })
-    .catch(({ response }) => {
-      if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
-      } else {
-        displayError(response.data.message)(dispatch);
-      }
-    });
-};
-
-export const getCartItem = cartId => dispatch => {
-  axios
-    .get(`${BASE_URL}/cart/${cartId}`)
-    .then(({ data }) => {
-      dispatch({
-        type: FETCH_CART,
-        payload: data
-      });
-    })
-    .catch(({ response }) => {
-      if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
-      } else {
-        displayError(response.data.message)(dispatch);
-      }
-    });
-};
-
-export const addToCart = cartId => dispatch => {
-  axios
-    .post(`${BASE_URL}/cart/${cartId}/update`)
-    .then(({ data }) => {
-      dispatch({
-        type: ADD_TO_CART,
-        payload: data
-      });
     })
     .catch(({ response }) => {
       if (response.data.errors) {

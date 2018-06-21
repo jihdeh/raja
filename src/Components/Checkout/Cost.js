@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   Text,
@@ -6,22 +6,22 @@ import {
   Image,
   TouchableOpacity,
   TextInput
-} from "react-native";
-import FStyles from "../../Styles/CheckoutStyle";
+} from 'react-native';
+import FStyles from '../../Styles/CheckoutStyle';
 
-const Cost = () => (
+const Cost = ({ product }) => (
   <View style={FStyles.contTwo}>
     <View style={FStyles.lowCont}>
       <Text style={FStyles.noEmph}>Subtotal</Text>
-      <Text style={FStyles.noEmph}>$440.00</Text>
+      <Text style={FStyles.noEmph}>Rp {product.totalPrice}</Text>
     </View>
     <View style={FStyles.lowCont}>
       <Text style={FStyles.noEmph}>Shipping cost</Text>
-      <Text style={FStyles.noEmph}>$5.00</Text>
+      <Text style={FStyles.noEmph}>Rp 5.00</Text>
     </View>
     <View style={FStyles.lowCont}>
       <Text style={FStyles.emph}>Total</Text>
-      <Text style={FStyles.mEmph}>$445.00</Text>
+      <Text style={FStyles.mEmph}>Rp {product.totalPrice}</Text>
     </View>
     <TouchableOpacity style={FStyles.evtbtn}>
       <Text style={FStyles.evntTxt}>Pay</Text>

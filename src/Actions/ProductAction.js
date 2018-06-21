@@ -1,45 +1,48 @@
-import axios from "axios";
-import querystring from "querystring";
-import { BASE_URL } from "../Constants/BaseUrl";
-import { displayError } from "./ErrorAction";
-import { AsyncStorage } from "react-native";
+import axios from 'axios';
+import querystring from 'querystring';
+import { BASE_URL } from '../Constants/BaseUrl';
+import { displayError } from './ErrorAction';
+import { AsyncStorage } from 'react-native';
 import {
   PRODUCT_CREATED,
   PRODUCT_ONSALE,
   PRODUCT_TRENDING,
   PRODUCT_FEATURED,
   PROFILE_PRODUCTS,
-  FOLLOWING_PROFILE_PRODUCTS
-} from "../Constants/ActionTypes";
+  FOLLOWING_PROFILE_PRODUCTS,
+  FETCH_CART,
+  ADD_TO_CART,
+  BID_FOR_PRODUCT
+} from '../Constants/ActionTypes';
 
-AsyncStorage.getItem("token").then(
-  token => (axios.defaults.headers.common["Authorization"] = `Bearer ${token}`)
+AsyncStorage.getItem('token').then(
+  token => (axios.defaults.headers.common['Authorization'] = `Bearer ${token}`)
 );
 
 const errorHandler = errors =>
   Object.keys(errors)
     .map((key, i) => `${i + 1}. ${key}: ${errors[key]}`)
-    .join("\n");
+    .join('\n');
 
 export const createProduct = (product, token) => async dispatch => {
   const form = new FormData();
   Object.keys(product).forEach(key => {
-    if (key !== "images") {
+    if (key !== 'images') {
       form.append(key, product[key]);
     }
   });
 
   // append images last
   product.images.forEach((image, index) =>
-    form.append("images", {
+    form.append('images', {
       uri: image.uri,
-      type: "image/jpeg",
-      name: "image-0" + (index + 1)
+      type: 'image/jpeg',
+      name: 'image-0' + (index + 1)
     })
   );
 
   const options = {
-    method: "POST",
+    method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`
     },
@@ -62,13 +65,13 @@ export const createProduct = (product, token) => async dispatch => {
 export const getProducts = type => async dispatch => {
   let dispatchType;
   switch (type) {
-    case "onSale":
+    case 'onSale':
       dispatchType = PRODUCT_ONSALE;
       break;
-    case "isFeatured":
+    case 'isFeatured':
       dispatchType = PRODUCT_FEATURED;
       break;
-    case "isTrending":
+    case 'isTrending':
       dispatchType = PRODUCT_TRENDING;
       break;
     default:
@@ -93,11 +96,71 @@ export const getUserProducts = (userId, type) => async dispatch => {
   axios
     .get(`${BASE_URL}/products?user=${userId}`)
     .then(({ data }) => {
-      if (type === "following") {
+      if (type === 'following') {
         dispatch({ type: FOLLOWING_PROFILE_PRODUCTS, payload: data });
         return;
       }
       dispatch({ type: PROFILE_PRODUCTS, payload: data });
+    })
+    .catch(({ response }) => {
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
+export const getCartItem = token => dispatch => {
+  axios
+    .get(`${BASE_URL}/cart/`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(({ data }) => {
+      dispatch({
+        type: FETCH_CART,
+        payload: data
+      });
+    })
+    .catch(({ response }) => {
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
+export const addToCart = (cartId, productId, quantity = 1) => dispatch => {
+  axios
+    .put(`${BASE_URL}/cart/${cartId}/update`, { product: productId, quantity })
+    .then(({ data }) => {
+      dispatch({
+        type: ADD_TO_CART,
+        payload: data
+      });
+    })
+    .catch(({ response }) => {
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
+export const bidForProduct = (productId, amount) => dispatch => {
+  axios
+    .put(`${BASE_URL}/products/${productId}/bid`, {
+      amount
+    })
+    .then(({ data }) => {
+      dispatch({
+        type: BID_FOR_PRODUCT,
+        payload: data
+      });
     })
     .catch(({ response }) => {
       if (response.data.errors) {

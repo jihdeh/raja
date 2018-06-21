@@ -10,6 +10,7 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
+import { getCartItem, addToCart } from '../Actions/ProductAction';
 import { getBookmarks } from '../Actions/SharedAction';
 import Item from '../Components/Cart/Item';
 
@@ -20,20 +21,27 @@ import CStyles from '../Styles/CartStyles';
 
 class Cart extends Component {
   render() {
-    const { navigation } = this.props;
+    const { navigation, product } = this.props;
+    console.log(product);
 
     return (
       <View style={CStyles.cartContainer}>
         <View style={CStyles.cartItems}>
           <ScrollView style={CStyles.cartItemsScrollableCont}>
-            <Item />
-            <Item />
+            {product.addToCart &&
+              product.addToCart.items.map((cartItem, key) => {
+                return <Item cartItem={cartItem} key={key} />;
+              })}
           </ScrollView>
         </View>
         <View style={CStyles.cartBtnCont}>
           <View style={CStyles.btnTitle}>
-            <Text style={CStyles.btnTitleTxt}>Subtotal(2 items)</Text>
-            <Text style={CStyles.btnTitleTxtTwo}>$440.00</Text>
+            <Text style={CStyles.btnTitleTxt}>
+              Subtotal({get(product, 'addToCart.items.length')})
+            </Text>
+            <Text style={CStyles.btnTitleTxtTwo}>
+              Rp{get(product, 'addToCart.totalPrice')}
+            </Text>
           </View>
           <TouchableOpacity
             onPress={() => navigation.navigate('CheckoutScreen')}
@@ -47,4 +55,13 @@ class Cart extends Component {
   }
 }
 
-export default Cart;
+const mapStateToProps = state => ({
+  product: state.get('product').toJS()
+});
+
+const mapDispatchToProps = dispatch => ({
+  getCartItem: bindActionCreators(getCartItem, dispatch),
+  addToCart: bindActionCreators(addToCart, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Cart);
