@@ -133,7 +133,7 @@ export const getCartItem = token => dispatch => {
     });
 };
 
-export const addToCart = (cartId, productId, quantity = 1) => dispatch => {
+export const addToCart = (cartId, productId, quantity) => dispatch => {
   axios
     .put(`${BASE_URL}/cart/${cartId}/update`, { product: productId, quantity })
     .then(({ data }) => {

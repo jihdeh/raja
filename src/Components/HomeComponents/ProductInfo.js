@@ -87,7 +87,7 @@ class ProductInfo extends Component {
       });
       successHandler(null, false).then(() => getFollowings());
     }
-    const hasBookmark = bookmark && bookmark;
+    const hasBookmark = get(bookmark, 'items');
     this._isBookmark(item, hasBookmark);
     return;
   }
@@ -104,8 +104,7 @@ class ProductInfo extends Component {
     // console.log(target.value);
   }
 
-  _isBookmark(item, { items }) {
-    console.log(items);
+  _isBookmark(item, items) {
     const isBookmarked = items && items.find(bm => bm.id == item.id);
     this.setState({
       isBookmarked

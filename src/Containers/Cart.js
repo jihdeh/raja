@@ -27,10 +27,19 @@ class Cart extends Component {
     return (
       <View style={CStyles.cartContainer}>
         <View style={CStyles.cartItems}>
-          <ScrollView style={CStyles.cartItemsScrollableCont}>
+          <ScrollView
+            style={CStyles.cartItemsScrollableCont}
+            keyboardShouldPersistTaps="always"
+          >
             {product.addToCart &&
               product.addToCart.items.map((cartItem, key) => {
-                return <Item cartItem={cartItem} key={key} />;
+                return (
+                  <Item
+                    cartId={product.addToCart.id}
+                    cartItem={cartItem}
+                    key={key}
+                  />
+                );
               })}
           </ScrollView>
         </View>
