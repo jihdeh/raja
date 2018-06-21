@@ -69,6 +69,16 @@ class ProfileView extends Component {
     );
   };
 
+  onSearchItem = searchInput => {
+    const { hotListsItems } = this.props;
+    const lists = get(hotListsItems, 'items');
+    this.setState({ searchInput });
+    const searchRes = lists.filter(item => item.name.indexOf(searchInput) > -1);
+    this.setState({
+      productSearchResult: searchRes
+    });
+  };
+
   render() {
     const {
       navigation,
@@ -77,6 +87,7 @@ class ProfileView extends Component {
       username,
       followers
     } = this.props;
+    const { productSearchResult } = this.state;
 
     return (
       <View>
@@ -128,7 +139,7 @@ class ProfileView extends Component {
               placeholder="Search"
               placeholderTextColor="rgba(45, 45, 45, 0.3)"
               returnKeyType="search"
-              onChangeText={searchInput => this.setState({ searchInput })}
+              onChangeText={searchInput => this.onSearchItem(searchInput)}
               value={this.state.searchInput}
             />
             <Icon
@@ -142,7 +153,7 @@ class ProfileView extends Component {
             {get(hotListsItems, 'items.length') ? (
               <FlatList
                 numColumns={2}
-                data={get(hotListsItems, 'items')}
+                data={productSearchResult || get(hotListsItems, 'items')}
                 keyExtractor={_keyExtractor}
                 renderItem={({ item }) => this.renderItem(item)}
               />
