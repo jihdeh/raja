@@ -22,7 +22,6 @@ import CStyles from '../Styles/CartStyles';
 class Cart extends Component {
   render() {
     const { navigation, product } = this.props;
-    console.log(product);
 
     return (
       <View style={CStyles.cartContainer}>
