@@ -35,9 +35,11 @@ export default class Addresses extends Component {
               }
             />
           </View>
-          <View style={LStyles.divis}>
-            <Ionicons name="ios-home" size={40} color="grey" />
-          </View>
+          {edit ? null : (
+            <View style={LStyles.divis}>
+              <Ionicons name="ios-home" size={40} color="grey" />
+            </View>
+          )}
           <View style={LStyles.moreDetails}>
             <Text style={LStyles.loc}>SEND TO</Text>
             {edit ? (
