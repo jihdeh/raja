@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
   },
   btnLbl: {
     fontSize: 18,
-    fontWeight: "400"
+    fontWeight: "400",
+    color: "#6c63c0"
   },
   welcIn: {
     color: "#6c63c0"
