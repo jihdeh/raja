@@ -28,52 +28,67 @@ class Cart extends Component {
     console.log(product);
 
     return (
-      <View style={CStyles.cartContainer}>
-        <View style={CStyles.cartItems}>
-          <ScrollView
-            style={CStyles.cartItemsScrollableCont}
-            keyboardShouldPersistTaps="always"
-          >
-            {product.addToCart
-              ? product.addToCart.items.map((cartItem, key) => {
-                  return (
-                    <Item
-                      cartId={product.addToCart.id}
-                      cartItem={cartItem}
-                      key={key}
-                    />
-                  );
-                })
-              : product.getCart &&
-                product.getCart.items.map((cartItem, key) => {
-                  return (
-                    <Item
-                      cartId={product.getCart.id}
-                      cartItem={cartItem}
-                      key={key}
-                    />
-                  );
-                })}
-          </ScrollView>
-        </View>
-        <View style={CStyles.cartBtnCont}>
-          <View style={CStyles.btnTitle}>
-            <Text style={CStyles.btnTitleTxt}>
-              Subtotal({get(product, 'addToCart.items.length') ||
-                get(product, 'getCart.items.length')})
-            </Text>
-            <Text style={CStyles.btnTitleTxtTwo}>
-              Rp{get(product, 'addToCart.totalPrice') ||
-                get(product, 'getCart.totalPrice')}
-            </Text>
+      <View style={{ flex: 1 }}>
+        {get(product, 'getCart') ? (
+          get(product, 'addToCart.items.length') ||
+          get(product, 'getCart.items.length') ? (
+            <View style={CStyles.cartContainer}>
+              <View style={CStyles.cartItems}>
+                <ScrollView
+                  style={CStyles.cartItemsScrollableCont}
+                  keyboardShouldPersistTaps="always"
+                >
+                  {product.addToCart
+                    ? product.addToCart.items.map((cartItem, key) => {
+                        return (
+                          <Item
+                            cartId={product.addToCart.id}
+                            cartItem={cartItem}
+                            key={key}
+                          />
+                        );
+                      })
+                    : product.getCart &&
+                      product.getCart.items.map((cartItem, key) => {
+                        return (
+                          <Item
+                            cartId={product.getCart.id}
+                            cartItem={cartItem}
+                            key={key}
+                          />
+                        );
+                      })}
+                </ScrollView>
+              </View>
+              <View style={CStyles.cartBtnCont}>
+                <View style={CStyles.btnTitle}>
+                  <Text style={CStyles.btnTitleTxt}>
+                    Subtotal({get(product, 'addToCart.items.length') ||
+                      get(product, 'getCart.items.length')})
+                  </Text>
+                  <Text style={CStyles.btnTitleTxtTwo}>
+                    Rp{get(product, 'addToCart.totalPrice') ||
+                      get(product, 'getCart.totalPrice')}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('CheckoutScreen')}
+                  style={CStyles.cartBtn}
+                >
+                  <Text style={CStyles.myTxt}>Checkout</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          ) : (
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: '#000000' }}>Nothing added to cart</Text>
+            </View>
+          )
+        ) : (
+          <View style={{ flex: 1 }}>
+            <Text style={{ color: '#000000' }}>Loading...</Text>
           </View>
-          <TouchableOpacity
-            onPress={() => navigation.navigate('CheckoutScreen')}
-            style={CStyles.cartBtn}
-          >
-            <Text style={CStyles.myTxt}>Checkout</Text>
-          </TouchableOpacity>
-        </View>
+        )}
       </View>
     );
   }
