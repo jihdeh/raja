@@ -150,7 +150,11 @@ class ProductInfo extends Component {
 
   render() {
     const isTinder = 'tinder';
-    const { navigation, product } = this.props;
+    const {
+      navigation,
+      product,
+      user: { userExtended: { addresses } }
+    } = this.props;
     const { isBookmarked } = this.state;
     const { state } = navigation;
     const { params } = state;
@@ -158,6 +162,8 @@ class ProductInfo extends Component {
     const isInCart =
       get(product, 'getCart') &&
       get(product, 'getCart.items').find(p => p.id === item.id);
+    const getDefaultAddy =
+      addresses.length && addresses.find(addy => addy.isDefault);
 
     return (
       <ScrollView style={{ flex: 1 }}>
@@ -283,7 +289,9 @@ class ProductInfo extends Component {
 
               <View style={PStyles.productInfoMoreX}>
                 <Text>Delivery:</Text>
-                <Text>{item.owner.location.cityName} to </Text>
+                <Text>
+                  {item.owner.location.cityName} to {getDefaultAddy.cityName}
+                </Text>
               </View>
             </View>
           </View>
@@ -320,7 +328,8 @@ class ProductInfo extends Component {
 
 const mapStateToProps = state => ({
   shared: state.get('shared').toJS(),
-  product: state.get('product').toJS()
+  product: state.get('product').toJS(),
+  user: state.get('auth').toJS()
 });
 
 const mapDispatchToProps = dispatch => ({

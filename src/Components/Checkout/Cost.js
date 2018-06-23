@@ -9,6 +9,12 @@ import {
 } from 'react-native';
 import Picker from 'react-native-picker-select';
 import { RadioGroup, RadioButton } from 'react-native-flexi-radio-button';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import get from 'lodash/get';
+
+import { displayError } from '../../Actions/ErrorAction';
+import { checkout } from '../../Actions/ProductAction';
 
 import GStyles from '../../Styles/GeneralStyle';
 import FStyles from '../../Styles/CheckoutStyle';
@@ -84,7 +90,20 @@ class Cost extends Component {
     // "bank"
   }
 
+  validate() {
+    const { bankOption, paymentMethod } = this.state;
+    if (
+      (paymentMethod === 'bank' || paymentMethod === 'internet') &&
+      !bankOption
+    ) {
+      this.props.displayError('Please select bank option');
+      return false;
+    }
+    return true;
+  }
+
   onPayClicked() {
+    if (!this.validate()) return;
     const {
       selection: { bankName, internetBankName },
       paymentMethod
@@ -98,7 +117,9 @@ class Cost extends Component {
   }
 
   render() {
-    const { product } = this.props;
+    const { product: { addToCart, getCart } } = this.props;
+    const { bankOption } = this.state;
+
     return (
       <View>
         <View style={FStyles.lblHeader}>
@@ -151,7 +172,9 @@ class Cost extends Component {
         <View style={FStyles.contTwo}>
           <View style={FStyles.lowCont}>
             <Text style={FStyles.noEmph}>Subtotal</Text>
-            <Text style={FStyles.noEmph}>Rp {product.totalPrice}</Text>
+            <Text style={FStyles.noEmph}>
+              Rp {get(addToCart, 'totalPrice') || get(getCart, 'totalPrice')}
+            </Text>
           </View>
           <View style={FStyles.lowCont}>
             <Text style={FStyles.noEmph}>Shipping cost</Text>
@@ -159,7 +182,9 @@ class Cost extends Component {
           </View>
           <View style={FStyles.lowCont}>
             <Text style={FStyles.emph}>Total</Text>
-            <Text style={FStyles.mEmph}>Rp {product.totalPrice}</Text>
+            <Text style={FStyles.mEmph}>
+              Rp {get(addToCart, 'totalPrice') || get(getCart, 'totalPrice')}
+            </Text>
           </View>
           <TouchableOpacity
             onPress={() => this.onPayClicked()}
@@ -172,5 +197,13 @@ class Cost extends Component {
     );
   }
 }
+const mapStateToProps = state => ({
+  product: state.get('product').toJS()
+});
 
-export default Cost;
+const mapDispatchToProps = dispatch => ({
+  displayError: bindActionCreators(displayError, dispatch),
+  pay: bindActionCreators(checkout, dispatch)
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Cost);

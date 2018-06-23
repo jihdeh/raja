@@ -21,6 +21,7 @@ import FStyles from '../Styles/CheckoutStyle';
 class Checkout extends Component {
   render() {
     const { product, user: { userExtended }, navigation } = this.props;
+    console.log(userExtended);
 
     return (
       <View style={FStyles.container}>
@@ -38,7 +39,7 @@ class Checkout extends Component {
             </ScrollView>
           </View>
           <Details navigation={navigation} addresses={userExtended.addresses} />
-          <Cost product={product.addToCart || product.getCart} />
+          <Cost />
         </ScrollView>
       </View>
     );
