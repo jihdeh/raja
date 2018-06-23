@@ -1,14 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  TextInput
-} from 'react-native';
-import Picker from 'react-native-picker-select';
 import { RadioGroup, RadioButton } from 'react-native-flexi-radio-button';
+import { View, Text } from 'react-native';
+import Picker from 'react-native-picker-select';
 
 import GStyles from '../../Styles/GeneralStyle';
 import FStyles from '../../Styles/CheckoutStyle';
@@ -59,7 +52,7 @@ const INTERNET_BANKING = [
   }
 ];
 
-class Cost extends Component {
+class PaymentMethod extends Component {
   state = {
     paymentMethod: 'card',
     bankOption: null
@@ -72,6 +65,7 @@ class Cost extends Component {
   }
 
   bankSelection(bank) {
+    console.log(bank);
     this.setState({
       selection: bank,
       bankOption: bank.bankName
@@ -98,7 +92,6 @@ class Cost extends Component {
   }
 
   render() {
-    const { product } = this.props;
     return (
       <View>
         <View style={FStyles.lblHeader}>
@@ -148,29 +141,9 @@ class Cost extends Component {
             </View>
           </Fragment>
         )}
-        <View style={FStyles.contTwo}>
-          <View style={FStyles.lowCont}>
-            <Text style={FStyles.noEmph}>Subtotal</Text>
-            <Text style={FStyles.noEmph}>Rp {product.totalPrice}</Text>
-          </View>
-          <View style={FStyles.lowCont}>
-            <Text style={FStyles.noEmph}>Shipping cost</Text>
-            <Text style={FStyles.noEmph}>Rp 5.00</Text>
-          </View>
-          <View style={FStyles.lowCont}>
-            <Text style={FStyles.emph}>Total</Text>
-            <Text style={FStyles.mEmph}>Rp {product.totalPrice}</Text>
-          </View>
-          <TouchableOpacity
-            onPress={() => this.onPayClicked()}
-            style={FStyles.evtbtn}
-          >
-            <Text style={FStyles.evntTxt}>PAY</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     );
   }
 }
 
-export default Cost;
+export default PaymentMethod;

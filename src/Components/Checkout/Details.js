@@ -12,7 +12,6 @@ import FStyles from '../../Styles/CheckoutStyle';
 const Details = ({ addresses, navigation }) => {
   const getDefaultAddy =
     addresses.length && addresses.find(addy => addy.isDefault);
-  console.log(getDefaultAddy);
 
   return (
     <View style={FStyles.contOne}>

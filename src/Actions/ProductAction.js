@@ -12,7 +12,8 @@ import {
   FOLLOWING_PROFILE_PRODUCTS,
   FETCH_CART,
   ADD_TO_CART,
-  BID_FOR_PRODUCT
+  BID_FOR_PRODUCT,
+  CHECKOUT
 } from '../Constants/ActionTypes';
 
 AsyncStorage.getItem('token').then(
@@ -159,6 +160,26 @@ export const bidForProduct = (productId, amount) => dispatch => {
     .then(({ data }) => {
       dispatch({
         type: BID_FOR_PRODUCT,
+        payload: data
+      });
+    })
+    .catch(({ response }) => {
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
+export const checkout = data => dispatch => {
+  axios
+    .post(`${BASE_URL}/checkout`, {
+      data
+    })
+    .then(({ data }) => {
+      dispatch({
+        type: CHECKOUT,
         payload: data
       });
     })
