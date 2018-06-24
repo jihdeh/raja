@@ -19,27 +19,24 @@ import Cost from '../Components/Checkout/Cost';
 import FStyles from '../Styles/CheckoutStyle';
 
 class Checkout extends Component {
-  componentDidMount() {
-    console.log('-ashere');
-  }
-
   render() {
     const { product, user: { userExtended }, navigation } = this.props;
-    console.log(userExtended);
 
     return (
-      <View style={FStyles.container}>
+      <ScrollView style={FStyles.container}>
         <View style={FStyles.contOne}>
-          <ScrollView style={FStyles.scrollable}>
-            {product.addToCart &&
-              product.addToCart.items.map((cartItem, key) => {
+          {product.addToCart
+            ? product.addToCart.items.map((cartItem, key) => {
+                return <Item cartItem={cartItem} key={key} />;
+              })
+            : product.getCart &&
+              product.getCart.items.map((cartItem, key) => {
                 return <Item cartItem={cartItem} key={key} />;
               })}
-          </ScrollView>
         </View>
         <Details navigation={navigation} addresses={userExtended.addresses} />
-        <Cost product={product.addToCart} />
-      </View>
+        <Cost />
+      </ScrollView>
     );
   }
 }

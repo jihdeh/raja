@@ -33,7 +33,16 @@ class HomeTab extends Component {
       tabBarIcon: ({ tintColor }) => (
         <Icon name="ios-home" style={{ color: tintColor }} />
       ),
-      headerLeft: <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />,
+      headerLeft: (
+        <View style={GStyles.headerRightContainer}>
+          <Icon
+            name="ios-cart"
+            onPress={() => navigation.navigate('CartScreen')}
+            style={{ paddingLeft: 10 }}
+          />
+          <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />
+        </View>
+      ),
       headerRight: (
         <View style={GStyles.headerRightContainer}>
           <Icon
@@ -66,7 +75,7 @@ class HomeTab extends Component {
       .then(() => getProducts('isFeatured'))
       .then(() => getLoggedUserProfile(value))
       .then(() => getFollowers(value))
-      .then(() => getFollowings())
+      .then(() => getFollowings(value))
       .then(() => getCartItem(value));
   }
 

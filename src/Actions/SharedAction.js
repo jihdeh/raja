@@ -137,9 +137,11 @@ export const getFollowers = token => dispatch => {
     });
 };
 
-export const getFollowings = () => dispatch => {
+export const getFollowings = token => dispatch => {
   axios
-    .get(`${BASE_URL}/user/followings`)
+    .get(`${BASE_URL}/user/followings`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
     .then(({ data }) => {
       dispatch({
         type: FETCH_USER_FOLLOWINGS,

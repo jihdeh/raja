@@ -15,13 +15,12 @@ import CStyles from '../../Styles/CartStyles';
 
 class Item extends Component {
   state = {
-    cartItem: null,
     quantity: 1
   };
 
   updateCartItem() {
-    const { cartId, addToCart } = this.props;
-    const { cartItem, quantity } = this.state;
+    const { cartId, addToCart, cartItem } = this.props;
+    const { quantity } = this.state;
     addToCart(cartId, cartItem, quantity);
   }
 
@@ -37,30 +36,38 @@ class Item extends Component {
           <View style={CStyles.topDetail}>
             <View style={CStyles.topCont}>
               <Text style={CStyles.top}>{cartItem.name}</Text>
-              <Text style={CStyles.top}> Rp{cartItem.price}</Text>
+              <Text style={CStyles.top}> Rp {cartItem.price}</Text>
             </View>
-            <TouchableOpacity style={CStyles.cancel}>
-              <Text style={CStyles.ex}>X</Text>
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity style={CStyles.cancel}>
+                <Text style={CStyles.ex}>X</Text>
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={CStyles.detailOne}>
-            <Text style={CStyles.detailLabel}>QUANTITY</Text>
-            <TextInput
-              onChangeText={quantity =>
-                this.setState({ quantity, cartItem: cartItem.id })
-              }
-              style={CStyles.Inputs}
-              defaultValue={cartItem.quantity.toString()}
-            />
+            <View>
+              <Text style={CStyles.detailLabel}>QUANTITY</Text>
+            </View>
+            <View style={{ marginBottom: 10 }}>
+              <TextInput
+                onChangeText={quantity =>
+                  this.setState({ quantity, cartItem: cartItem.id })
+                }
+                style={CStyles.Inputs}
+                defaultValue={cartItem.quantity.toString()}
+              />
+            </View>
           </View>
-          <View>
-            <TouchableOpacity
-              onPress={() => this.updateCartItem()}
-              style={CStyles.cancel}
-            >
-              <Text>Update</Text>
-            </TouchableOpacity>
-          </View>
+          {cartItem.id === this.state.cartItem ? (
+            <View style={{ marginTop: 20 }}>
+              <TouchableOpacity
+                onPress={() => this.updateCartItem()}
+                style={CStyles.cancel}
+              >
+                <Text>Update</Text>
+              </TouchableOpacity>
+            </View>
+          ) : null}
         </View>
       </View>
     );
