@@ -5,6 +5,7 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
   TextInput
 } from 'react-native';
 import Picker from 'react-native-picker-select';
@@ -45,31 +46,43 @@ const INTERNET_BANKING = [
   },
   {
     label: 'Klikbca',
-    value: { bankName: 'bca_klikbca', internetBankName: 'bca_klickpay' }
+    value: { bankName: 'permata', internetBankName: 'bca_klikbca' }
   },
   {
     label: 'Mandiri Clickpay',
-    value: { bankName: 'mandiri_clickpay', internetBankName: 'bca_klickpay' }
+    value: {
+      bankName: 'permata',
+      internetBankName: 'mandiri_clickpay'
+    }
   },
   {
     label: 'Epay BRI',
-    value: { bankName: 'bri_epay', internetBankName: 'bca_klickpay' }
+    value: { bankName: 'permata', internetBankName: 'bri_epay' }
   },
   {
     label: 'CIMB Clicks',
-    value: { bankName: 'cimb_clicks', internetBankName: 'bca_klickpay' }
+    value: { bankName: 'permata', internetBankName: 'cimb_clicks' }
   },
   {
     label: 'Danamon Online Banking',
-    value: { bankName: 'danamon_online', internetBankName: 'bca_klickpay' }
+    value: { bankName: 'permata', internetBankName: 'danamon_online' }
   }
 ];
 
 class Cost extends Component {
   state = {
     paymentMethod: 'card',
-    bankOption: null
+    bankOption: null,
+    isLoading: false
   };
+
+  componentWillReceiveProps(nextProps) {
+    const { product: { checkout } } = nextProps;
+    console.log(checkout);
+    this.setState({
+      isLoading: false
+    });
+  }
 
   onSelect(index, value) {
     this.setState({
@@ -82,12 +95,6 @@ class Cost extends Component {
       selection: bank,
       bankOption: bank.bankName
     });
-    // bankName
-    // "bca"
-    // internetBankName
-    // "bca_klikpay"
-    // paymentMethod
-    // "bank"
   }
 
   validate() {
@@ -97,6 +104,9 @@ class Cost extends Component {
       !bankOption
     ) {
       this.props.displayError('Please select bank option');
+      this.setState({
+        isLoading: false
+      });
       return false;
     }
     return true;
@@ -114,11 +124,15 @@ class Cost extends Component {
       paymentMethod
     };
     console.log(obj);
+    this.setState({
+      isLoading: true
+    });
+    this.props.pay(obj);
   }
 
   render() {
     const { product: { addToCart, getCart } } = this.props;
-    const { bankOption } = this.state;
+    const { bankOption, isLoading } = this.state;
 
     return (
       <View>
@@ -186,12 +200,18 @@ class Cost extends Component {
               Rp {get(addToCart, 'totalPrice') || get(getCart, 'totalPrice')}
             </Text>
           </View>
-          <TouchableOpacity
-            onPress={() => this.onPayClicked()}
-            style={FStyles.evtbtn}
-          >
-            <Text style={FStyles.evntTxt}>PAY</Text>
-          </TouchableOpacity>
+          {!isLoading ? (
+            <TouchableOpacity
+              onPress={() => this.onPayClicked()}
+              style={FStyles.evtbtn}
+            >
+              <Text style={FStyles.evntTxt}>PAY</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={FStyles.evtbtn}>
+              <ActivityIndicator size="small" color="#ffffff" />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );

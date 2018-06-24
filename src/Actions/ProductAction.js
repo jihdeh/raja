@@ -134,7 +134,7 @@ export const getCartItem = token => dispatch => {
     });
 };
 
-export const addToCart = (cartId, productId, quantity) => dispatch => {
+export const addToCart = (cartId, { id: productId }, quantity) => dispatch => {
   axios
     .put(`${BASE_URL}/cart/${cartId}/update`, { product: productId, quantity })
     .then(({ data }) => {
@@ -175,9 +175,10 @@ export const bidForProduct = (productId, amount) => dispatch => {
 export const checkout = data => dispatch => {
   axios
     .post(`${BASE_URL}/checkout`, {
-      data
+      ...data
     })
     .then(({ data }) => {
+      console.log(data);
       dispatch({
         type: CHECKOUT,
         payload: data

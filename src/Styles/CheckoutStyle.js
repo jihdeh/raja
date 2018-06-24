@@ -3,7 +3,6 @@ const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
     flex: 1,
     padding: 20,
     paddingTop: 30
@@ -23,6 +22,8 @@ const styles = StyleSheet.create({
   itemCont: {
     display: 'flex',
     flexDirection: 'row',
+    marginTop: 30,
+    marginBottom: 30,
     height: height / 12
   },
   imageCont: { flex: 1 },
@@ -70,7 +71,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     height: 55,
-    marginTop: 25
+    marginTop: 25,
+    marginBottom: 35
   },
   evntTxt: { color: 'white', fontWeight: 'bold' },
   noEmph: { color: 'rgba(0,0,0,.5)', fontWeight: 'bold' },

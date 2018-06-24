@@ -62,11 +62,12 @@ class Cart extends Component {
               <View style={CStyles.cartBtnCont}>
                 <View style={CStyles.btnTitle}>
                   <Text style={CStyles.btnTitleTxt}>
-                    Subtotal({get(product, 'addToCart.items.length') ||
+                    Subtotal ({get(product, 'addToCart.items.length') ||
                       get(product, 'getCart.items.length')})
                   </Text>
                   <Text style={CStyles.btnTitleTxtTwo}>
-                    Rp{get(product, 'addToCart.totalPrice') ||
+                    Rp{' '}
+                    {get(product, 'addToCart.totalPrice') ||
                       get(product, 'getCart.totalPrice')}
                   </Text>
                 </View>

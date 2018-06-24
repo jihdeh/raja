@@ -21,27 +21,22 @@ import FStyles from '../Styles/CheckoutStyle';
 class Checkout extends Component {
   render() {
     const { product, user: { userExtended }, navigation } = this.props;
-    console.log(userExtended);
 
     return (
-      <View style={FStyles.container}>
-        <ScrollView>
-          <View style={FStyles.contOne}>
-            <ScrollView style={FStyles.scrollable}>
-              {product.addToCart
-                ? product.addToCart.items.map((cartItem, key) => {
-                    return <Item cartItem={cartItem} key={key} />;
-                  })
-                : product.getCart &&
-                  product.getCart.items.map((cartItem, key) => {
-                    return <Item cartItem={cartItem} key={key} />;
-                  })}
-            </ScrollView>
-          </View>
-          <Details navigation={navigation} addresses={userExtended.addresses} />
-          <Cost />
-        </ScrollView>
-      </View>
+      <ScrollView style={FStyles.container}>
+        <View style={FStyles.contOne}>
+          {product.addToCart
+            ? product.addToCart.items.map((cartItem, key) => {
+                return <Item cartItem={cartItem} key={key} />;
+              })
+            : product.getCart &&
+              product.getCart.items.map((cartItem, key) => {
+                return <Item cartItem={cartItem} key={key} />;
+              })}
+        </View>
+        <Details navigation={navigation} addresses={userExtended.addresses} />
+        <Cost />
+      </ScrollView>
     );
   }
 }

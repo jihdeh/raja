@@ -111,7 +111,7 @@ class ProductInfo extends Component {
     });
   }
 
-  _buyProduct({ id: productId }) {
+  _buyProduct(selectedItem) {
     //trigger buy
     const { navigation, addToCart, product: { getCart } } = this.props;
     const { state } = navigation;
@@ -120,7 +120,7 @@ class ProductInfo extends Component {
     const isInCart =
       getCart && get(getCart, 'items').find(p => p.id === item.id);
     const newProductAddQuantity = isInCart ? null : 1;
-    addToCart(getCart.id, productId, newProductAddQuantity);
+    addToCart(getCart.id, selectedItem, newProductAddQuantity);
     navigation.navigate('CartScreen');
   }
 

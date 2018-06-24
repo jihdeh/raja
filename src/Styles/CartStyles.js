@@ -1,9 +1,9 @@
-import { StyleSheet, Dimensions } from "react-native";
-const width = Dimensions.get("window").width;
-const height = Dimensions.get("window").height;
+import { StyleSheet, Dimensions } from 'react-native';
+const width = Dimensions.get('window').width;
+const height = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   cartContainer: {
-    display: "flex",
+    display: 'flex',
     flex: 1,
     padding: 20,
     paddingTop: 30
@@ -14,10 +14,10 @@ const styles = StyleSheet.create({
   cartBtn: {
     flex: 1,
     borderRadius: 10,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#ff5252"
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ff5252'
   },
   cartItems: {
     flex: 6,
@@ -25,22 +25,22 @@ const styles = StyleSheet.create({
     paddingBottom: 5
   },
   myTxt: {
-    color: "white",
-    fontWeight: "bold",
+    color: 'white',
+    fontWeight: 'bold',
     fontSize: 15
   },
   btnTitle: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    alignItems: "center"
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    alignItems: 'center'
   },
   cartItemsScrollableCont: { flex: 1 },
   eachCartItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 20,
     height: height / 8
   },
@@ -50,72 +50,74 @@ const styles = StyleSheet.create({
   },
   detailCont: {
     flex: 2,
-    justifyContent: "space-between",
-    paddingLeft: 20
+    justifyContent: 'space-between',
+    paddingLeft: 20,
+    flexDirection: 'column'
   },
   imageItem: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
     borderRadius: 10
   },
 
   topDetail: {
     flex: 3,
-    flexDirection: "row",
-    justifyContent: "space-between"
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   detailLabel: {
-    justifyContent: "flex-end",
-    alignItems: "flex-start",
-    display: "flex",
-    flex: 3,
-    color: "rgba(0,0,0,.2)",
+    color: 'rgba(0,0,0,.2)',
     fontSize: 13,
-    fontWeight: "bold"
+    marginTop: 10,
+    fontWeight: 'bold'
   },
   top: {
     fontSize: 13,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
   cancelCont: {
     flex: 1
   },
   detailOne: {
+    padding: 1,
     marginBottom: 9,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 1
+    marginTop: 20,
+    flex: 1,
+    flexDirection: 'row',
+    display: 'flex',
+    justifyContent: 'space-between'
   },
   topCont: {
-    marginBottom: 10
+    marginBottom: 20,
+    display: 'flex',
+    flexDirection: 'column'
   },
   cancel: {
-    alignItems: "flex-end",
+    alignItems: 'flex-end',
     marginBottom: 10
   },
-  ex: { color: "rgba(0,0,0,.2)", fontSize: 20 },
+  ex: { color: 'rgba(0,0,0,.2)', fontSize: 20 },
   Inputs: {
-    justifyContent: "center",
-    textAlign: "center",
-    flex: 1,
+    textAlign: 'center',
+    height: 25,
+    width: 45,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 3,
-    borderColor: "rgba(0,0,0,.2)",
+    borderColor: 'rgba(0,0,0,.2)',
     marginLeft: 2,
-    marginTop: 1,
-    color: "#ff5252",
-    fontWeight: "bold",
+    color: '#ff5252',
+    fontWeight: 'bold',
     fontSize: 12
   },
   btnTitleTxt: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 11,
-    color: "rgba(0,0,0,.7)"
+    color: 'rgba(0,0,0,.7)'
   },
   btnTitleTxtTwo: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 13,
-    color: "rgba(0,0,0,.9)"
+    color: 'rgba(0,0,0,.9)'
   }
 });
 

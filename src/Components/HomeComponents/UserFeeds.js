@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   View,
   Text,
@@ -6,9 +6,9 @@ import {
   Image,
   TouchableHighlight,
   TouchableOpacity
-} from "react-native";
-import get from "lodash/get";
-import Styles from "../../Styles/HomeStyle";
+} from 'react-native';
+import get from 'lodash/get';
+import Styles from '../../Styles/HomeStyle';
 
 const _keyExtractor = (feed, index) => feed.id;
 
@@ -17,7 +17,7 @@ const renderItem = (profile, navigation) => (
     <TouchableOpacity
       style={Styles.profileContainer}
       onPress={() =>
-        navigation.navigate("ProfileTab", {
+        navigation.navigate('ProfileTab', {
           following: { ...profile },
           username: profile.username,
           followingProfile: true
@@ -40,14 +40,14 @@ const renderItem = (profile, navigation) => (
         style={Styles.itemForSaleImage}
         source={{
           uri:
-            get(profile, "image") ||
-            "https://i.pinimg.com/736x/69/8d/97/698d97fb72fa05f36f63b9c66402d367--sorority-house-decor-sorority-houses.jpg"
+            get(profile, 'image') ||
+            'https://i.pinimg.com/736x/69/8d/97/698d97fb72fa05f36f63b9c66402d367--sorority-house-decor-sorority-houses.jpg'
         }}
       />
       <Text style={Styles.saleTitle}>
-        {get(profile, "title") || "House decor on fleek"}
+        {get(profile, 'title') || 'House decor on fleek'}
       </Text>
-      <Text style={Styles.saleAmount}>{get(profile, "amount") || "$20"}</Text>
+      <Text style={Styles.saleAmount}>{get(profile, 'amount') || '$20'}</Text>
     </View>
   </View>
 );
@@ -58,7 +58,7 @@ const UserFeeds = ({ userFeedsList, navigation }) => (
       <Text>Your Feeds</Text>
     </View>
     {userFeedsList ? (
-      get(userFeedsList, "length") ? (
+      get(userFeedsList, 'length') ? (
         <FlatList
           data={userFeedsList}
           numColumns={2}
