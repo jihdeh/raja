@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import get from 'lodash/get';
 import EditProfile from '../Components/SettingsComponents/editProfile';
 import UpdatePassword from '../Components/SettingsComponents/updatePassword';
 import UpdateAddress from '../Components/SettingsComponents/updateAddress';
@@ -29,10 +30,6 @@ class Settings extends Component {
     phonenumber: ''
   };
 
-  componentDidMount() {
-    // console.log(this.props)
-  }
-
   onChange = (field, value) => {
     this.setState({
       [field]: value
@@ -40,6 +37,7 @@ class Settings extends Component {
   };
 
   render() {
+    const { navigation, user: { userExtended, updateProfile } } = this.props;
     return (
       <ScrollView>
         <View style={HStyles.hotListHeader}>
@@ -52,15 +50,24 @@ class Settings extends Component {
         <UpdatePassword />
         <View style={HStyles.hotListHeader}>
           <Text>MY ADDRESSES</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('AddressScreen')}
+          >
+            <Text>
+              View addresses ({get(updateProfile, 'addresses.length') ||
+                get(userExtended, 'addresses.length')})
+            </Text>
+          </TouchableOpacity>
         </View>
-        <UpdateAddress />
+        <UpdateAddress navigation={navigation} />
       </ScrollView>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  shared: state.get('shared')
+  shared: state.get('shared'),
+  user: state.get('auth').toJS()
 });
 
 const mapDispatchToProps = dispatch => {

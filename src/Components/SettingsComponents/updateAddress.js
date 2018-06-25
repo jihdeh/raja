@@ -4,7 +4,8 @@ import {
   Text,
   KeyboardAvoidingView,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from 'react-native';
 import CheckBox from 'react-native-checkbox';
 import Picker from 'react-native-picker-select';
@@ -36,7 +37,8 @@ class UpdateAddress extends PureComponent {
     cityId: '',
     subDistrictName: '',
     phone: '',
-    isDefault: false
+    isDefault: false,
+    isLoading: false
   };
 
   componentWillMount() {
@@ -63,9 +65,13 @@ class UpdateAddress extends PureComponent {
         cityId: '',
         subDistrictName: '',
         phone: '',
-        isDefault: false
+        isDefault: false,
+        isLoading: false
       });
+      // this.props.navigation.navigate('AddressScreen');
+      return;
     }
+    return;
   }
 
   onChange = (field, value) => {
@@ -152,11 +158,15 @@ class UpdateAddress extends PureComponent {
       subDistrictId,
       isDefault
     };
+    this.setState({
+      isLoading: true
+    });
     this.props.updateProfile({ address });
   };
 
   render() {
     const { location: { loadedCity, loadedProvince } } = this.props;
+    const { isLoading } = this.state;
 
     return (
       <View style={{ margin: 10 }}>
@@ -287,12 +297,18 @@ class UpdateAddress extends PureComponent {
           />
         </View>
 
-        <TouchableOpacity
-          onPress={this.onSubmit}
-          style={[Styles.btn, GStyles.buttonContainer]}
-        >
-          <Text style={GStyles.buttonText}>SAVE ADDRESS</Text>
-        </TouchableOpacity>
+        {!isLoading ? (
+          <TouchableOpacity
+            onPress={this.onSubmit}
+            style={[Styles.btn, GStyles.buttonContainer]}
+          >
+            <Text style={GStyles.buttonText}>SAVE ADDRESS</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={[Styles.btn, GStyles.buttonContainer]}>
+            <ActivityIndicator size="small" color="#ffffff" />
+          </TouchableOpacity>
+        )}
       </View>
     );
   }

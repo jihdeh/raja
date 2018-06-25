@@ -18,6 +18,7 @@ import SignUpScreen from './Containers/SignUp';
 import SettingsScreen from './Containers/Settings';
 import CartScreen from './Containers/Cart';
 import CheckoutScreen from './Containers/Checkout';
+import AddressScreen from './Containers/Address';
 
 const AppTabNavigator = TabNavigator(
   {
@@ -66,6 +67,7 @@ const AppNavigator = StackNavigator({
   SettingsScreen: { screen: SettingsScreen },
   CartScreen: { screen: CartScreen },
   CheckoutScreen: { screen: CheckoutScreen },
+  AddressScreen: { screen: AddressScreen },
   Home: {
     screen: AppTabNavigator
   },
