@@ -60,14 +60,20 @@ class FirstRoute extends Component {
 
   render() {
     const { orderHistory } = this.props;
-    if (!orderHistory) return null;
+
     return (
       <ScrollView>
-        <Accordion
-          sections={orderHistory.items}
-          renderHeader={this._renderHeader}
-          renderContent={this._renderContent}
-        />
+        {orderHistory && orderHistory.items.length ? (
+          <Accordion
+            sections={orderHistory.items}
+            renderHeader={this._renderHeader}
+            renderContent={this._renderContent}
+          />
+        ) : (
+          <View style={{ flex: 1 }}>
+            <Text>You haven't bought anything.</Text>
+          </View>
+        )}
       </ScrollView>
     );
   }

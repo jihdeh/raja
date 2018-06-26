@@ -88,7 +88,6 @@ class ProfileView extends Component {
       followers
     } = this.props;
     const { productSearchResult } = this.state;
-    console.log(hotListsItems);
 
     return (
       <View>
