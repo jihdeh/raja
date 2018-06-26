@@ -76,7 +76,6 @@ class ProfileTab extends PureComponent {
     get(params, 'followingProfile') &&
     get(params, 'username') !== get(userExtended, 'username')
       ? (!this.hasLoaded || this.hasLoaded !== get(params, 'username')) &&
-        !get(hotListsItems, 'followingProfileProducts') &&
         this.loadProfileProducts(get(params, 'following.id'), 'following')
       : get(hotListsItems, 'profileProducts.items') == undefined &&
         this.loadProfileProducts(get(userExtended, 'id'));
