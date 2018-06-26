@@ -30,8 +30,13 @@ const errorHandler = errors =>
 export const createProduct = (product, token) => async dispatch => {
   const form = new FormData();
   Object.keys(product).forEach(key => {
+    const item = product[key];
     if (key !== 'images') {
-      form.append(key, product[key]);
+      if (Array.isArray(item)) {
+        form.append(key, JSON.stringify(item))
+      } else {
+        form.append(key, item)
+      }
     }
   });
 
@@ -39,7 +44,7 @@ export const createProduct = (product, token) => async dispatch => {
   product.images.forEach((image, index) =>
     form.append('images', {
       uri: image.uri,
-      type: 'image/jpeg',
+      type: 'image/png',
       name: 'image-0' + (index + 1)
     })
   );
@@ -49,7 +54,7 @@ export const createProduct = (product, token) => async dispatch => {
     headers: {
       Authorization: `Bearer ${token}`
     },
-    data: querystring.stringify(form),
+    data: form,
     url: `${BASE_URL}/products`
   };
   axios(options)

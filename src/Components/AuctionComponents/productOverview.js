@@ -62,18 +62,18 @@ class ProductOverview extends Component {
           <Text>Title:</Text>
           <Text style={Styles.rightEnd}>{params.name}</Text>
         </View>
-        <View style={Styles.productInformation}>
+        {/* <View style={Styles.productInformation}>
           <Text>Summary:</Text>
           <Text style={Styles.rightEnd}>{params.summary}</Text>
-        </View>
+        </View> */}
         <View style={Styles.productInformation}>
           <Text>Description:</Text>
           <Text style={Styles.rightEnd}>{params.description}</Text>
         </View>
-        <View style={Styles.productInformation}>
+        {/* <View style={Styles.productInformation}>
           <Text>Brand:</Text>
           <Text style={Styles.rightEnd}>{params.brand || 'Generic' }</Text>
-        </View>
+        </View> */}
         <View style={Styles.productInformation}>
           <Text>Category:</Text>
           <Text style={Styles.rightEnd}>{params.category}</Text>
@@ -99,7 +99,7 @@ class ProductOverview extends Component {
               : params.targetPrice}
           </Text>
         </View>
-        { params.saleFormat === "fixed" &&
+        {/* params.saleFormat === "fixed" &&
           <React.Fragment>
             <View style={Styles.productInformation}>
               <Text>On Sale:</Text>
@@ -116,7 +116,7 @@ class ProductOverview extends Component {
               </View>
             }
           </React.Fragment>
-        }
+        */}
         
         {params.saleFormat === "auction" && (
           <React.Fragment>
@@ -135,7 +135,7 @@ class ProductOverview extends Component {
             </View>
           </React.Fragment>
         )}
-        {
+        {/* {
           params.isBundle &&
           <View style={Styles.productInformation}>
             <Text>This is a bundle:</Text>
@@ -149,13 +149,19 @@ class ProductOverview extends Component {
         <View style={Styles.productInformation}>
           <Text>In Stock:</Text>
           <Text style={Styles.rightEnd}>{params.inStock ? 'Yes' : 'No'}</Text>
-        </View>
+        </View> */}
         <View style={Styles.productInformation}>
           <Text>Delivery Method:</Text>
           <Text style={Styles.rightEnd}>
             {params.courierDelivery ? 'Courier' : ''} 
             {params.courierDelivery && params.selfDelivery ? ', ' : ''}
             {params.selfDelivery  ?  'Self' : ''} 
+          </Text>
+        </View>
+        <View style={Styles.productInformation}>
+          <Text>Product Location:</Text>
+          <Text style={Styles.rightEnd}>
+            {''}
           </Text>
         </View>
         <TouchableOpacity

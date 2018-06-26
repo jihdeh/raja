@@ -4,7 +4,8 @@ import { displayError } from './ErrorAction';
 import {
   FETCH_PROVINCE,
   FETCH_CITY,
-  FETCH_SUBDISTRICT
+  FETCH_SUBDISTRICT,
+  FETCH_COURIERS
 } from '../Constants/ActionTypes';
 import { AsyncStorage } from 'react-native';
 import { transformData } from '../utils/pickerHelper';
@@ -60,6 +61,25 @@ export const getCity = () => async dispatch => {
       }
     });
 };
+
+export const getCouriers = () => async dispatch => {
+  axios
+    .get(`${BASE_URL}/location/couriers`)
+    .then(({ data }) => {
+      dispatch({
+        type: FETCH_COURIERS,
+        payload: data
+      });
+    })
+    .catch(({ response }) => {
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
 
 export const getSubdistrict = cityCode => async dispatch => {
   try {

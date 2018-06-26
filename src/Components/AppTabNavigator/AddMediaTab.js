@@ -105,9 +105,6 @@ class AddMediaTab extends Component {
       name,
       description,
       category,
-      summary,
-      brand,
-      sku
     } = this.state.product;
     if (!images.length) {
       this.props.displayError('Please upload images');
@@ -116,8 +113,6 @@ class AddMediaTab extends Component {
     if (
       !name.trim() ||
       !description.trim() ||
-      !summary.trim() ||
-      !brand.trim() ||
       !category
     ) {
       this.props.displayError('All fields are required');
@@ -159,7 +154,7 @@ class AddMediaTab extends Component {
       return false;
     }
 
-    const categories = this.props.shared.toJS()
+    const categories = this.props.shared.toJS
       ? this.props.shared.toJS().categories
       : [];
 
@@ -284,7 +279,7 @@ class AddMediaTab extends Component {
                 value={this.state.product.description}
               />
             </KeyboardAvoidingView>
-            <KeyboardAvoidingView
+            {/* <KeyboardAvoidingView
               behavior="padding"
               keyboardVerticalOffset={64}
             >
@@ -302,7 +297,7 @@ class AddMediaTab extends Component {
                 }
                 value={this.state.product.summary}
               />
-            </KeyboardAvoidingView>
+            </KeyboardAvoidingView> */}
             <Text style={Styles.product_text}>Category:</Text>
             <View style={GStyles.dropDownSelection_input}>
               <Picker
@@ -317,6 +312,15 @@ class AddMediaTab extends Component {
                   this.state.selectedCategory
                     ? this.state.selectedCategory.name
                     : this.state.product.category
+                }
+              />
+            </View>
+            <View>
+              <CheckBox
+                label="Use last category"
+                checked={this.state.useLastCategory}
+                onChange={checked =>
+                  this.setState({useLastCategory: !this.state.useLastCategory})
                 }
               />
             </View>
@@ -381,7 +385,7 @@ class AddMediaTab extends Component {
                 value={this.state.product.quantity}
               />
             </KeyboardAvoidingView>
-            <KeyboardAvoidingView
+            {/* <KeyboardAvoidingView
               behavior="padding"
               keyboardVerticalOffset={64}
             >
@@ -419,7 +423,7 @@ class AddMediaTab extends Component {
                 }
                 value={this.state.product.sku}
               />
-            </KeyboardAvoidingView>
+            </KeyboardAvoidingView> */}
 
             <TouchableOpacity
               onPress={this.onNext}

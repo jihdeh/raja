@@ -32,6 +32,8 @@ export const FETCH_PROVINCE = 'FETCH_PROVINCE';
 export const FETCH_CITY = 'FETCH_CITY';
 export const FETCH_SUBDISTRICT = 'FETCH_SUBDISTRICT';
 
+export const FETCH_COURIERS = 'FETCH_COURIERS';
+
 export const FETCH_CART = 'FETCH_CART';
 export const ADD_TO_CART = 'ADD_TO_CART';
 export const BID_FOR_PRODUCT = 'BID_FOR_PRODUCT';

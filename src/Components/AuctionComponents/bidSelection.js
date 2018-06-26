@@ -13,6 +13,7 @@ import { Icon } from "native-base";
 import moment from "moment/moment";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import Picker from "react-native-picker-select";
+import MultiSelect from 'react-native-multiple-select';
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
@@ -22,6 +23,7 @@ import GStyles from "../../Styles/GeneralStyle";
 import Styles from "../../Styles/BidSelectionStyle";
 
 class BidSelection extends Component {
+
   state = {
     isDateTimePickerVisible: false,
     deliveryOptions: [
@@ -38,21 +40,23 @@ class BidSelection extends Component {
     ],
     product: {
       saleFormat: "fixed",
-      condition: "new",
-      salePrice: "0",
+      condition: "used",
+      salePrice: "",
       targetPrice: "0",
+      location: '',
       originalPrice: "0",
       auctionEnd: null,
       isBundle: false,
       showAuctionTarget: false,
       // onSale: false,
-      weight: "1",
+      weight: "",
       isActive: true,
-      inStock: true,
+      // inStock: true,
       courierDelivery: false,
 			selfDelivery: false,
     }
   };
+
 
   static navigationOptions = ({ navigation }) => {
     return {
@@ -87,7 +91,6 @@ class BidSelection extends Component {
   _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
 
   _handleDatePicked = date => {
-    console.log("A date has been picked: ", date);
     this.setState({
       product: { 
         ...this.state.product,
@@ -96,6 +99,25 @@ class BidSelection extends Component {
     });
     this._hideDateTimePicker();
   };
+
+  _handleCourierChange = (couriers) => {
+    if (couriers.length > 4) return;
+    this.setState({ 
+      couriers,
+      disableCourierSelect: couriers.length >= 4,
+      product: {
+        ...this.state.product, 
+        couriers: couriers.map(c => ({courierId: c.value, name: c.label})) // format for server
+      } 
+    });
+  }
+
+  _getLocation = () => {
+    if (!this.props.user) return '';
+
+    const location = this.props.user.userExtended.addresses.find(a => a.isDefault);
+    if (location && location.id !== state.product.location) return location.id
+  }
 
   validate() {
     const {
@@ -147,7 +169,6 @@ class BidSelection extends Component {
       targetPrice, auctionEnd, weight, deliveryMethod,
       isBundle, showAuctionTarget, courierDelivery
     } = this.state.product;
-    let onSale = this.state.product.onSale;
 
     return (
       <View style={[GStyles.container, Styles.container]}>
@@ -186,7 +207,7 @@ class BidSelection extends Component {
                 }
                 value={salePrice}
               />
-              <Text style={Styles.product_text}>Conditions:</Text>
+              {/* <Text style={Styles.product_text}>Conditions:</Text>
               <View style={Styles.checkSelections}>
                 <CheckBox
                   label="on sale"
@@ -212,8 +233,8 @@ class BidSelection extends Component {
                   })
                 }
               />
-              </View>
-              {onSale && (
+              </View> */}
+              {/* {onSale && (
                 <KeyboardAvoidingView>
                   <Text style={Styles.product_text}>
                     Enter Original Product Price(Rp):
@@ -230,7 +251,7 @@ class BidSelection extends Component {
                     value={originalPrice}
                   />
                 </KeyboardAvoidingView>
-              )}
+              )} */}
             </View>
           ) : (
             <View style={Styles.priceInput}>
@@ -302,17 +323,17 @@ class BidSelection extends Component {
             <Text style={Styles.product_text_header}>PRODUCT CONDITION</Text>
             <View style={Styles.checkSelections}>
               <CheckBox
-                label="New"
-                checked={condition === "new"}
-                onChange={checked =>
-                  this.onTypeChecked(checked, "new", "condition")
-                }
-              />
-              <CheckBox
                 label="Used"
                 checked={condition === "used"}
                 onChange={checked =>
                   this.onTypeChecked(checked, "used", "condition")
+                }
+              />
+              <CheckBox
+                label="New"
+                checked={condition === "new"}
+                onChange={checked =>
+                  this.onTypeChecked(checked, "new", "condition")
                 }
               />
               <CheckBox
@@ -366,18 +387,49 @@ class BidSelection extends Component {
               />
             </View>
             {
-              courierDelivery && 
+              courierDelivery && loadedCouriers && 
               <React.Fragment>
-                <Text style={Styles.product_text}>Delivery Method:</Text>
+                <Text style={Styles.product_text}>Courier:</Text>
                 <View style={GStyles.dropDownSelection_input}>
+                  {/*<MultiSelect
+                    hideTags
+                    items={loadedCouriers}
+                    uniqueKey="value"
+                    ref={(component) => { this.multiSelect = component }}
+                    onSelectedItemsChange={this._handleCourierChange}
+                    // selectedItems={selectedItems}
+                    selectText="Pick Couriers"
+                    searchInputPlaceholderText="Search Couriers..."
+                    // onChangeInput={ (text)=> console.log(text)}
+                    tagRemoveIconColor="#CCC"
+                    tagBorderColor="#CCC"
+                    tagTextColor="#CCC"
+                    selectedItemTextColor="#CCC"
+                    selectedItemIconColor="#CCC"
+                    itemTextColor="#000"
+                    displayKey="name"
+                    searchInputStyle={{ color: '#CCC' }}
+                    submitButtonColor="#CCC"
+                    submitButtonText="Submit"
+                  />*/}
                   <Picker
-                    items={this.state.deliveryOptions}
+                    items={loadedCouriers.map(c => ({...c, label: c.name, }))}
                     hideIcon
-                    onValueChange={(method, index) =>
-                      this.setState({ product: { 
-                        ...this.state.product, deliveryMethod: method 
-                      }})
-                    }
+                    onValueChange={(value) => {
+                      const courier = loadedCouriers.find(c => c.value === value);
+                     this.setState({ 
+                        product: {
+                          ...this.state.product, 
+                          couriers: courier ? [{courierId: courier.value, name: courier.name}]: [] // format for server
+                          // couriers: couriers.map(c => ({courierId: c.value, name: c.label})) // format for server
+                        } 
+                      }); 
+                    }}
+                    // onValueChange={(method, index) =>
+                      // this.setState({ product: { 
+                        // ...this.state.product, deliveryMethod: method 
+                      // }})
+                    // }
                     placeholder={{}}
                     value={deliveryMethod}
                   />
@@ -386,7 +438,7 @@ class BidSelection extends Component {
             }
           </View>
 
-          <View style={Styles.breakLine} />
+          {/* <View style={Styles.breakLine} />
             <Text style={Styles.product_text_header}>PRODUCT STATUS</Text>
             <View style={Styles.checkSelections}>
               <CheckBox
@@ -413,7 +465,30 @@ class BidSelection extends Component {
                   })
                 }
               />
-            </View>
+            </View> */}
+
+          <View style={Styles.breakLine} />
+          <Text style={Styles.product_text_header}>PRODUCT LOCATION</Text>
+          {(!this.props.user || !this.props.user.userExtended.addresses
+            || !this.props.user.userExtended.addresses.length) &&
+            <Text >You need to add an address on your profile before selling</Text>
+          }
+
+          <View style={GStyles.dropDownSelection_input}>
+            <Picker
+              items={this.props.user.userExtended.addresses.map(a => ({...a, label: a.address, value: a.id}))}
+              hideIcon
+              value={this._getLocation()}
+              onValueChange={(value) => {
+               this.setState({ 
+                  product: {
+                    ...this.state.product, 
+                    location: value
+                  } 
+                }); 
+              }}
+            />
+          </View>
 
           <View style={Styles.buttonActions}>
             <TouchableOpacity
@@ -428,8 +503,16 @@ class BidSelection extends Component {
     );
   }
 }
+
+
+const mapStateToProps = state => ({
+  location: state.get('location').toJS(),
+  user: state.get('auth').toJS()
+});
+
+
 const mapDispatchToProps = dispatch => ({
   displayError: bindActionCreators(displayError, dispatch)
 });
 
-export default connect(null, mapDispatchToProps)(BidSelection);
+export default connect(mapStateToProps, mapDispatchToProps)(BidSelection);

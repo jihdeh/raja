@@ -290,6 +290,7 @@ class ProductInfo extends Component {
               <View style={PStyles.productInfoMoreX}>
                 <Text>Delivery:</Text>
                 <Text>
+                  {console.log(item)}
                   {item.owner.location.cityName} to {getDefaultAddy.cityName}
                 </Text>
               </View>

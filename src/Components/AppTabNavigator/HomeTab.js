@@ -16,6 +16,7 @@ import {
   getFollowers,
   getFollowings
 } from '../../Actions/SharedAction';
+import { getCouriers } from '../../Actions/LocationAction';
 import { getProducts, getCartItem } from '../../Actions/ProductAction';
 
 import { Container, Content, Icon } from 'native-base';
@@ -62,12 +63,14 @@ class HomeTab extends Component {
     const {
       getCategories,
       getProducts,
+      getCouriers,
       getLoggedUserProfile,
       getFollowers,
       getFollowings,
       getCartItem
     } = this.props;
     getCategories();
+    getCouriers();
     const value =
       (await AsyncStorage.getItem('token')) || isAuthenticated.token;
     getProducts('onSale')
@@ -109,6 +112,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => {
   return {
     getCategories: bindActionCreators(getCategories, dispatch),
+    getCouriers: bindActionCreators(getCouriers, dispatch),
     getProducts: bindActionCreators(getProducts, dispatch),
     getFollowers: bindActionCreators(getFollowers, dispatch),
     getFollowings: bindActionCreators(getFollowings, dispatch),
