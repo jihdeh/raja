@@ -210,19 +210,22 @@ export const bidForProduct = (productId, amount) => dispatch => {
     });
 };
 
-export const checkout = data => dispatch => {
+export const checkout = data => async dispatch => {
   axios
     .post(`${BASE_URL}/checkout`, {
       ...data
     })
     .then(({ data }) => {
-      console.log(data);
       dispatch({
         type: CHECKOUT,
         payload: data
       });
+      boughtOrderHistory()(dispatch);
     })
     .catch(({ response }) => {
+      if (response.status === 503) {
+        return displayError('Server unvailable, please try later')(dispatch);
+      }
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
       } else {

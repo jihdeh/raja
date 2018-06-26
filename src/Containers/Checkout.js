@@ -5,7 +5,8 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
-  TextInput
+  TextInput,
+  InteractionManager
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -19,6 +20,14 @@ import Cost from '../Components/Checkout/Cost';
 import FStyles from '../Styles/CheckoutStyle';
 
 class Checkout extends Component {
+  toScreen = Screen => {
+    const { navigation } = this.props;
+
+    InteractionManager.runAfterInteractions(() => {
+      navigation.navigate(Screen);
+    });
+  };
+
   render() {
     const { product, user: { userExtended }, navigation } = this.props;
 
@@ -35,7 +44,7 @@ class Checkout extends Component {
               })}
         </View>
         <Details navigation={navigation} addresses={userExtended.addresses} />
-        <Cost />
+        <Cost navigation={navigation} toScreen={this.toScreen} />
       </ScrollView>
     );
   }

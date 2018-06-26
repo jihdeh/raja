@@ -25,7 +25,7 @@ class FirstRoute extends Component {
         <Text style={Styles.headerTimeTitle}>
           {moment(section.createdAt).format('MMMM Do YYYY, h:mm')}
         </Text>
-        <Text>Delivery To: {section.address.address}</Text>
+        <Text>Delivery To: {get(section, 'address.address')}</Text>
         <Text>Subtotal: RP {section.totalPrice}</Text>
       </View>
     );
@@ -86,7 +86,7 @@ class SecondRoute extends Component {
         <Text style={Styles.headerTimeTitle}>
           {moment(section.createdAt).format('MMMM Do YYYY, h:mm')}
         </Text>
-        <Text>Delivery To: {section.address.address}</Text>
+        <Text>Delivery To: {get(section, 'address.address')}</Text>
         <Text>Subtotal: RP {section.totalPrice}</Text>
       </View>
     );

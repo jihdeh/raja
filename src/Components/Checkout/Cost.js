@@ -71,18 +71,20 @@ const INTERNET_BANKING = [
 
 class Cost extends Component {
   state = {
-    paymentMethod: 'card',
+    paymentMethod: null,
     bankOption: null,
     isLoading: false
   };
 
   componentWillReceiveProps(nextProps) {
-    const { product: { checkout }, navigation } = nextProps;
+    const { product: { checkout }, navigation, toScreen } = nextProps;
     this.setState({
       isLoading: false
     });
-    console.log('anas');
-    navigation.navigate('OrderHistoryScreen');
+    console.log('anas', nextProps, this.props.product.checkout);
+    if (this.props.product.checkout !== checkout) {
+      toScreen('OrderHistoryScreen');
+    }
   }
 
   onSelect(index, value) {
@@ -100,6 +102,10 @@ class Cost extends Component {
 
   validate() {
     const { bankOption, paymentMethod } = this.state;
+    if (!paymentMethod) {
+      this.props.displayError('Please select payment method');
+      return false;
+    }
     if (
       (paymentMethod === 'bank' || paymentMethod === 'internet') &&
       !bankOption
