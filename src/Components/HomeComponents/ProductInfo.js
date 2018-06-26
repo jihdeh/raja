@@ -291,7 +291,8 @@ class ProductInfo extends Component {
                 <Text>Delivery:</Text>
                 <Text>
                   {console.log(item)}
-                  {item.owner.location.cityName} to {getDefaultAddy.cityName}
+                  {get(item, 'owner.location.cityName') || 'No Address'} to{' '}
+                  {get(getDefaultAddy, 'cityName') || 'No Delivery address'}
                 </Text>
               </View>
             </View>
