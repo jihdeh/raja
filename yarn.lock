@@ -3693,6 +3693,10 @@ react-native-modal@^5.4.0:
     prop-types "^15.6.1"
     react-native-animatable "^1.2.4"
 
+react-native-multiple-select@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/react-native-multiple-select/-/react-native-multiple-select-0.4.4.tgz#6deb41afa3fb4a73e34ffd6851e64f4c36f4a6df"
+
 react-native-picker-select@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/react-native-picker-select/-/react-native-picker-select-3.0.0.tgz#b03d28d4ff399105ac09ac41b54a1be006a4d001"
@@ -3710,6 +3714,10 @@ react-native-safe-module@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-native-safe-module/-/react-native-safe-module-1.2.0.tgz#a23824ca24edc2901913694a76646475113d570d"
   dependencies:
     dedent "^0.6.0"
+
+react-native-sectioned-multi-select@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-sectioned-multi-select/-/react-native-sectioned-multi-select-0.5.0.tgz#63e0be475c0e3b83f8a0805bb686ac25535e7480"
 
 react-native-snap-carousel@^3.7.0:
   version "3.7.0"
