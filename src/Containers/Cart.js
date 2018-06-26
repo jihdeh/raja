@@ -20,9 +20,6 @@ import Styles from '../Styles/BookmarkStyle';
 import CStyles from '../Styles/CartStyles';
 
 class Cart extends Component {
-  componentDidMount() {
-    // this.props.getCartItem();
-  }
   render() {
     const { navigation, product } = this.props;
 

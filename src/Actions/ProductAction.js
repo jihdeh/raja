@@ -13,7 +13,9 @@ import {
   FETCH_CART,
   ADD_TO_CART,
   BID_FOR_PRODUCT,
-  CHECKOUT
+  CHECKOUT,
+  FETCH_BOUGHT_ORDER_HISTORY,
+  FETCH_SOLD_ORDER_HISTORY
 } from '../Constants/ActionTypes';
 
 AsyncStorage.getItem('token').then(
@@ -122,6 +124,42 @@ export const getCartItem = token => dispatch => {
     .then(({ data }) => {
       dispatch({
         type: FETCH_CART,
+        payload: data
+      });
+    })
+    .catch(({ response }) => {
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
+export const boughtOrderHistory = () => async dispatch => {
+  axios
+    .get(`${BASE_URL}/orders`)
+    .then(({ data }) => {
+      dispatch({
+        type: FETCH_BOUGHT_ORDER_HISTORY,
+        payload: data
+      });
+    })
+    .catch(({ response }) => {
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
+export const soldOrderHistory = () => async dispatch => {
+  axios
+    .get(`${BASE_URL}/orders?tab=seller`)
+    .then(({ data }) => {
+      dispatch({
+        type: FETCH_SOLD_ORDER_HISTORY,
         payload: data
       });
     })

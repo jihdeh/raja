@@ -68,6 +68,8 @@ class UpdateAddress extends PureComponent {
         isDefault: false,
         isLoading: false
       });
+      console.log('3');
+      this.props.displayError('Successfully created');
       // this.props.navigation.navigate('AddressScreen');
       return;
     }

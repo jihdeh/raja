@@ -77,11 +77,12 @@ class Cost extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { product: { checkout } } = nextProps;
-    console.log(checkout);
+    const { product: { checkout }, navigation } = nextProps;
     this.setState({
       isLoading: false
     });
+    console.log('anas');
+    navigation.navigate('OrderHistoryScreen');
   }
 
   onSelect(index, value) {
@@ -123,7 +124,6 @@ class Cost extends Component {
       internetBankName,
       paymentMethod
     };
-    console.log(obj);
     this.setState({
       isLoading: true
     });
