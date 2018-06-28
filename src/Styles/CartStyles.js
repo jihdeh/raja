@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   detailLabel: {
     color: 'rgba(0,0,0,.2)',
     fontSize: 13,
-    marginTop: 10,
+    marginTop: 6,
     fontWeight: 'bold'
   },
   top: {
