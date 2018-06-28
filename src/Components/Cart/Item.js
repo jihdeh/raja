@@ -35,7 +35,13 @@ class Item extends Component {
         <View style={CStyles.detailCont}>
           <View style={CStyles.topDetail}>
             <View style={CStyles.topCont}>
-              <Text style={CStyles.top}>{cartItem.name}</Text>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode={'tail'}
+                style={CStyles.top}
+              >
+                {cartItem.name}
+              </Text>
               <Text style={CStyles.top}> Rp {cartItem.price}</Text>
             </View>
             <View>
