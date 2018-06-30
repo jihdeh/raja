@@ -100,21 +100,12 @@ class AddMediaTab extends Component {
   }
 
   validate() {
-    const {
-      images,
-      name,
-      description,
-      category,
-    } = this.state.product;
+    const { images, name, description, category } = this.state.product;
     if (!images.length) {
       this.props.displayError('Please upload images');
       return false;
     }
-    if (
-      !name.trim() ||
-      !description.trim() ||
-      !category
-    ) {
+    if (!name.trim() || !description.trim() || !category) {
       this.props.displayError('All fields are required');
       return false;
     }
@@ -208,77 +199,69 @@ class AddMediaTab extends Component {
       : null;
 
     return (
-      <View>
-        <View style={GStyles.hotListHeader}>
-          <Text>Sell Product</Text>
-          <TouchableOpacity
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'flex-end'
-            }}
-            onPress={() => this.setState({ imageBrowserOpen: true })}
-          >
-            <Icon name="ios-add-circle-outline" style={{ fontSize: 20 }} />
-            <Text>Add Image</Text>
-          </TouchableOpacity>
-        </View>
-        <ScrollView
-          contentContainerStyle={{
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
+      <ScrollView
+        contentContainerStyle={{
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
+          <View style={GStyles.hotListHeader}>
+            <Text>Sell Product</Text>
+            <TouchableOpacity
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'flex-end'
+              }}
+              onPress={() => this.setState({ imageBrowserOpen: true })}
+            >
+              <Icon name="ios-add-circle-outline" style={{ fontSize: 20 }} />
+              <Text>Add Image</Text>
+            </TouchableOpacity>
+          </View>
           <View style={Styles.imageContainer}>
             {this.state.product.images.map((item, i) =>
               this.renderImage(item, i)
             )}
           </View>
           <View style={Styles.afterLayer}>
-            <KeyboardAvoidingView
-              behavior="padding"
-              keyboardVerticalOffset={64}
-            >
-              <Text style={Styles.product_text}>Product Name:</Text>
-              <TextInput
-                style={GStyles.input}
-                underlineColorAndroid="transparent"
-                placeholder="Name of product"
-                placeholderTextColor="rgba(45, 45, 45, 0.3)"
-                returnKeyType="next"
-                onSubmitEditing={() => this.description.focus()}
-                keyboardType="default"
-                autoCapitalize={'none'}
-                onChangeText={name =>
-                  this.setState({
-                    product: { ...this.state.product, name }
-                  })
-                }
-                value={this.state.product.name}
-                autoCorrect={false}
-              />
-            </KeyboardAvoidingView>
-            <KeyboardAvoidingView
-              behavior="padding"
-              keyboardVerticalOffset={64}
-            >
-              <Text style={Styles.product_text}>Description:</Text>
-              <TextInput
-                style={[GStyles.input, Styles.description]}
-                underlineColorAndroid="transparent"
-                placeholder="Description of product"
-                multiline={true}
-                placeholderTextColor="rgba(45, 45, 45, 0.3)"
-                ref={input => {
-                  this.description = input;
-                }}
-                onChangeText={description =>
-                  this.setState({
-                    product: { ...this.state.product, description }
-                  })
-                }
-                value={this.state.product.description}
-              />
-            </KeyboardAvoidingView>
+            <Text style={Styles.product_text}>Product Name:</Text>
+            <TextInput
+              style={GStyles.input}
+              underlineColorAndroid="transparent"
+              placeholder="Name of product"
+              placeholderTextColor="rgba(45, 45, 45, 0.3)"
+              returnKeyType="next"
+              onSubmitEditing={() => this.description.focus()}
+              keyboardType="default"
+              autoCapitalize={'none'}
+              onChangeText={name =>
+                this.setState({
+                  product: { ...this.state.product, name }
+                })
+              }
+              value={this.state.product.name}
+              autoCorrect={false}
+            />
+
+            <Text style={Styles.product_text}>Description:</Text>
+            <TextInput
+              style={[GStyles.input, Styles.description]}
+              underlineColorAndroid="transparent"
+              placeholder="Description of product"
+              multiline={true}
+              placeholderTextColor="rgba(45, 45, 45, 0.3)"
+              ref={input => {
+                this.description = input;
+              }}
+              onChangeText={description =>
+                this.setState({
+                  product: { ...this.state.product, description }
+                })
+              }
+              value={this.state.product.description}
+            />
+
             {/* <KeyboardAvoidingView
               behavior="padding"
               keyboardVerticalOffset={64}
@@ -320,7 +303,9 @@ class AddMediaTab extends Component {
                 label="Use last category"
                 checked={this.state.useLastCategory}
                 onChange={checked =>
-                  this.setState({useLastCategory: !this.state.useLastCategory})
+                  this.setState({
+                    useLastCategory: !this.state.useLastCategory
+                  })
                 }
               />
             </View>
@@ -365,26 +350,20 @@ class AddMediaTab extends Component {
                   </View>
                 </React.Fragment>
               )}
-
-            <KeyboardAvoidingView
-              behavior="padding"
-              keyboardVerticalOffset={64}
-            >
-              <Text style={Styles.product_text}>Quantity:</Text>
-              <TextInput
-                style={GStyles.input}
-                underlineColorAndroid="transparent"
-                placeholder="Quantity"
-                keyboardType="numeric"
-                placeholderTextColor="rgba(45, 45, 45, 0.3)"
-                onChangeText={quantity =>
-                  this.setState({
-                    product: { ...this.state.product, quantity }
-                  })
-                }
-                value={this.state.product.quantity}
-              />
-            </KeyboardAvoidingView>
+            <Text style={Styles.product_text}>Quantity:</Text>
+            <TextInput
+              style={GStyles.input}
+              underlineColorAndroid="transparent"
+              placeholder="Quantity"
+              keyboardType="numeric"
+              placeholderTextColor="rgba(45, 45, 45, 0.3)"
+              onChangeText={quantity =>
+                this.setState({
+                  product: { ...this.state.product, quantity }
+                })
+              }
+              value={this.state.product.quantity}
+            />
             {/* <KeyboardAvoidingView
               behavior="padding"
               keyboardVerticalOffset={64}
@@ -432,9 +411,8 @@ class AddMediaTab extends Component {
               <Text style={GStyles.buttonText}>NEXT</Text>
             </TouchableOpacity>
           </View>
-          <View style={{ marginBottom: 40 }} />
-        </ScrollView>
-      </View>
+        </KeyboardAvoidingView>
+      </ScrollView>
     );
   }
 }

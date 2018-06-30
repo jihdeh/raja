@@ -81,7 +81,6 @@ class Cost extends Component {
     this.setState({
       isLoading: false
     });
-    console.log('anas', nextProps, this.props.product.checkout);
     if (this.props.product.checkout !== checkout) {
       toScreen('OrderHistoryScreen');
     }
@@ -142,7 +141,6 @@ class Cost extends Component {
     this.setState({
       isLoading: true
     });
-    console.log(obj);
     this.props.pay(obj);
   }
 
