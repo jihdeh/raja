@@ -42,7 +42,7 @@ class Item extends Component {
               >
                 {cartItem.name}
               </Text>
-              <Text style={CStyles.top}> Rp {cartItem.price}</Text>
+              <Text style={CStyles.top}> Rp {Math.round(cartItem.price)}</Text>
             </View>
             <View>
               <TouchableOpacity style={CStyles.cancel}>

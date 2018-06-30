@@ -1,5 +1,5 @@
-import { StyleSheet, Dimensions } from "react-native";
-const width = Dimensions.get("window").width;
+import { StyleSheet, Dimensions } from 'react-native';
+const width = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
   listsContainer: {
@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
 
   saleTitle: {
     width: 150,
-    fontWeight: "bold"
+    fontWeight: 'bold'
   },
 
   saleAmount: {
@@ -23,9 +23,9 @@ const styles = StyleSheet.create({
   },
 
   hotListHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    borderBottomColor: "#d6d7d8",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomColor: '#d6d7d8',
     borderBottomWidth: 1,
     paddingBottom: 5,
     marginLeft: 10,
@@ -38,19 +38,19 @@ const styles = StyleSheet.create({
   noAvailableText: {
     margin: 10,
     padding: 10,
-    textAlign: "center"
+    textAlign: 'center'
   },
 
   userFeedContainer: {
     width: width / 2 - 15,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: '#FFFFFF',
     marginLeft: 10,
     borderRadius: 10,
     marginBottom: 20
   },
 
   profileContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginVertical: 3,
     marginLeft: 8,
     marginTop: 8,
@@ -58,29 +58,29 @@ const styles = StyleSheet.create({
   },
 
   profileImage: {
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     width: 30,
     height: 30,
     borderWidth: 1,
-    borderColor: "rgba(0,0,0,0.2)",
+    borderColor: 'rgba(0,0,0,0.2)',
     borderRadius: 15
   },
 
   textWrapper: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center"
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 
   profileName: {
     marginHorizontal: 1,
-    textAlign: "center",
+    textAlign: 'center',
     paddingLeft: 10
   },
 
   itemForSaleImage: {
     marginTop: 8,
-    width: "100%",
+    width: '100%',
     height: 180,
     borderRadius: 5
   }

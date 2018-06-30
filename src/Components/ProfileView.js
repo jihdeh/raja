@@ -59,7 +59,14 @@ class ProfileView extends Component {
               style={HStyles.itemForSaleImage}
               source={{ uri: get(item, 'images[0].url') }}
             />
-            <Text style={HStyles.saleTitle}>{item.name.toUpperCase()}</Text>
+
+            <Text
+              style={HStyles.saleTitle}
+              numberOfLines={1}
+              ellipsizeMode={'tail'}
+            >
+              {item.name}
+            </Text>
             {item.saleFormat !== 'auction' && (
               <Text style={Styles.saleAmount}>{item.salePrice}</Text>
             )}

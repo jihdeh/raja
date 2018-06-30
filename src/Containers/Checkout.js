@@ -44,7 +44,11 @@ class Checkout extends Component {
               })}
         </View>
         <Details navigation={navigation} addresses={userExtended.addresses} />
-        <Cost navigation={navigation} toScreen={this.toScreen} />
+        <Cost
+          navigation={navigation}
+          addresses={userExtended.addresses}
+          toScreen={this.toScreen}
+        />
       </ScrollView>
     );
   }

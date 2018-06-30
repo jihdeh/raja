@@ -153,18 +153,19 @@ class ProductInfo extends Component {
     const {
       navigation,
       product,
-      user: { userExtended: { addresses } }
+      user: { userExtended: { id, addresses } }
     } = this.props;
     const { isBookmarked } = this.state;
     const { state } = navigation;
     const { params } = state;
     const { item } = params;
+
     const isInCart =
       get(product, 'getCart') &&
       get(product, 'getCart.items').find(p => p.id === item.id);
     const getDefaultAddy =
       addresses.length && addresses.find(addy => addy.isDefault);
-
+    console.log(item);
     return (
       <ScrollView style={{ flex: 1 }}>
         <View style={Styles.profileContainer}>
@@ -183,19 +184,21 @@ class ProductInfo extends Component {
                 {item.meta.averageRating}% rating
               </Text>
             </View>
-            {this.state.isFollowing ? (
-              <TouchableHighlight
-                onPress={() => this._unFollowUser(item.owner.id)}
-              >
-                <Text style={PStyles.followBtn}>Unfollow</Text>
-              </TouchableHighlight>
-            ) : (
-              <TouchableHighlight
-                onPress={() => this._followUser(item.owner.id)}
-              >
-                <Text style={PStyles.followBtn}>Follow</Text>
-              </TouchableHighlight>
-            )}
+            {item.owner.id !== id ? (
+              this.state.isFollowing ? (
+                <TouchableHighlight
+                  onPress={() => this._unFollowUser(item.owner.id)}
+                >
+                  <Text style={PStyles.followBtn}>Unfollow</Text>
+                </TouchableHighlight>
+              ) : (
+                <TouchableHighlight
+                  onPress={() => this._followUser(item.owner.id)}
+                >
+                  <Text style={PStyles.followBtn}>Follow</Text>
+                </TouchableHighlight>
+              )
+            ) : null}
           </View>
         </View>
         <View
@@ -290,7 +293,6 @@ class ProductInfo extends Component {
               <View style={PStyles.productInfoMoreX}>
                 <Text>Delivery:</Text>
                 <Text>
-                  {console.log(item)}
                   {get(item, 'owner.location.cityName') || 'No Address'} to{' '}
                   {get(getDefaultAddy, 'cityName') || 'No Delivery address'}
                 </Text>

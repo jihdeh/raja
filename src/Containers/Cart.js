@@ -64,8 +64,8 @@ class Cart extends Component {
                   </Text>
                   <Text style={CStyles.btnTitleTxtTwo}>
                     Rp{' '}
-                    {get(product, 'addToCart.totalPrice') ||
-                      get(product, 'getCart.totalPrice')}
+                    {Math.round(get(product, 'addToCart.totalPrice')) ||
+                      Math.round(get(product, 'getCart.totalPrice'))}
                   </Text>
                 </View>
                 <TouchableOpacity

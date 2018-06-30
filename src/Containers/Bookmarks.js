@@ -33,12 +33,9 @@ class Bookmark extends Component {
     return (
       <ScrollView style={{ flex: 1 }}>
         {get(shared, 'bookmark') &&
-          shared.bookmark.map((item, key) => {
+          shared.bookmark.items.map((item, key) => {
             return (
-              <TouchableOpacity
-                key={key}
-                onPress={() => navigation.navigate('ProductInfo', { item })}
-              >
+              <TouchableOpacity key={key}>
                 <View style={Styles.section}>
                   <View>
                     <Image

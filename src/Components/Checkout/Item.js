@@ -17,7 +17,9 @@ const Item = ({ cartItem }) => (
         <Image source={{ uri: cartItem.image }} style={FStyles.imageItem} />
       </View>
       <View style={FStyles.detailCont}>
-        <Text style={FStyles.toplbl}>{cartItem.name}</Text>
+        <Text style={FStyles.toplbl} numberOfLines={1} ellipsizeMode={'tail'}>
+          {cartItem.name}
+        </Text>
         <Text style={FStyles.lbl}>{cartItem.sellerName}</Text>
         <View style={FStyles.lblCont}>
           <Text style={FStyles.lbl}>Quantity {cartItem.quantity}</Text>

@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   StyleSheet,
   Button,
@@ -8,19 +8,19 @@ import {
   View,
   TextInput,
   TouchableOpacity
-} from "react-native";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { createAccount } from "../Actions/AuthAction";
-import { displayError } from "../Actions/ErrorAction";
-import Styles from "../Styles/SignUpStyle";
+} from 'react-native';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { createAccount } from '../Actions/AuthAction';
+import { displayError } from '../Actions/ErrorAction';
+import Styles from '../Styles/SignUpStyle';
 
 class SignUp extends Component {
   state = {
-    passwordInput: "",
-    usernameInput: "",
-    confirmPasswordInput: "",
-    emailInput: "",
+    passwordInput: '',
+    usernameInput: '',
+    confirmPasswordInput: '',
+    emailInput: '',
     loading: false
   };
 
@@ -30,7 +30,7 @@ class SignUp extends Component {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
             style={Styles.icon}
-            source={require("../../assets/backArrow.png")}
+            source={require('../../assets/backArrow.png')}
           />
         </TouchableOpacity>
       )
@@ -68,16 +68,16 @@ class SignUp extends Component {
     const isEmailValid = this.validateEmail(emailInput);
 
     if (!emailInput || !usernameInput) {
-      this.props.displayError("Email and Username please.");
+      this.props.displayError('Email and Username please.');
       return;
     } else if (!isEmailValid) {
-      this.props.displayError("Email address should be valid.");
+      this.props.displayError('Email address should be valid.');
       return false;
     } else if (passwordInput !== confirmPasswordInput) {
-      this.props.displayError("Passwords do not match!");
+      this.props.displayError('Passwords do not match!');
       return false;
     } else if (noWhiteSpaceUsername) {
-      this.props.displayError("No spaces allowed in username");
+      this.props.displayError('No spaces allowed in username');
       return false;
     }
 
@@ -99,14 +99,14 @@ class SignUp extends Component {
     const userData = {
       email: emailInput.trim(),
       password: passwordInput.trim(),
-      username: usernameInput.replace(/\s+/g, ""),
+      username: usernameInput.replace(/\s+/g, ''),
       passwordConfirm: confirmPasswordInput.trim()
     };
 
     this.setState({
       loading: true
     });
-    this.props.onSignUp(userData);
+    this.props.onSignUp(userData, navigation.navigate);
   };
 
   render() {
@@ -179,7 +179,7 @@ class SignUp extends Component {
 }
 
 const mapStateToProps = state => ({
-  errorMessage: state.get("errorMessage")
+  errorMessage: state.get('errorMessage')
 });
 
 const mapDispatchToProps = dispatch => {

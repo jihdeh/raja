@@ -12,7 +12,7 @@ import FStyles from '../../Styles/CheckoutStyle';
 const Details = ({ addresses, navigation }) => {
   const getDefaultAddy =
     addresses.length && addresses.find(addy => addy.isDefault);
-  console.log('qw-qw', getDefaultAddy, '2323', addresses);
+
   return (
     <View style={FStyles.contOne}>
       {addresses.length && getDefaultAddy ? (

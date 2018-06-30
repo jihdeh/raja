@@ -102,6 +102,15 @@ class Cost extends Component {
 
   validate() {
     const { bankOption, paymentMethod } = this.state;
+    const { addresses } = this.props;
+    const getDefaultAddy =
+      addresses.length && addresses.find(addy => addy.isDefault);
+
+    if (!getDefaultAddy || !addresses.length) {
+      this.props.displayError('Please add a default delivery address');
+      return false;
+    }
+
     if (!paymentMethod) {
       this.props.displayError('Please select payment method');
       return false;
@@ -133,6 +142,7 @@ class Cost extends Component {
     this.setState({
       isLoading: true
     });
+    console.log(obj);
     this.props.pay(obj);
   }
 
@@ -193,7 +203,9 @@ class Cost extends Component {
           <View style={FStyles.lowCont}>
             <Text style={FStyles.noEmph}>Subtotal</Text>
             <Text style={FStyles.noEmph}>
-              Rp {get(addToCart, 'totalPrice') || get(getCart, 'totalPrice')}
+              Rp{' '}
+              {Math.round(get(addToCart, 'totalPrice')) ||
+                Math.round(get(getCart, 'totalPrice'))}
             </Text>
           </View>
           <View style={FStyles.lowCont}>
@@ -203,7 +215,9 @@ class Cost extends Component {
           <View style={FStyles.lowCont}>
             <Text style={FStyles.emph}>Total</Text>
             <Text style={FStyles.mEmph}>
-              Rp {get(addToCart, 'totalPrice') || get(getCart, 'totalPrice')}
+              Rp{' '}
+              {Math.round(get(addToCart, 'totalPrice')) ||
+                Math.round(get(getCart, 'totalPrice'))}
             </Text>
           </View>
           {!isLoading ? (

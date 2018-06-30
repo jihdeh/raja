@@ -33,7 +33,11 @@ export const login = ({ email, password }, navigate) => dispatch => {
     })
     .catch(error => {
       const { data } = error.response;
-      displayError(data.message)(dispatch);
+      if (data.errors) {
+        displayError(errorHandler(data.errors))(dispatch);
+      } else {
+        displayError(data.message)(dispatch);
+      }
     });
 };
 
@@ -60,7 +64,7 @@ export const facebookLogin = (access_token, navigate) => dispatch => {
     });
 };
 
-export const createAccount = accountDetails => async dispatch => {
+export const createAccount = (accountDetails, navigate) => async dispatch => {
   axios
     .post(`${BASE_URL}/auth/register`, accountDetails)
     .then(async ({ data }) => {
@@ -70,11 +74,15 @@ export const createAccount = accountDetails => async dispatch => {
       });
     })
     .then(async () => {
-      await login(accountDetails)(dispatch);
+      await login(accountDetails, navigate)(dispatch);
     })
     .catch(error => {
       const { data } = error.response;
-      displayError(errorHandler(data.errors))(dispatch);
+      if (data.errors) {
+        displayError(errorHandler(data.errors))(dispatch);
+      } else {
+        displayError(data.message)(dispatch);
+      }
     });
 };
 
