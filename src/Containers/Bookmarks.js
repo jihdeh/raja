@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  AsyncStorage
+} from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import get from 'lodash/get';
@@ -15,9 +22,12 @@ class Bookmark extends Component {
     this.state = { loading: true };
   }
 
-  async componentWillMount() {
-    const { getBookmarks } = this.props;
-    await getBookmarks();
+  async componentDidMount() {
+    const { getBookmarks, auth } = this.props;
+    const { user: isAuthenticated } = auth;
+    const value =
+      (await AsyncStorage.getItem('token')) || isAuthenticated.token;
+    await getBookmarks(value);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -65,7 +75,8 @@ class Bookmark extends Component {
 }
 
 const mapStateToProps = state => ({
-  shared: state.get('shared').toJS()
+  shared: state.get('shared').toJS(),
+  auth: state.get('auth').toJS()
 });
 
 const mapDispatchToProps = dispatch => {

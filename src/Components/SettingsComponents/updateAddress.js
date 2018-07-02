@@ -5,7 +5,8 @@ import {
   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage
 } from 'react-native';
 import CheckBox from 'react-native-checkbox';
 import Picker from 'react-native-picker-select';
@@ -122,7 +123,11 @@ class UpdateAddress extends PureComponent {
     });
   }
 
-  onSubmit = () => {
+  onSubmit = async () => {
+    const { user } = this.props;
+    const { user: isAuthenticated } = auth;
+    const token =
+      (await AsyncStorage.getItem('token')) || isAuthenticated.token;
     const {
       firstName,
       lastName,
@@ -163,7 +168,7 @@ class UpdateAddress extends PureComponent {
     this.setState({
       isLoading: true
     });
-    this.props.updateProfile({ address });
+    this.props.updateProfile({ address }, token);
   };
 
   render() {
