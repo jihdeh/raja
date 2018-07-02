@@ -35,7 +35,10 @@ class Bookmark extends Component {
         {get(shared, 'bookmark') &&
           shared.bookmark.items.map((item, key) => {
             return (
-              <TouchableOpacity key={key}>
+              <TouchableOpacity
+                key={key}
+                onPress={() => navigation.navigate('ProductInfo', { item })}
+              >
                 <View style={Styles.section}>
                   <View>
                     <Image

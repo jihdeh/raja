@@ -56,6 +56,7 @@ class ProfileView extends Component {
         >
           <View style={HStyles.listsContainer}>
             <Image
+              resizeMethod="resize"
               style={HStyles.itemForSaleImage}
               source={{ uri: get(item, 'images[0].url') }}
             />

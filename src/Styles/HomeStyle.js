@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   hotListHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderBottomColor: 'green',
+    borderBottomColor: '#d6d7d8',
     borderBottomWidth: 1,
     paddingBottom: 5,
     marginLeft: 10,
