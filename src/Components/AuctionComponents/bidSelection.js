@@ -116,7 +116,7 @@ class BidSelection extends Component {
     const location = this.props.user.userExtended.addresses.find(
       a => a.isDefault
     );
-    if (location && location.id !== state.product.location) return location.id;
+    if (location && location.id !== this.state.product.location) return location.id;
   };
 
   validate() {
