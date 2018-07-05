@@ -11,7 +11,8 @@ import {
   BID_FOR_PRODUCT,
   CHECKOUT,
   FETCH_BOUGHT_ORDER_HISTORY,
-  FETCH_SOLD_ORDER_HISTORY
+  FETCH_SOLD_ORDER_HISTORY,
+  FETCH_SHIPPING_COST
 } from '../Constants/ActionTypes';
 import { set } from '../utils/functional-immutable';
 
@@ -43,6 +44,8 @@ const ProductReducer = (state = initialState, { type, payload }) => {
       return set('boughtOrderHistory', payload, state);
     case FETCH_SOLD_ORDER_HISTORY:
       return set('soldOrderHistory', payload, state);
+    case FETCH_SHIPPING_COST:
+      return set('shippingCost', payload, state);
     default:
       return state;
   }

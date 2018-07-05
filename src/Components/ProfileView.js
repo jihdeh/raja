@@ -93,7 +93,8 @@ class ProfileView extends Component {
       hotListsItems,
       address,
       username,
-      followers
+      followers,
+      user: { userExtended }
     } = this.props;
     const { productSearchResult } = this.state;
 
@@ -110,12 +111,18 @@ class ProfileView extends Component {
                 <Text>Listings</Text>
               </View>
 
-              <View style={Styles.profileInfo}>
+              <TouchableOpacity
+                onPress={() =>
+                  userExtended.username === username &&
+                  navigation.navigate('FollowersScreen')
+                }
+                style={Styles.profileInfo}
+              >
                 <Text style={Styles.profileInfoCount}>
                   {(followers && followers.length) || 0}
                 </Text>
                 <Text>Followers</Text>
-              </View>
+              </TouchableOpacity>
               <View style={Styles.profileInfo}>
                 <Text style={Styles.profileInfoCount}>100%</Text>
                 <Text>Rating</Text>

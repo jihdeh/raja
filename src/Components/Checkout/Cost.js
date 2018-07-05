@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 import get from 'lodash/get';
 
 import { displayError } from '../../Actions/ErrorAction';
-import { checkout } from '../../Actions/ProductAction';
+import { checkout, getShippingCost } from '../../Actions/ProductAction';
 
 import GStyles from '../../Styles/GeneralStyle';
 import FStyles from '../../Styles/CheckoutStyle';
@@ -84,6 +84,13 @@ class Cost extends Component {
     if (this.props.product.checkout !== checkout) {
       toScreen('OrderHistoryScreen');
     }
+  }
+
+  componentDidMount() {
+    const { addresses, getShippingCost } = this.props;
+    const getDefaultAddy =
+      addresses.length && addresses.find(addy => addy.isDefault);
+    getShippingCost(getDefaultAddy.id);
   }
 
   onSelect(index, value) {
@@ -241,7 +248,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   displayError: bindActionCreators(displayError, dispatch),
-  pay: bindActionCreators(checkout, dispatch)
+  pay: bindActionCreators(checkout, dispatch),
+  getShippingCost: bindActionCreators(getShippingCost, dispatch)
+  // getShippingCost:
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cost);

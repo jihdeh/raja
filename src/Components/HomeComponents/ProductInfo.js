@@ -180,7 +180,7 @@ class ProductInfo extends Component {
       get(product, 'getCart.items').find(p => p.id === item.id);
     const getDefaultAddy =
       addresses.length && addresses.find(addy => addy.isDefault);
-    console.log(item);
+
     return (
       <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="always">
         <View style={Styles.profileContainer}>

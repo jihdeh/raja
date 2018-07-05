@@ -15,7 +15,8 @@ import {
   BID_FOR_PRODUCT,
   CHECKOUT,
   FETCH_BOUGHT_ORDER_HISTORY,
-  FETCH_SOLD_ORDER_HISTORY
+  FETCH_SOLD_ORDER_HISTORY,
+  FETCH_SHIPPING_COST
 } from '../Constants/ActionTypes';
 
 AsyncStorage.getItem('token').then(
@@ -159,6 +160,27 @@ export const boughtOrderHistory = () => async dispatch => {
     });
 };
 
+export const getShippingCost = addressId => async dispatch => {
+  console.log(addressId);
+  axios
+    .get(`${BASE_URL}/checkout?location=${addressId}`)
+    .then(({ data }) => {
+      console.log(data);
+      dispatch({
+        type: FETCH_SHIPPING_COST,
+        payload: data
+      });
+    })
+    .catch(({ response }) => {
+      console.log(response);
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
 export const soldOrderHistory = () => async dispatch => {
   axios
     .get(`${BASE_URL}/orders?tab=seller`)
@@ -179,7 +201,10 @@ export const soldOrderHistory = () => async dispatch => {
 
 export const addToCart = (cartId, { id: productId }, quantity) => dispatch => {
   axios
-    .put(`${BASE_URL}/cart/${cartId}/update`, { product: productId, quantity })
+    .put(`${BASE_URL}/cart/${cartId}/update`, {
+      product: productId,
+      quantity
+    })
     .then(({ data }) => {
       dispatch({
         type: ADD_TO_CART,
@@ -207,8 +232,6 @@ export const bidForProduct = (productId, amount) => dispatch => {
       });
     })
     .catch(({ response }) => {
-      console.log(response);
-
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
       } else {
