@@ -27,7 +27,11 @@ import {
   successHandler,
   getFollowings
 } from '../../Actions/SharedAction';
-import { getCartItem, addToCart } from '../../Actions/ProductAction';
+import {
+  getCartItem,
+  addToCart,
+  bidForProduct
+} from '../../Actions/ProductAction';
 import SliderEntry from '../../Components/SliderEntry';
 
 import { sliderWidth, itemWidth } from '../../Styles/SliderEntry.style';
@@ -124,6 +128,17 @@ class ProductInfo extends Component {
     navigation.navigate('CartScreen');
   }
 
+  _bidProduct(selectedItem) {
+    //trigger buy
+    const { navigation, bidForProduct } = this.props;
+    const { state } = navigation;
+    const { params } = state;
+    const { item } = params;
+    const { bidPrice } = this.state;
+    console.log(bidPrice);
+    bidForProduct(item.id, +bidPrice);
+  }
+
   _followUser(id) {
     this.setState({
       isLoading: true,
@@ -167,7 +182,7 @@ class ProductInfo extends Component {
       addresses.length && addresses.find(addy => addy.isDefault);
     console.log(item);
     return (
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="always">
         <View style={Styles.profileContainer}>
           <TouchableHighlight style={Styles.imageContainer}>
             <Image
@@ -250,20 +265,24 @@ class ProductInfo extends Component {
               </TouchableOpacity>
             )}
           </View>
-          {item.onSale ? (
-            <Text>
-              Price "On SALE": Rp{item.salePrice}{' '}
-              <Text
-                style={{
-                  textDecorationLine: 'line-through',
-                  textDecorationStyle: 'solid'
-                }}
-              >
-                Rp{item.originalPrice}
+          {!item.auction ? (
+            item.onSale ? (
+              <Text>
+                Price "On SALE": Rp{item.salePrice}{' '}
+                <Text
+                  style={{
+                    textDecorationLine: 'line-through',
+                    textDecorationStyle: 'solid'
+                  }}
+                >
+                  Rp{item.originalPrice}
+                </Text>
               </Text>
-            </Text>
+            ) : (
+              <Text>Price : Rp{item.salePrice}</Text>
+            )
           ) : (
-            <Text>Price : Rp{item.salePrice}</Text>
+            <Text>Current Bid : Rp{item.currentBidPrice || 0}</Text>
           )}
 
           <View style={PStyles.hr} />
@@ -299,7 +318,7 @@ class ProductInfo extends Component {
               </View>
             </View>
           </View>
-          {!item.auction && (
+          {!item.auction ? (
             <TouchableOpacity
               onPress={() => this._buyProduct(item)}
               style={[Styles.btn, GStyles.buttonContainer]}
@@ -308,6 +327,25 @@ class ProductInfo extends Component {
                 {isInCart ? 'UPDATE CART' : 'ADD TO CART'}
               </Text>
             </TouchableOpacity>
+          ) : (
+            <View>
+              <Text style={{ color: 'red' }}>Minimum of Rp10,000</Text>
+              <TextInput
+                keyboardType="numeric"
+                placeholder="Enter Bid"
+                clearTextOnFocus
+                enablesReturnKeyAutomatically
+                style={PStyles.commentInput}
+                onChangeText={bidPrice => this.setState({ bidPrice })}
+                value={this.state.bidPrice}
+              />
+              <TouchableOpacity
+                onPress={() => this._bidProduct(item)}
+                style={[Styles.btn, GStyles.buttonContainer]}
+              >
+                <Text style={GStyles.buttonText}>BID</Text>
+              </TouchableOpacity>
+            </View>
           )}
           <View style={{ marginTop: 20 }}>
             <Text>Comments</Text>
@@ -345,7 +383,8 @@ const mapDispatchToProps = dispatch => ({
   addToCart: bindActionCreators(addToCart, dispatch),
   successHandler: bindActionCreators(successHandler, dispatch),
   bookmarkProduct: bindActionCreators(bookmarkProduct, dispatch),
-  unBookmarkProduct: bindActionCreators(unBookmarkProduct, dispatch)
+  unBookmarkProduct: bindActionCreators(unBookmarkProduct, dispatch),
+  bidForProduct: bindActionCreators(bidForProduct, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductInfo);

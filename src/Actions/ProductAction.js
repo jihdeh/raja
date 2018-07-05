@@ -33,9 +33,9 @@ export const createProduct = (product, token) => async dispatch => {
     const item = product[key];
     if (key !== 'images') {
       if (Array.isArray(item)) {
-        form.append(key, JSON.stringify(item))
+        form.append(key, JSON.stringify(item));
       } else {
-        form.append(key, item)
+        form.append(key, item);
       }
     }
   });
@@ -207,6 +207,8 @@ export const bidForProduct = (productId, amount) => dispatch => {
       });
     })
     .catch(({ response }) => {
+      console.log(response);
+
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
       } else {
