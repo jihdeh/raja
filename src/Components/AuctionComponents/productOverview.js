@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -6,28 +6,36 @@ import {
   TouchableOpacity,
   ScrollView,
   AsyncStorage
-} from "react-native";
-import moment from "moment/moment";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { createProduct } from "../../Actions/ProductAction";
-import Styles from "../../Styles/ProductOverview";
-import GStyles from "../../Styles/GeneralStyle";
+} from 'react-native';
+import moment from 'moment/moment';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { createProduct } from '../../Actions/ProductAction';
+import Styles from '../../Styles/ProductOverview';
+import GStyles from '../../Styles/GeneralStyle';
 
 class ProductOverview extends Component {
+  state = {
+    isLoading: false
+  };
+
   static navigationOptions = ({ navigation }) => {
     return {
-      headerTitle: "Product Overview",
+      headerTitle: 'Product Overview',
       headerLeft: (
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Image
             style={GStyles.icon}
-            source={require("../../../assets/backArrow.png")}
+            source={require('../../../assets/backArrow.png')}
           />
         </TouchableOpacity>
       )
     };
   };
+
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps);
+  }
 
   renderImage(item, i) {
     return <Image style={Styles.image} source={{ uri: item.file }} key={i} />;
@@ -37,14 +45,16 @@ class ProductOverview extends Component {
     const { navigation } = this.props;
     const { state } = navigation;
     const { params } = state;
-    const token = await AsyncStorage.getItem("token");
+    const token = await AsyncStorage.getItem('token');
 
     this.props.createProduct({ ...params }, token);
   };
 
-  getLocationText = (id) => {
+  getLocationText = id => {
     if (!this.props.user) return '';
-    const location = this.props.user.userExtended.addresses.find(a => a.id === id);
+    const location = this.props.user.userExtended.addresses.find(
+      a => a.id === id
+    );
     if (location) return location.address;
   };
 
@@ -97,10 +107,11 @@ class ProductOverview extends Component {
           <Text style={Styles.rightEnd}>{params.quantity}kg</Text>
         </View>
         <View style={Styles.productInformation}>
-          <Text>{params.saleFormat === "fixed" ? 
-            'Sale Price' : 'Target Price'}:</Text>
+          <Text>
+            {params.saleFormat === 'fixed' ? 'Sale Price' : 'Target Price'}:
+          </Text>
           <Text style={Styles.rightEnd}>
-            Rp{params.saleFormat === "fixed"
+            Rp{params.saleFormat === 'fixed'
               ? params.salePrice
               : params.targetPrice}
           </Text>
@@ -123,20 +134,20 @@ class ProductOverview extends Component {
             }
           </React.Fragment>
         */}
-        
-        {params.saleFormat === "auction" && (
+
+        {params.saleFormat === 'auction' && (
           <React.Fragment>
             <View style={Styles.productInformation}>
               <Text>Auction Ends:</Text>
               <Text style={Styles.rightEnd}>
-                {moment(params.auctionEnd).format("MMMM Do YYYY, h:mm a")}
+                {moment(params.auctionEnd).format('MMMM Do YYYY, h:mm a')}
               </Text>
             </View>
 
             <View style={Styles.productInformation}>
               <Text>Show Auction Target:</Text>
               <Text style={Styles.rightEnd}>
-                {params.showAuctionTarget ? 'Yes': 'No'}
+                {params.showAuctionTarget ? 'Yes' : 'No'}
               </Text>
             </View>
           </React.Fragment>
@@ -159,19 +170,19 @@ class ProductOverview extends Component {
         <View style={Styles.productInformation}>
           <Text>Delivery Method:</Text>
           <Text style={Styles.rightEnd}>
-            {params.courierDelivery ? 'Courier' : ''} 
+            {params.courierDelivery ? 'Courier' : ''}
             {params.courierDelivery && params.selfDelivery ? ', ' : ''}
-            {params.selfDelivery  ?  'Self' : ''} 
+            {params.selfDelivery ? 'Self' : ''}
           </Text>
         </View>
-        { params.courierDelivery && 
+        {params.courierDelivery && (
           <View style={Styles.productInformation}>
             <Text>Couriers:</Text>
             <Text style={Styles.rightEnd}>
               {params.couriers.map(c => c.name).join(', ')}
             </Text>
           </View>
-        }
+        )}
         <View style={Styles.productInformation}>
           <Text>Product Location:</Text>
           <Text style={Styles.rightEnd}>
@@ -190,7 +201,7 @@ class ProductOverview extends Component {
 }
 
 const mapStateToProps = state => ({
-  product: state.get("product"),
+  product: state.get('product'),
   user: state.get('auth').toJS()
 });
 

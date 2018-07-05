@@ -36,7 +36,7 @@ class Followers extends Component {
                   navigation.navigate('ProfileTab', {
                     following: { ...follower },
                     username: follower.username,
-                    followingProfile: true
+                    followingProfile: false
                   })
                 }
               >
