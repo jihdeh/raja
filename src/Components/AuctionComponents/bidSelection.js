@@ -23,38 +23,29 @@ import GStyles from '../../Styles/GeneralStyle';
 import Styles from '../../Styles/BidSelectionStyle';
 
 class BidSelection extends Component {
-  state = {
-    isDateTimePickerVisible: false,
-    deliveryOptions: [
-      {
-        label: 'Courier',
-        value: 'courier',
-        key: 'courier'
-      },
-      {
-        label: 'Pick Up',
-        value: 'pickUp',
-        key: 'pickUp'
+  constructor(props) {
+    super(props);
+    this.state = {
+      isDateTimePickerVisible: false,
+      product: {
+        saleFormat: 'fixed',
+        condition: 'used',
+        salePrice: '',
+        targetPrice: '0',
+        // location: '',
+        location: this._getLocation(true),
+        originalPrice: '0',
+        auctionEnd: null,
+        isBundle: false,
+        showAuctionTarget: false,
+        weight: '',
+        isActive: true,
+        courierDelivery: false,
+        selfDelivery: false,
+        couriers: []
       }
-    ],
-    product: {
-      saleFormat: 'fixed',
-      condition: 'used',
-      salePrice: '',
-      targetPrice: '0',
-      location: '',
-      originalPrice: '0',
-      auctionEnd: null,
-      isBundle: false,
-      showAuctionTarget: false,
-      // onSale: false,
-      weight: '',
-      isActive: true,
-      // inStock: true,
-      courierDelivery: false,
-      selfDelivery: false
-    }
-  };
+    };
+  }
 
   static navigationOptions = ({ navigation }) => {
     return {
@@ -110,13 +101,15 @@ class BidSelection extends Component {
     });
   };
 
-  _getLocation = () => {
+  _getLocation = (initial = false) => {
     if (!this.props.user) return '';
 
-    const location = this.props.user.userExtended.addresses.find(
-      a => a.isDefault
-    );
-    if (location && location.id !== this.state.product.location) return location.id;
+    if (!initial && this.state.product.location) return this.state.product.location
+    const location = this.props.user.userExtended.addresses.find(a => a.isDefault);
+    
+    if (location && initial) return location.id;
+
+    if (location && !initial && location.id !== this.state.product.location) return location.id;
   };
 
   validate() {
@@ -159,6 +152,20 @@ class BidSelection extends Component {
     }
   };
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location.loadedCouriers && !this.state.product.couriers.length) {
+      this.setState({
+        product: {
+          ...this.state.product, 
+          couriers: [{
+            courierId: nextProps.location.loadedCouriers[0].value,
+            name: nextProps.location.loadedCouriers[0].name
+          }]
+        }
+      })
+    }
+  }
+
   render() {
     const {
       saleFormat,
@@ -173,6 +180,8 @@ class BidSelection extends Component {
       showAuctionTarget,
       courierDelivery
     } = this.state.product;
+
+    const { location: { loadedCouriers } } = this.props;
 
     return (
       <View style={[GStyles.container, Styles.container]}>
@@ -435,7 +444,7 @@ class BidSelection extends Component {
                                       name: courier.name
                                     }
                                   ]
-                                : [] // format for server
+                                : this.state.product.couriers // format for server
                               // couriers: couriers.map(c => ({courierId: c.value, name: c.label})) // format for server
                             }
                           });

@@ -38,15 +38,21 @@ class ProductOverview extends Component {
     const { state } = navigation;
     const { params } = state;
     const token = await AsyncStorage.getItem("token");
-    console.log(token);
 
     this.props.createProduct({ ...params }, token);
+  };
+
+  getLocationText = (id) => {
+    if (!this.props.user) return '';
+    const location = this.props.user.userExtended.addresses.find(a => a.id === id);
+    if (location) return location.address;
   };
 
   render() {
     const { navigation } = this.props;
     const { state } = navigation;
     const { params } = state;
+
     return (
       <ScrollView>
         <View style={GStyles.hotListHeader}>
@@ -158,10 +164,18 @@ class ProductOverview extends Component {
             {params.selfDelivery  ?  'Self' : ''} 
           </Text>
         </View>
+        { params.courierDelivery && 
+          <View style={Styles.productInformation}>
+            <Text>Couriers:</Text>
+            <Text style={Styles.rightEnd}>
+              {params.couriers.map(c => c.name).join(', ')}
+            </Text>
+          </View>
+        }
         <View style={Styles.productInformation}>
           <Text>Product Location:</Text>
           <Text style={Styles.rightEnd}>
-            {''}
+            {this.getLocationText(params.location)}
           </Text>
         </View>
         <TouchableOpacity
@@ -176,7 +190,8 @@ class ProductOverview extends Component {
 }
 
 const mapStateToProps = state => ({
-  product: state.get("product")
+  product: state.get("product"),
+  user: state.get('auth').toJS()
 });
 
 const mapDispatchToProps = dispatch => ({
