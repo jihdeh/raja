@@ -104,6 +104,7 @@ class ProfileTab extends PureComponent {
         {get(params, 'followingProfile') ? (
           <ProfileView
             navigation={navigation}
+            followers={get(shared, 'followers')}
             username={get(params, 'following.username') || '...'}
             hotListsItems={get(hotListsItems, 'followingProfileProducts')}
             address={get(findDefaultAddress, 'address')}
