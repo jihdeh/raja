@@ -97,7 +97,7 @@ class ProfileView extends Component {
       user: { userExtended }
     } = this.props;
     const { productSearchResult } = this.state;
-    console.log(followers);
+    console.log(followers, get(hotListsItems, 'items.length'));
     return (
       <View>
         <ScrollView>

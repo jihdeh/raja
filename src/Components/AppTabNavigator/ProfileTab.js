@@ -53,6 +53,27 @@ class ProfileTab extends PureComponent {
     }
   }
 
+  componentDidMount() {
+    console.log('eee');
+  }
+
+  componentWillReceiveProps() {
+    const { navigation, products, user: { userExtended } } = this.props;
+    const { state: { params } } = navigation;
+    const hotListsItems = products;
+
+    console.log(
+      '8props',
+      get(params, 'followingProfile'),
+      get(params, 'username'),
+      get(userExtended, 'username')
+    );
+  }
+
+  componentDidUpdate() {
+    console.log('wasssap');
+  }
+
   loadProfileProducts(id, type) {
     const { getUserProducts, getFollowingUserProfile } = this.props;
 
@@ -104,7 +125,6 @@ class ProfileTab extends PureComponent {
         {get(params, 'followingProfile') ? (
           <ProfileView
             navigation={navigation}
-            followers={get(shared, 'followers')}
             username={get(params, 'following.username') || '...'}
             hotListsItems={get(hotListsItems, 'followingProfileProducts')}
             address={get(findDefaultAddress, 'address')}

@@ -103,9 +103,10 @@ export const getProducts = type => async dispatch => {
 
 export const getUserProducts = (userId, type) => async dispatch => {
   axios
-    .get(`${BASE_URL}/products?user=${userId}`)
+    .get(`${BASE_URL}/products?owner=${userId}`)
     .then(({ data }) => {
       if (type === 'following') {
+        console.log(data);
         dispatch({ type: FOLLOWING_PROFILE_PRODUCTS, payload: data });
         return;
       }
