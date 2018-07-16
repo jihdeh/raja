@@ -160,10 +160,14 @@ export const boughtOrderHistory = () => async dispatch => {
     });
 };
 
-export const getShippingCost = addressId => async dispatch => {
+export const getShippingCost = (token, addressId) => async dispatch => {
   console.log(addressId);
   axios
-    .get(`${BASE_URL}/checkout?location=${addressId}`)
+    .get(`${BASE_URL}/checkout?location=${addressId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     .then(({ data }) => {
       console.log(data);
       dispatch({
@@ -212,6 +216,7 @@ export const addToCart = (cartId, { id: productId }, quantity) => dispatch => {
       });
     })
     .catch(({ response }) => {
+      console.log(response.data);
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
       } else {
@@ -240,9 +245,9 @@ export const bidForProduct = (productId, amount) => dispatch => {
     });
 };
 
-export const checkout = data => async dispatch => {
+export const checkout = (data, addressId) => async dispatch => {
   axios
-    .post(`${BASE_URL}/checkout`, {
+    .post(`${BASE_URL}/checkout?location=${addressId}`, {
       ...data
     })
     .then(({ data }) => {

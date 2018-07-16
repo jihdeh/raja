@@ -6,7 +6,8 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
-  TextInput
+  TextInput,
+  AsyncStorage
 } from 'react-native';
 import Picker from 'react-native-picker-select';
 import { RadioGroup, RadioButton } from 'react-native-flexi-radio-button';
@@ -86,11 +87,15 @@ class Cost extends Component {
     }
   }
 
-  componentDidMount() {
-    const { addresses, getShippingCost } = this.props;
+  async componentDidMount() {
+    const { addresses, getShippingCost, auth } = this.props;
+    const { user: isAuthenticated } = auth;
+    const authToken =
+      (await AsyncStorage.getItem('token')) || isAuthenticated.token;
+
     const getDefaultAddy =
       addresses.length && addresses.find(addy => addy.isDefault);
-    getShippingCost(getDefaultAddy.id);
+    getShippingCost(authToken, getDefaultAddy.id);
   }
 
   onSelect(index, value) {
@@ -106,13 +111,18 @@ class Cost extends Component {
     });
   }
 
-  validate() {
-    const { bankOption, paymentMethod } = this.state;
+  defaultAddress() {
     const { addresses } = this.props;
     const getDefaultAddy =
       addresses.length && addresses.find(addy => addy.isDefault);
+    return getDefaultAddy;
+  }
 
-    if (!getDefaultAddy || !addresses.length) {
+  validate() {
+    const { bankOption, paymentMethod } = this.state;
+    const { addresses } = this.props;
+
+    if (!this.defaultAddress() || !addresses.length) {
       this.props.displayError('Please add a default delivery address');
       return false;
     }
@@ -140,6 +150,7 @@ class Cost extends Component {
       selection: { bankName, internetBankName },
       paymentMethod
     } = this.state;
+    const location = this.defaultAddress();
     const obj = {
       bankName,
       internetBankName,
@@ -148,7 +159,7 @@ class Cost extends Component {
     this.setState({
       isLoading: true
     });
-    this.props.pay(obj);
+    this.props.pay(obj, location.id);
   }
 
   render() {
@@ -243,14 +254,14 @@ class Cost extends Component {
   }
 }
 const mapStateToProps = state => ({
-  product: state.get('product').toJS()
+  product: state.get('product').toJS(),
+  auth: state.get('auth').toJS()
 });
 
 const mapDispatchToProps = dispatch => ({
   displayError: bindActionCreators(displayError, dispatch),
   pay: bindActionCreators(checkout, dispatch),
   getShippingCost: bindActionCreators(getShippingCost, dispatch)
-  // getShippingCost:
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cost);
