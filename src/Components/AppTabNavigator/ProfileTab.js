@@ -55,11 +55,11 @@ class ProfileTab extends PureComponent {
 
   async loadProfileProducts(id, type) {
     const { user: isAuthenticated } = this.props.user;
-    if (get(isAuthenticated, 'token')) {
-      const authToken =
-        (await AsyncStorage.getItem('token')) || get(isAuthenticated, 'token');
-      const { getUserProducts, getFollowingUserProfile } = this.props;
+    const authToken =
+      (await AsyncStorage.getItem('token')) || get(isAuthenticated, 'token');
+    const { getUserProducts, getFollowingUserProfile } = this.props;
 
+    if (authToken) {
       getUserProducts(authToken, id, type);
       getFollowingUserProfile(authToken, id);
     }
