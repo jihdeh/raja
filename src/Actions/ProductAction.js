@@ -101,12 +101,13 @@ export const getProducts = type => async dispatch => {
     });
 };
 
-export const getUserProducts = (userId, type) => async dispatch => {
+export const getUserProducts = (token, userId, type) => async dispatch => {
   axios
-    .get(`${BASE_URL}/products?owner=${userId}`)
+    .get(`${BASE_URL}/products?owner=${userId}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
     .then(({ data }) => {
       if (type === 'following') {
-        console.log(data);
         dispatch({ type: FOLLOWING_PROFILE_PRODUCTS, payload: data });
         return;
       }
@@ -162,7 +163,6 @@ export const boughtOrderHistory = () => async dispatch => {
 };
 
 export const getShippingCost = (token, addressId) => async dispatch => {
-  console.log(addressId);
   axios
     .get(`${BASE_URL}/checkout?location=${addressId}`, {
       headers: {
@@ -177,7 +177,6 @@ export const getShippingCost = (token, addressId) => async dispatch => {
       });
     })
     .catch(({ response }) => {
-      console.log(response);
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
       } else {

@@ -53,32 +53,16 @@ class ProfileTab extends PureComponent {
     }
   }
 
-  componentDidMount() {
-    console.log('eee');
-  }
+  async loadProfileProducts(id, type) {
+    const { user: isAuthenticated } = this.props.user;
+    if (get(isAuthenticated, 'token')) {
+      const authToken =
+        (await AsyncStorage.getItem('token')) || get(isAuthenticated, 'token');
+      const { getUserProducts, getFollowingUserProfile } = this.props;
 
-  componentWillReceiveProps() {
-    const { navigation, products, user: { userExtended } } = this.props;
-    const { state: { params } } = navigation;
-    const hotListsItems = products;
-
-    console.log(
-      '8props',
-      get(params, 'followingProfile'),
-      get(params, 'username'),
-      get(userExtended, 'username')
-    );
-  }
-
-  componentDidUpdate() {
-    console.log('wasssap');
-  }
-
-  loadProfileProducts(id, type) {
-    const { getUserProducts, getFollowingUserProfile } = this.props;
-
-    getUserProducts(id, type);
-    getFollowingUserProfile(id);
+      getUserProducts(authToken, id, type);
+      getFollowingUserProfile(authToken, id);
+    }
     return;
   }
 
@@ -93,7 +77,6 @@ class ProfileTab extends PureComponent {
     const { navigation, products, user: { userExtended } } = this.props;
     const { state: { params } } = navigation;
     const hotListsItems = products;
-
     get(params, 'followingProfile') &&
     get(params, 'username') !== get(userExtended, 'username')
       ? (!this.hasLoaded || this.hasLoaded !== get(params, 'username')) &&
@@ -125,6 +108,7 @@ class ProfileTab extends PureComponent {
         {get(params, 'followingProfile') ? (
           <ProfileView
             navigation={navigation}
+            profile={followingUserExtended && followingUserExtended}
             username={get(params, 'following.username') || '...'}
             hotListsItems={get(hotListsItems, 'followingProfileProducts')}
             address={get(findDefaultAddress, 'address')}
@@ -133,6 +117,7 @@ class ProfileTab extends PureComponent {
           <ProfileView
             navigation={navigation}
             username={get(userExtended, 'username') || '...'}
+            profile={followingUserExtended && followingUserExtended}
             followers={get(shared, 'followers')}
             hotListsItems={get(hotListsItems, 'profileProducts')}
             address={get(findDefaultAddress, 'address')}

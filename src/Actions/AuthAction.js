@@ -8,6 +8,7 @@ import {
   UPDATE_PROFILE,
   LOGGED_USER_PROFILE,
   UPDATE_PASSWORD,
+  LOG_OUT,
   FOLLOWING_USER_PROFILE
 } from '../Constants/ActionTypes';
 import toArray from 'lodash/toArray';
@@ -44,6 +45,10 @@ export const login = ({ email, password }, navigate) => dispatch => {
 export const logout = () => async dispatch => {
   await dispatch({
     type: IS_AUTHENTICATED,
+    payload: null
+  });
+  dispatch({
+    type: LOG_OUT,
     payload: null
   });
 };
@@ -145,9 +150,11 @@ export const getLoggedUserProfile = token => async dispatch => {
     });
 };
 
-export const getFollowingUserProfile = id => async dispatch => {
+export const getFollowingUserProfile = (token, id) => async dispatch => {
   axios
-    .get(`${BASE_URL}/user/${id}`)
+    .get(`${BASE_URL}/user/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
     .then(async ({ data }) => {
       await dispatch({
         type: FOLLOWING_USER_PROFILE,

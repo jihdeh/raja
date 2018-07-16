@@ -93,11 +93,11 @@ class ProfileView extends Component {
       hotListsItems,
       address,
       username,
-      followers,
+      profile,
       user: { userExtended }
     } = this.props;
     const { productSearchResult } = this.state;
-    console.log(followers, get(hotListsItems, 'items.length'));
+    console.log(profile);
     return (
       <View>
         <ScrollView>
@@ -106,7 +106,7 @@ class ProfileView extends Component {
             <View style={Styles.profileInfoLayer}>
               <View style={Styles.profileInfo}>
                 <Text style={Styles.profileInfoCount}>
-                  {get(hotListsItems, 'items.length')}
+                  {get(hotListsItems, 'totalResults')}
                 </Text>
                 <Text>Listings</Text>
               </View>
@@ -119,12 +119,14 @@ class ProfileView extends Component {
                 style={Styles.profileInfo}
               >
                 <Text style={Styles.profileInfoCount}>
-                  {(followers && followers.length) || 0}
+                  {get(profile, 'followersCount')}
                 </Text>
                 <Text>Followers</Text>
               </TouchableOpacity>
               <View style={Styles.profileInfo}>
-                <Text style={Styles.profileInfoCount}>100%</Text>
+                <Text style={Styles.profileInfoCount}>
+                  {get(profile, 'meta.averageRating')}%
+                </Text>
                 <Text>Rating</Text>
               </View>
             </View>
