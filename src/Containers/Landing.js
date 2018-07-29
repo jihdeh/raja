@@ -87,11 +87,9 @@ class LandingPage extends Component {
               'https://airshp.com/wp-content/uploads/AL1-LogoSuite2016-v3_MARK-688x688.png'
           }}
         />
-        {this.state.isAuthenticated === false &&
-          <View>
-            <Login {...this.props} />
-          </View>
-        }
+        <View>
+          <Login {...this.props} />
+        </View>
       </KeyboardAvoidingView>
     )
   }
