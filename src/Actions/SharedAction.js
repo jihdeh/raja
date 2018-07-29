@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { BASE_URL } from '../Constants/BaseUrl';
-import { displayError } from './ErrorAction';
+import axios from 'axios'
+import { BASE_URL } from '../Constants/BaseUrl'
+import { displayError } from './ErrorAction'
 import {
   CATEGORIES_FETCHED,
   CATEGORIES_LOADING,
@@ -11,93 +11,95 @@ import {
   FOLLOW_USER,
   UNFOLLOW_USER,
   REQUEST_SUCCESS
-} from '../Constants/ActionTypes';
-import { AsyncStorage } from 'react-native';
-import toArray from 'lodash/toArray';
-import { transformData } from '../utils/categoryHelpers';
+} from '../Constants/ActionTypes'
+import { AsyncStorage } from 'react-native'
+import toArray from 'lodash/toArray'
+import { transformData } from '../utils/categoryHelpers'
 
 AsyncStorage.getItem('token').then(
   token => (axios.defaults.headers.common['Authorization'] = `Bearer ${token}`)
-);
+)
 
 export const successHandler = (type, payload) => async dispatch => {
   dispatch({
     type: REQUEST_SUCCESS,
     payload
-  });
-};
+  })
+}
 
 const errorHandler = errors =>
   toArray(errors)
     .map((errorMsg, key) => `${key + 1} ${errorMsg}`)
-    .join('\n');
+    .join('\n')
 
 export const getCategories = () => dispatch => {
-  dispatch({ type: CATEGORIES_LOADING });
+  dispatch({ type: CATEGORIES_LOADING })
   axios
     .get(`${BASE_URL}/categories`)
     .then(({ data }) => {
       dispatch({
         type: CATEGORIES_FETCHED,
         payload: transformData(data)
-      });
+      })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
-export const getBookmarks = () => dispatch => {
+export const getBookmarks = token => dispatch => {
   axios
-    .get(`${BASE_URL}/user/bookmarks`)
+    .get(`${BASE_URL}/user/bookmarks`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
     .then(({ data }) => {
       dispatch({
         type: FETCH_BOOKMARKS,
         payload: data
-      });
+      })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const bookmarkProduct = productID => dispatch => {
   axios
     .post(`${BASE_URL}/products/${productID}/bookmark`)
     .then(({ data }) => {
-      getBookmarks()(dispatch);
+      getBookmarks()(dispatch)
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const unBookmarkProduct = productID => dispatch => {
   axios
     .delete(`${BASE_URL}/products/${productID}/bookmark`)
     .then(({ data }) => {
-      getBookmarks()(dispatch);
+      getBookmarks()(dispatch)
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const getNotifications = () => async dispatch => {
   axios
@@ -106,16 +108,16 @@ export const getNotifications = () => async dispatch => {
       dispatch({
         type: FETCH_NOTIFICATIONS,
         payload: data
-      });
+      })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const getFollowers = token => dispatch => {
   axios
@@ -126,16 +128,16 @@ export const getFollowers = token => dispatch => {
       dispatch({
         type: FETCH_USER_FOLLOWERS,
         payload: data
-      });
+      })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const getFollowings = token => dispatch => {
   axios
@@ -146,43 +148,43 @@ export const getFollowings = token => dispatch => {
       dispatch({
         type: FETCH_USER_FOLLOWINGS,
         payload: data
-      });
+      })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const followUser = userId => dispatch => {
   axios
     .post(`${BASE_URL}/user/${userId}/follow`)
     .then(({ data }) => {
-      successHandler(REQUEST_SUCCESS, true)(dispatch);
+      successHandler(REQUEST_SUCCESS, true)(dispatch)
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const unFollowUser = userId => dispatch => {
   axios
     .delete(`${BASE_URL}/user/${userId}/unfollow`)
     .then(({ data }) => {
-      successHandler(REQUEST_SUCCESS, true)(dispatch);
+      successHandler(REQUEST_SUCCESS, true)(dispatch)
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
