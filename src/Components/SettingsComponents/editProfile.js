@@ -4,7 +4,8 @@ import {
   Text,
   KeyboardAvoidingView,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  AsyncStorage
 } from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -13,13 +14,7 @@ import GStyles from '../../Styles/GeneralStyle'
 import Styles from '../../Styles/SettingStyle'
 
 class EditProfile extends PureComponent {
-  state = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    username: '',
-    phone: ''
-  }
+  state = {}
 
   onChange = (field, value) => {
     this.setState({
@@ -27,10 +22,11 @@ class EditProfile extends PureComponent {
     })
   }
 
-  onUpdateProfile = () => {
+  async onUpdateProfile() {
     const { user: { userExtended } } = this.props
-    const moldObj = Object.assign({ ...this.state }, { ...userExtended })
-    this.props.updateProfile(moldObj)
+    const token = (await AsyncStorage.getItem('token')) || this.props.user.token
+    const moldObj = Object.assign({ ...userExtended }, { ...this.state })
+    this.props.updateProfile(moldObj, token)
   }
 
   render() {
@@ -113,7 +109,7 @@ class EditProfile extends PureComponent {
           />
         </KeyboardAvoidingView>
         <TouchableOpacity
-          onPress={this.onUpdateProfile}
+          onPress={() => this.onUpdateProfile()}
           style={[Styles.btn, GStyles.buttonContainer]}
         >
           <Text style={GStyles.buttonText}>UPDATE PROFILE</Text>
