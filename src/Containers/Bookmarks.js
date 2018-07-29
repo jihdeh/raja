@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
   View,
   Text,
@@ -6,39 +6,38 @@ import {
   Image,
   TouchableOpacity,
   AsyncStorage
-} from 'react-native';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import get from 'lodash/get';
-import { getBookmarks } from '../Actions/SharedAction';
+} from 'react-native'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import get from 'lodash/get'
+import { getBookmarks } from '../Actions/SharedAction'
 
-import GStyles from '../Styles/GeneralStyle';
-import HStyles from '../Styles/HomeStyle';
-import Styles from '../Styles/BookmarkStyle';
+import GStyles from '../Styles/GeneralStyle'
+import HStyles from '../Styles/HomeStyle'
+import Styles from '../Styles/BookmarkStyle'
 
 class Bookmark extends Component {
   constructor(props) {
-    super(props);
-    this.state = { loading: true };
+    super(props)
+    this.state = { loading: true }
   }
 
   async componentDidMount() {
-    const { getBookmarks, auth } = this.props;
-    const { user: isAuthenticated } = auth;
-    const value =
-      (await AsyncStorage.getItem('token')) || isAuthenticated.token;
-    await getBookmarks(value);
+    const { getBookmarks, auth } = this.props
+    const { user: isAuthenticated } = auth
+    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
+    await getBookmarks(token)
   }
 
   componentWillReceiveProps(nextProps) {
-    const { shared: { bookmark } } = this.props;
+    const { shared: { bookmark } } = this.props
     if (bookmark && bookmark.length) {
-      this.setState({ loading: false });
+      this.setState({ loading: false })
     }
   }
 
   render() {
-    const { shared, navigation } = this.props;
+    const { shared, navigation } = this.props
 
     return (
       <ScrollView style={{ flex: 1 }}>
@@ -67,22 +66,22 @@ class Bookmark extends Component {
                 </View>
                 <View style={Styles.divider} />
               </TouchableOpacity>
-            );
+            )
           })}
       </ScrollView>
-    );
+    )
   }
 }
 
 const mapStateToProps = state => ({
   shared: state.get('shared').toJS(),
   auth: state.get('auth').toJS()
-});
+})
 
 const mapDispatchToProps = dispatch => {
   return {
     getBookmarks: bindActionCreators(getBookmarks, dispatch)
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Bookmark);
+export default connect(mapStateToProps, mapDispatchToProps)(Bookmark)

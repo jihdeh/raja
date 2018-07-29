@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react'
 import {
   View,
   Text,
@@ -8,18 +8,18 @@ import {
   ActivityIndicator,
   TextInput,
   AsyncStorage
-} from 'react-native';
-import Picker from 'react-native-picker-select';
-import { RadioGroup, RadioButton } from 'react-native-flexi-radio-button';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import get from 'lodash/get';
+} from 'react-native'
+import Picker from 'react-native-picker-select'
+import { RadioGroup, RadioButton } from 'react-native-flexi-radio-button'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import get from 'lodash/get'
 
-import { displayError } from '../../Actions/ErrorAction';
-import { checkout, getShippingCost } from '../../Actions/ProductAction';
+import { displayError } from '../../Actions/ErrorAction'
+import { checkout, getShippingCost } from '../../Actions/ProductAction'
 
-import GStyles from '../../Styles/GeneralStyle';
-import FStyles from '../../Styles/CheckoutStyle';
+import GStyles from '../../Styles/GeneralStyle'
+import FStyles from '../../Styles/CheckoutStyle'
 
 const BANK_OPTIONS = [
   {
@@ -38,7 +38,7 @@ const BANK_OPTIONS = [
     label: 'BNI Virtual Account',
     value: { bankName: 'bni', internetBankName: 'mandiri_clickpay' }
   }
-];
+]
 
 const INTERNET_BANKING = [
   {
@@ -68,103 +68,106 @@ const INTERNET_BANKING = [
     label: 'Danamon Online Banking',
     value: { bankName: 'permata', internetBankName: 'danamon_online' }
   }
-];
+]
 
 class Cost extends Component {
   state = {
     paymentMethod: null,
     bankOption: null,
     isLoading: false
-  };
+  }
 
   componentWillReceiveProps(nextProps) {
-    const { product: { checkout }, navigation, toScreen } = nextProps;
+    const { product: { checkout }, navigation, toScreen } = nextProps
     this.setState({
       isLoading: false
-    });
+    })
     if (this.props.product.checkout !== checkout) {
-      toScreen('OrderHistoryScreen');
+      toScreen('OrderHistoryScreen')
     }
   }
 
   async componentDidMount() {
-    const { addresses, getShippingCost, auth } = this.props;
-    const { user: isAuthenticated } = auth;
+    const { addresses, getShippingCost, auth } = this.props
+    const { user: isAuthenticated } = auth
     const authToken =
-      (await AsyncStorage.getItem('token')) || isAuthenticated.token;
+      (await AsyncStorage.getItem('token')) || isAuthenticated.token
 
     const getDefaultAddy =
-      addresses.length && addresses.find(addy => addy.isDefault);
-    getShippingCost(authToken, getDefaultAddy.id);
+      addresses.length && addresses.find(addy => addy.isDefault)
+    getShippingCost(authToken, getDefaultAddy.id)
   }
 
   onSelect(index, value) {
     this.setState({
       paymentMethod: value
-    });
+    })
   }
 
   bankSelection(bank) {
     this.setState({
       selection: bank,
       bankOption: bank.bankName
-    });
+    })
   }
 
   defaultAddress() {
-    const { addresses } = this.props;
+    const { addresses } = this.props
     const getDefaultAddy =
-      addresses.length && addresses.find(addy => addy.isDefault);
-    return getDefaultAddy;
+      addresses.length && addresses.find(addy => addy.isDefault)
+    return getDefaultAddy
   }
 
   validate() {
-    const { bankOption, paymentMethod } = this.state;
-    const { addresses } = this.props;
+    const { bankOption, paymentMethod } = this.state
+    const { addresses } = this.props
 
     if (!this.defaultAddress() || !addresses.length) {
-      this.props.displayError('Please add a default delivery address');
-      return false;
+      this.props.displayError('Please add a default delivery address')
+      return false
     }
 
     if (!paymentMethod) {
-      this.props.displayError('Please select payment method');
-      return false;
+      this.props.displayError('Please select payment method')
+      return false
     }
     if (
       (paymentMethod === 'bank' || paymentMethod === 'internet') &&
       !bankOption
     ) {
-      this.props.displayError('Please select bank option');
+      this.props.displayError('Please select bank option')
       this.setState({
         isLoading: false
-      });
-      return false;
+      })
+      return false
     }
-    return true;
+    return true
   }
 
-  onPayClicked() {
-    if (!this.validate()) return;
+  async onPayClicked() {
+    if (!this.validate()) return
+    const { auth } = this.props
+    const { user: isAuthenticated } = auth
+    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
     const {
       selection: { bankName, internetBankName },
       paymentMethod
-    } = this.state;
-    const location = this.defaultAddress();
+    } = this.state
+    const location = this.defaultAddress()
     const obj = {
       bankName,
       internetBankName,
       paymentMethod
-    };
+    }
     this.setState({
       isLoading: true
-    });
-    this.props.pay(obj, location.id);
+    })
+    this.props.pay(obj, location.id, token)
   }
 
   render() {
-    const { product: { addToCart, getCart } } = this.props;
-    const { bankOption, isLoading } = this.state;
+    const { product: { addToCart, getCart } } = this.props
+    const { bankOption, isLoading } = this.state
 
     return (
       <View>
@@ -250,18 +253,18 @@ class Cost extends Component {
           )}
         </View>
       </View>
-    );
+    )
   }
 }
 const mapStateToProps = state => ({
   product: state.get('product').toJS(),
   auth: state.get('auth').toJS()
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   displayError: bindActionCreators(displayError, dispatch),
   pay: bindActionCreators(checkout, dispatch),
   getShippingCost: bindActionCreators(getShippingCost, dispatch)
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(Cost);
+export default connect(mapStateToProps, mapDispatchToProps)(Cost)

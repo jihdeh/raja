@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react'
 import {
   View,
   ScrollView,
@@ -10,14 +10,14 @@ import {
   TextInput,
   Button,
   AsyncStorage
-} from 'react-native';
-import jwtDecode from 'jwt-decode';
-import moment from 'moment/moment';
-import { Icon } from 'native-base';
-import get from 'lodash/get';
-import Carousel from 'react-native-snap-carousel';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+} from 'react-native'
+import jwtDecode from 'jwt-decode'
+import moment from 'moment/moment'
+import { Icon } from 'native-base'
+import get from 'lodash/get'
+import Carousel from 'react-native-snap-carousel'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import {
   getBookmarks,
   bookmarkProduct,
@@ -26,19 +26,19 @@ import {
   unFollowUser,
   successHandler,
   getFollowings
-} from '../../Actions/SharedAction';
+} from '../../Actions/SharedAction'
 import {
   getCartItem,
   addToCart,
   bidForProduct
-} from '../../Actions/ProductAction';
-import SliderEntry from '../../Components/SliderEntry';
+} from '../../Actions/ProductAction'
+import SliderEntry from '../../Components/SliderEntry'
 
-import { sliderWidth, itemWidth } from '../../Styles/SliderEntry.style';
-import styles, { colors } from '../../Styles/SliderEntry.index';
-import Styles from '../../Styles/HomeStyle';
-import GStyles from '../../Styles/GeneralStyle';
-import PStyles from '../../Styles/ProductStyle';
+import { sliderWidth, itemWidth } from '../../Styles/SliderEntry.style'
+import styles, { colors } from '../../Styles/SliderEntry.index'
+import Styles from '../../Styles/HomeStyle'
+import GStyles from '../../Styles/GeneralStyle'
+import PStyles from '../../Styles/ProductStyle'
 
 class ProductInfo extends Component {
   state = {
@@ -47,27 +47,29 @@ class ProductInfo extends Component {
     isFollowing: false,
     followTrigger: false,
     isBookmarked: false
-  };
+  }
   static navigationOptions = ({ navigation }) => {
-    const { state } = navigation;
-    const { params } = state;
-    const { item } = params;
+    const { state } = navigation
+    const { params } = state
+    const { item } = params
     return {
       headerTitle: item.name
-    };
-  };
+    }
+  }
 
   async componentWillMount() {
-    const { getBookmarks, navigation } = this.props;
-    const { state } = navigation;
-    const { params } = state;
-    const { item } = params;
+    const { getBookmarks, navigation, user } = this.props
+    const { user: isAuthenticated } = user
+    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
+    const { state } = navigation
+    const { params } = state
+    const { item } = params
     if (item.owner.isFollowing) {
       this.setState({
         isFollowing: true
-      });
+      })
     }
-    getBookmarks();
+    getBookmarks(token)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -77,31 +79,31 @@ class ProductInfo extends Component {
       getFollowings,
       navigation,
       shared: { bookmark }
-    } = nextProps;
+    } = nextProps
 
-    const { state } = navigation;
-    const { params } = state;
-    const { item } = params;
+    const { state } = navigation
+    const { params } = state
+    const { item } = params
 
     if (requestSuccess && this.state.followTrigger) {
       this.setState({
         isLoading: false,
         followTrigger: false,
         isFollowing: !this.state.isFollowing
-      });
-      successHandler(null, false).then(() => getFollowings());
+      })
+      successHandler(null, false).then(() => getFollowings())
     }
-    const hasBookmark = get(bookmark, 'items');
-    this._isBookmark(item, hasBookmark);
-    return;
+    const hasBookmark = get(bookmark, 'items')
+    this._isBookmark(item, hasBookmark)
+    return
   }
 
   _renderLightItem({ item, index }) {
-    return <SliderEntry data={item} even={false} />;
+    return <SliderEntry data={item} even={false} />
   }
 
   _renderItem({ item, index }) {
-    return <SliderEntry data={item} even={(index + 1) % 2 === 0} />;
+    return <SliderEntry data={item} even={(index + 1) % 2 === 0} />
   }
 
   _submitComment() {
@@ -109,78 +111,83 @@ class ProductInfo extends Component {
   }
 
   _isBookmark(item, items) {
-    const isBookmarked = items && items.find(bm => bm.id == item.id);
+    const isBookmarked = items && items.find(bm => bm.id == item.id)
     this.setState({
       isBookmarked
-    });
+    })
   }
 
   _buyProduct(selectedItem) {
     //trigger buy
-    const { navigation, addToCart, product: { getCart } } = this.props;
-    const { state } = navigation;
-    const { params } = state;
-    const { item } = params;
+    const { navigation, addToCart, product: { getCart } } = this.props
+    const { state } = navigation
+    const { params } = state
+    const { item } = params
     const isInCart =
-      getCart && get(getCart, 'items').find(p => p.id === item.id);
-    const newProductAddQuantity = isInCart ? null : 1;
-    addToCart(getCart.id, selectedItem, newProductAddQuantity);
-    navigation.navigate('CartScreen');
+      getCart && get(getCart, 'items').find(p => p.id === item.id)
+    const newProductAddQuantity = isInCart ? null : 1
+    addToCart(getCart.id, selectedItem, newProductAddQuantity)
+    navigation.navigate('CartScreen')
   }
 
   _bidProduct(selectedItem) {
     //trigger buy
-    const { navigation, bidForProduct } = this.props;
-    const { state } = navigation;
-    const { params } = state;
-    const { item } = params;
-    const { bidPrice } = this.state;
-    console.log(bidPrice);
-    bidForProduct(item.id, +bidPrice);
+    const { navigation, bidForProduct } = this.props
+    const { state } = navigation
+    const { params } = state
+    const { item } = params
+    const { bidPrice } = this.state
+    console.log(bidPrice)
+    bidForProduct(item.id, +bidPrice)
   }
 
   _followUser(id) {
     this.setState({
       isLoading: true,
       followTrigger: true
-    });
-    this.props.followUser(id);
+    })
+    this.props.followUser(id)
   }
 
   _unFollowUser(id) {
     this.setState({
       isLoading: true,
       followTrigger: true
-    });
-    this.props.unFollowUser(id);
+    })
+    this.props.unFollowUser(id)
   }
 
-  _bookmarkProduct = productID => {
-    this.props.bookmarkProduct(productID);
-  };
+  _bookmarkProduct = async productID => {
+    const { bookmarkProduct, user } = this.props
+    const { user: isAuthenticated } = user
+    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
+    bookmarkProduct(productID, token)
+  }
 
-  _unBookmarkProduct = productID => {
-    this.props.unBookmarkProduct(productID);
-  };
+  _unBookmarkProduct = async productID => {
+    const { unBookmarkProduct, user } = this.props
+    const { user: isAuthenticated } = user
+    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
+    unBookmarkProduct(productID, token)
+  }
 
   render() {
-    const isTinder = 'tinder';
+    const isTinder = 'tinder'
     const {
       navigation,
       product,
-      user: { userExtended: { id, addresses } }
-    } = this.props;
-    const { isBookmarked } = this.state;
-    const { state } = navigation;
-    const { params } = state;
-    const { item } = params;
+      user: { userExtended: { id, addresses, email } }
+    } = this.props
+    const { isBookmarked } = this.state
+    const { state } = navigation
+    const { params } = state
+    const { item } = params
 
     const isInCart =
       get(product, 'getCart') &&
-      get(product, 'getCart.items').find(p => p.id === item.id);
+      get(product, 'getCart.items').find(p => p.id === item.id)
     const getDefaultAddy =
-      addresses.length && addresses.find(addy => addy.isDefault);
-
+      addresses.length && addresses.find(addy => addy.isDefault)
     return (
       <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="always">
         <View style={Styles.profileContainer}>
@@ -318,35 +325,39 @@ class ProductInfo extends Component {
               </View>
             </View>
           </View>
-          {!item.auction ? (
-            <TouchableOpacity
-              onPress={() => this._buyProduct(item)}
-              style={[Styles.btn, GStyles.buttonContainer]}
-            >
-              <Text style={GStyles.buttonText}>
-                {isInCart ? 'UPDATE CART' : 'ADD TO CART'}
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <View>
-              <Text style={{ color: 'red' }}>Minimum of Rp10,000</Text>
-              <TextInput
-                keyboardType="numeric"
-                placeholder="Enter Bid"
-                clearTextOnFocus
-                enablesReturnKeyAutomatically
-                style={PStyles.commentInput}
-                onChangeText={bidPrice => this.setState({ bidPrice })}
-                value={this.state.bidPrice}
-              />
-              <TouchableOpacity
-                onPress={() => this._bidProduct(item)}
-                style={[Styles.btn, GStyles.buttonContainer]}
-              >
-                <Text style={GStyles.buttonText}>BID</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+          <Fragment>
+            {email !== item.owner.email ? (
+              !item.auction ? (
+                <TouchableOpacity
+                  onPress={() => this._buyProduct(item)}
+                  style={[Styles.btn, GStyles.buttonContainer]}
+                >
+                  <Text style={GStyles.buttonText}>
+                    {isInCart ? 'UPDATE CART' : 'ADD TO CART'}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <View>
+                  <Text style={{ color: 'red' }}>Minimum of Rp10,000</Text>
+                  <TextInput
+                    keyboardType="numeric"
+                    placeholder="Enter Bid"
+                    clearTextOnFocus
+                    enablesReturnKeyAutomatically
+                    style={PStyles.commentInput}
+                    onChangeText={bidPrice => this.setState({ bidPrice })}
+                    value={this.state.bidPrice}
+                  />
+                  <TouchableOpacity
+                    onPress={() => this._bidProduct(item)}
+                    style={[Styles.btn, GStyles.buttonContainer]}
+                  >
+                    <Text style={GStyles.buttonText}>BID</Text>
+                  </TouchableOpacity>
+                </View>
+              )
+            ) : null}
+          </Fragment>
           <View style={{ marginTop: 20 }}>
             <Text>Comments</Text>
             <TextInput
@@ -364,7 +375,7 @@ class ProductInfo extends Component {
           </View>
         </View>
       </ScrollView>
-    );
+    )
   }
 }
 
@@ -372,7 +383,7 @@ const mapStateToProps = state => ({
   shared: state.get('shared').toJS(),
   product: state.get('product').toJS(),
   user: state.get('auth').toJS()
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   getBookmarks: bindActionCreators(getBookmarks, dispatch),
@@ -385,6 +396,6 @@ const mapDispatchToProps = dispatch => ({
   bookmarkProduct: bindActionCreators(bookmarkProduct, dispatch),
   unBookmarkProduct: bindActionCreators(unBookmarkProduct, dispatch),
   bidForProduct: bindActionCreators(bidForProduct, dispatch)
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(ProductInfo)
