@@ -71,11 +71,13 @@ export const getBookmarks = token => dispatch => {
     })
 }
 
-export const bookmarkProduct = productID => dispatch => {
+export const bookmarkProduct = (productID, token) => dispatch => {
   axios
-    .post(`${BASE_URL}/products/${productID}/bookmark`)
+    .post(`${BASE_URL}/products/${productID}/bookmark`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
     .then(({ data }) => {
-      getBookmarks()(dispatch)
+      getBookmarks(token)(dispatch)
     })
     .catch(({ response }) => {
       if (response.data.errors) {
@@ -86,11 +88,13 @@ export const bookmarkProduct = productID => dispatch => {
     })
 }
 
-export const unBookmarkProduct = productID => dispatch => {
+export const unBookmarkProduct = (productID, token) => dispatch => {
   axios
-    .delete(`${BASE_URL}/products/${productID}/bookmark`)
+    .delete(`${BASE_URL}/products/${productID}/bookmark`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
     .then(({ data }) => {
-      getBookmarks()(dispatch)
+      getBookmarks(token)(dispatch)
     })
     .catch(({ response }) => {
       if (response.data.errors) {

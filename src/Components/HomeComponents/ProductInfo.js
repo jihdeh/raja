@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import {
   View,
   ScrollView,
@@ -58,8 +58,8 @@ class ProductInfo extends Component {
   }
 
   async componentWillMount() {
-    const { getBookmarks, navigation, auth } = this.props
-    const { user: isAuthenticated } = auth
+    const { getBookmarks, navigation, user } = this.props
+    const { user: isAuthenticated } = user
     const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
     const { state } = navigation
     const { params } = state
@@ -157,12 +157,18 @@ class ProductInfo extends Component {
     this.props.unFollowUser(id)
   }
 
-  _bookmarkProduct = productID => {
-    this.props.bookmarkProduct(productID)
+  _bookmarkProduct = async productID => {
+    const { bookmarkProduct, user } = this.props
+    const { user: isAuthenticated } = user
+    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
+    bookmarkProduct(productID, token)
   }
 
-  _unBookmarkProduct = productID => {
-    this.props.unBookmarkProduct(productID)
+  _unBookmarkProduct = async productID => {
+    const { unBookmarkProduct, user } = this.props
+    const { user: isAuthenticated } = user
+    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
+    unBookmarkProduct(productID, token)
   }
 
   render() {
@@ -170,7 +176,7 @@ class ProductInfo extends Component {
     const {
       navigation,
       product,
-      user: { userExtended: { id, addresses } }
+      user: { userExtended: { id, addresses, email } }
     } = this.props
     const { isBookmarked } = this.state
     const { state } = navigation
@@ -182,7 +188,6 @@ class ProductInfo extends Component {
       get(product, 'getCart.items').find(p => p.id === item.id)
     const getDefaultAddy =
       addresses.length && addresses.find(addy => addy.isDefault)
-
     return (
       <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="always">
         <View style={Styles.profileContainer}>
@@ -320,35 +325,39 @@ class ProductInfo extends Component {
               </View>
             </View>
           </View>
-          {!item.auction ? (
-            <TouchableOpacity
-              onPress={() => this._buyProduct(item)}
-              style={[Styles.btn, GStyles.buttonContainer]}
-            >
-              <Text style={GStyles.buttonText}>
-                {isInCart ? 'UPDATE CART' : 'ADD TO CART'}
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <View>
-              <Text style={{ color: 'red' }}>Minimum of Rp10,000</Text>
-              <TextInput
-                keyboardType="numeric"
-                placeholder="Enter Bid"
-                clearTextOnFocus
-                enablesReturnKeyAutomatically
-                style={PStyles.commentInput}
-                onChangeText={bidPrice => this.setState({ bidPrice })}
-                value={this.state.bidPrice}
-              />
-              <TouchableOpacity
-                onPress={() => this._bidProduct(item)}
-                style={[Styles.btn, GStyles.buttonContainer]}
-              >
-                <Text style={GStyles.buttonText}>BID</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+          <Fragment>
+            {email !== item.owner.email ? (
+              !item.auction ? (
+                <TouchableOpacity
+                  onPress={() => this._buyProduct(item)}
+                  style={[Styles.btn, GStyles.buttonContainer]}
+                >
+                  <Text style={GStyles.buttonText}>
+                    {isInCart ? 'UPDATE CART' : 'ADD TO CART'}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <View>
+                  <Text style={{ color: 'red' }}>Minimum of Rp10,000</Text>
+                  <TextInput
+                    keyboardType="numeric"
+                    placeholder="Enter Bid"
+                    clearTextOnFocus
+                    enablesReturnKeyAutomatically
+                    style={PStyles.commentInput}
+                    onChangeText={bidPrice => this.setState({ bidPrice })}
+                    value={this.state.bidPrice}
+                  />
+                  <TouchableOpacity
+                    onPress={() => this._bidProduct(item)}
+                    style={[Styles.btn, GStyles.buttonContainer]}
+                  >
+                    <Text style={GStyles.buttonText}>BID</Text>
+                  </TouchableOpacity>
+                </View>
+              )
+            ) : null}
+          </Fragment>
           <View style={{ marginTop: 20 }}>
             <Text>Comments</Text>
             <TextInput

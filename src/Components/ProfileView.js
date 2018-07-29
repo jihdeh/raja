@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
   View,
   Text,
@@ -10,28 +10,28 @@ import {
   TextInput,
   FlatList,
   ScrollView
-} from 'react-native';
-import jwtDecode from 'jwt-decode';
-import get from 'lodash/get';
-import { Icon } from 'native-base';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { logout } from '../Actions/AuthAction';
-import GStyles from '../Styles/GeneralStyle';
-import Styles from '../Styles/ProfileStyle';
-import HStyles from '../Styles/HomeStyle';
+} from 'react-native'
+import jwtDecode from 'jwt-decode'
+import get from 'lodash/get'
+import { Icon } from 'native-base'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { logout } from '../Actions/AuthAction'
+import GStyles from '../Styles/GeneralStyle'
+import Styles from '../Styles/ProfileStyle'
+import HStyles from '../Styles/HomeStyle'
 
-const _keyExtractor = (item, index) => item.id;
+const _keyExtractor = (item, index) => item.id
 class ProfileView extends Component {
   state = {
     searchInput: ''
-  };
+  }
 
   onLogout = () => {
-    AsyncStorage.clear();
-    this.props.logout();
-    this.props.navigation.navigate('Landing');
-  };
+    AsyncStorage.clear()
+    this.props.logout()
+    this.props.navigation.navigate('Landing')
+  }
 
   renderImage = () => {
     return (
@@ -43,11 +43,11 @@ class ProfileView extends Component {
             'https://vignette.wikia.nocookie.net/gumball/images/f/fc/Gumball.png/revision/latest?cb=20140110222931&path-prefix=pl'
         }}
       />
-    );
-  };
+    )
+  }
 
   renderItem = item => {
-    const { navigation } = this.props;
+    const { navigation } = this.props
 
     return (
       <View style={HStyles.userFeedContainer}>
@@ -74,18 +74,18 @@ class ProfileView extends Component {
           </View>
         </TouchableOpacity>
       </View>
-    );
-  };
+    )
+  }
 
   onSearchItem = searchInput => {
-    const { hotListsItems } = this.props;
-    const lists = get(hotListsItems, 'items');
-    this.setState({ searchInput });
-    const searchRes = lists.filter(item => item.name.indexOf(searchInput) > -1);
+    const { hotListsItems } = this.props
+    const lists = get(hotListsItems, 'items')
+    this.setState({ searchInput })
+    const searchRes = lists.filter(item => item.name.indexOf(searchInput) > -1)
     this.setState({
       productSearchResult: searchRes
-    });
-  };
+    })
+  }
 
   render() {
     const {
@@ -95,9 +95,8 @@ class ProfileView extends Component {
       username,
       profile,
       user: { userExtended }
-    } = this.props;
-    const { productSearchResult } = this.state;
-    console.log(profile);
+    } = this.props
+    const { productSearchResult } = this.state
     return (
       <View>
         <ScrollView>
@@ -188,7 +187,7 @@ class ProfileView extends Component {
           </View>
         </ScrollView>
       </View>
-    );
+    )
   }
 }
 
@@ -196,10 +195,10 @@ const mapStateToProps = state => ({
   products: state.get('product'),
   user: state.get('auth').toJS(),
   shared: state.get('shared').toJS()
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   logout: bindActionCreators(logout, dispatch)
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileView);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileView)

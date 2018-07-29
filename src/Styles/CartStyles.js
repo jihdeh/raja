@@ -1,6 +1,6 @@
-import { StyleSheet, Dimensions } from 'react-native';
-const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height;
+import { StyleSheet, Dimensions } from 'react-native'
+const width = Dimensions.get('window').width
+const height = Dimensions.get('window').height
 const styles = StyleSheet.create({
   cartContainer: {
     display: 'flex',
@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
   },
   cartBtn: {
     flex: 1,
+    height: 50,
     borderRadius: 10,
     display: 'flex',
     justifyContent: 'center',
@@ -34,7 +35,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 10
   },
   cartItemsScrollableCont: { flex: 1 },
   eachCartItem: {
@@ -119,6 +121,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: 'rgba(0,0,0,.9)'
   }
-});
+})
 
-export default styles;
+export default styles
