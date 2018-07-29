@@ -27,12 +27,6 @@ class ProfileView extends Component {
     searchInput: ''
   }
 
-  onLogout = () => {
-    AsyncStorage.clear()
-    this.props.logout()
-    this.props.navigation.navigate('Landing')
-  }
-
   renderImage = () => {
     return (
       <Image
