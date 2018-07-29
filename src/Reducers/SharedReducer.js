@@ -6,7 +6,9 @@ import {
   FETCH_BOOKMARKS,
   FETCH_USER_FOLLOWERS,
   FETCH_USER_FOLLOWINGS,
-  REQUEST_SUCCESS
+  REQUEST_SUCCESS,
+  SHOW_SPINNER,
+  HIDE_SPINNER,
 } from '../Constants/ActionTypes';
 import { set } from '../utils/functional-immutable';
 
@@ -14,6 +16,10 @@ const initialState = new Map();
 
 const ProductReducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case SHOW_SPINNER:
+      return set('showSpinner', true, state);
+    case HIDE_SPINNER:
+      return set('showSpinner', false, state);
     case CATEGORIES_LOADING:
       return set('categoriesLoading', true, state);
     case CATEGORIES_FETCHED:

@@ -2,10 +2,9 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  KeyboardAvoidingView,
-  TextInput,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  AsyncStorage
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -13,7 +12,7 @@ import get from 'lodash/get';
 import EditProfile from '../Components/SettingsComponents/editProfile';
 import UpdatePassword from '../Components/SettingsComponents/updatePassword';
 import UpdateAddress from '../Components/SettingsComponents/updateAddress';
-import { getLoggedUserProfile } from '../Actions/AuthAction';
+import { getLoggedUserProfile, logout } from '../Actions/AuthAction';
 import { getFollowers } from '../Actions/SharedAction';
 import { getProducts } from '../Actions/ProductAction';
 
@@ -34,6 +33,12 @@ class Settings extends Component {
     this.setState({
       [field]: value
     });
+  };
+
+  onLogout = () => {
+    AsyncStorage.clear();
+    this.props.logout();
+    this.props.navigation.navigate('Landing');
   };
 
   render() {
@@ -60,6 +65,14 @@ class Settings extends Component {
           </TouchableOpacity>
         </View>
         <UpdateAddress navigation={navigation} />
+        <View >
+          <TouchableOpacity
+            onPress={this.onLogout}
+            style={[Styles.btn, GStyles.buttonContainer]}
+          >
+            <Text style={GStyles.buttonText}>LOGOUT</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     );
   }
@@ -73,6 +86,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => {
   return {
     getFollowers: bindActionCreators(getFollowers, dispatch),
+    logout: bindActionCreators(logout, dispatch),
     getProducts: bindActionCreators(getProducts, dispatch),
     getLoggedUserProfile: bindActionCreators(getLoggedUserProfile, dispatch)
   };

@@ -144,25 +144,29 @@ class BidSelection extends Component {
   }
 
   onNext = () => {
-    if (this.validate()) {
+    // if (this.validate()) {
       this.props.navigation.navigate('ProductOverview', {
         ...this.state.product,
         ...this.props.navigation.state.params
       });
-    }
+    // }
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.location.loadedCouriers && !this.state.product.couriers.length) {
-      this.setState({
-        product: {
-          ...this.state.product, 
-          couriers: [{
-            courierId: nextProps.location.loadedCouriers[0].value,
-            name: nextProps.location.loadedCouriers[0].name
-          }]
-        }
-      })
+    if (nextProps.location.loadedCouriers) {
+      this.setState({ loadedCouriers: nextProps.location.loadedCouriers })
+
+      if (!this.state.product.couriers.length) {
+        this.setState({
+          product: {
+            ...this.state.product, 
+            couriers: [{
+              courierId: nextProps.location.loadedCouriers[0].value,
+              name: nextProps.location.loadedCouriers[0].name
+            }]
+          }
+        })
+      } 
     }
   }
 
@@ -181,7 +185,8 @@ class BidSelection extends Component {
       courierDelivery
     } = this.state.product;
 
-    const { location: { loadedCouriers } } = this.props;
+    // let { location: { loadedCouriers } } = this.props;
+    const loadedCouriers = this.state.loadedCouriers; // detach from immutable this.props;
 
     return (
       <View style={[GStyles.container, Styles.container]}>
@@ -401,95 +406,36 @@ class BidSelection extends Component {
               {courierDelivery &&
                 loadedCouriers && (
                   <React.Fragment>
-                    <Text style={Styles.product_text}>Courier:</Text>
-                    <View style={GStyles.dropDownSelection_input}>
-                      {/*<MultiSelect
-                    hideTags
-                    items={loadedCouriers}
-                    uniqueKey="value"
-                    ref={(component) => { this.multiSelect = component }}
-                    onSelectedItemsChange={this._handleCourierChange}
-                    // selectedItems={selectedItems}
-                    selectText="Pick Couriers"
-                    searchInputPlaceholderText="Search Couriers..."
-                    // onChangeInput={ (text)=> console.log(text)}
-                    tagRemoveIconColor="#CCC"
-                    tagBorderColor="#CCC"
-                    tagTextColor="#CCC"
-                    selectedItemTextColor="#CCC"
-                    selectedItemIconColor="#CCC"
-                    itemTextColor="#000"
-                    displayKey="name"
-                    searchInputStyle={{ color: '#CCC' }}
-                    submitButtonColor="#CCC"
-                    submitButtonText="Submit"
-                  />*/}
-                      <Picker
-                        items={loadedCouriers.map(c => ({
-                          ...c,
-                          label: c.name
-                        }))}
-                        hideIcon
-                        onValueChange={value => {
-                          const courier = loadedCouriers.find(
-                            c => c.value === value
-                          );
-                          this.setState({
-                            product: {
-                              ...this.state.product,
-                              couriers: courier
-                                ? [
-                                    {
-                                      courierId: courier.value,
-                                      name: courier.name
-                                    }
-                                  ]
-                                : this.state.product.couriers // format for server
-                              // couriers: couriers.map(c => ({courierId: c.value, name: c.label})) // format for server
-                            }
-                          });
-                        }}
-                        // onValueChange={(method, index) =>
-                        // this.setState({ product: {
-                        // ...this.state.product, deliveryMethod: method
-                        // }})
-                        // }
-                        placeholder={{}}
-                        value={deliveryMethod}
-                      />
-                    </View>
+                    <Text style={Styles.product_text}>Select Courier:</Text>
+                    {loadedCouriers.map(c => 
+                      <View style={GStyles.breakLine} key={c.value}>
+                        <CheckBox
+                          label={c.name}
+                          checked={c.checked}
+                          onChange={checked => {
+                            const couriers = [];
+                            this.setState({
+                              loadedCouriers: loadedCouriers.map(lc =>  {
+                                if (lc.value === c.value) lc.checked = !lc.checked
+
+                                if (lc.checked) {
+                                  loadedCouriers.filter(l => lc.checked)
+                                  couriers.push({courierId: lc.value, name: lc.name})
+                                }
+                                return lc;
+                              }),
+                              product: {
+                                ...this.state.product,
+                                couriers
+                              }
+                            })
+                          }}
+                        />
+                      </View>
+                    )}
                   </React.Fragment>
                 )}
             </View>
-
-            {/* <View style={Styles.breakLine} />
-            <Text style={Styles.product_text_header}>PRODUCT STATUS</Text>
-            <View style={Styles.checkSelections}>
-              <CheckBox
-                label="Active"
-                checked={this.state.product.isActive}
-                onChange={checked =>
-                  this.setState({
-                    product: { 
-                      ...this.state.product,
-                      isActive: !this.state.product.isActive 
-                    }
-                  })
-                }
-              />
-              <CheckBox
-                label="In Stock"
-                checked={this.state.product.inStock}
-                onChange={checked =>
-                  this.setState({
-                    product: { 
-                      ...this.state.product,
-                      inStock: !this.state.product.inStock 
-                    }
-                  })
-                }
-              />
-            </View> */}
 
             <View style={Styles.breakLine} />
             <Text style={Styles.product_text_header}>PRODUCT LOCATION</Text>

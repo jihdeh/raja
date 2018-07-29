@@ -1,9 +1,10 @@
 import axios from 'axios';
-import querystring from 'querystring';
 import { BASE_URL } from '../Constants/BaseUrl';
 import { displayError } from './ErrorAction';
 import { AsyncStorage } from 'react-native';
 import {
+  SHOW_SPINNER,
+  HIDE_SPINNER,
   PRODUCT_CREATED,
   PRODUCT_ONSALE,
   PRODUCT_TRENDING,
@@ -16,7 +17,8 @@ import {
   CHECKOUT,
   FETCH_BOUGHT_ORDER_HISTORY,
   FETCH_SOLD_ORDER_HISTORY,
-  FETCH_SHIPPING_COST
+  FETCH_SHIPPING_COST,
+  CLEAR_PRODUCT
 } from '../Constants/ActionTypes';
 
 AsyncStorage.getItem('token').then(
@@ -29,6 +31,8 @@ const errorHandler = errors =>
     .join('\n');
 
 export const createProduct = (product, token) => async dispatch => {
+  dispatch({ type: SHOW_SPINNER });
+  
   const form = new FormData();
   Object.keys(product).forEach(key => {
     const item = product[key];
@@ -61,14 +65,18 @@ export const createProduct = (product, token) => async dispatch => {
   axios(options)
     .then(response => {
       dispatch({ type: PRODUCT_CREATED, payload: response.data });
+      dispatch({ type: HIDE_SPINNER });
     })
     .catch(({ response }) => {
-      if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
-      } else {
-        displayError(response.data.message)(dispatch);
-      }
+      dispatch({ type: HIDE_SPINNER });
+      displayError(errorHandler(response.data.errors || response.data.message))(dispatch);
     });
+};
+
+export const clearProduct = () => async dispatch => {
+  dispatch({
+    type: CLEAR_PRODUCT,
+  });
 };
 
 export const getProducts = type => async dispatch => {
@@ -204,18 +212,21 @@ export const soldOrderHistory = () => async dispatch => {
 };
 
 export const addToCart = (cartId, { id: productId }, quantity) => dispatch => {
+  dispatch({ type: SHOW_SPINNER });
   axios
     .put(`${BASE_URL}/cart/${cartId}/update`, {
       product: productId,
       quantity
     })
     .then(({ data }) => {
+      dispatch({ type: HIDE_SPINNER });
       dispatch({
         type: ADD_TO_CART,
         payload: data
       });
     })
     .catch(({ response }) => {
+      dispatch({ type: HIDE_SPINNER });
       console.log(response.data);
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
@@ -226,17 +237,21 @@ export const addToCart = (cartId, { id: productId }, quantity) => dispatch => {
 };
 
 export const bidForProduct = (productId, amount) => dispatch => {
+  dispatch({ type: SHOW_SPINNER });
+
   axios
     .put(`${BASE_URL}/products/${productId}/bid`, {
       amount
     })
     .then(({ data }) => {
+      dispatch({ type: HIDE_SPINNER });
       dispatch({
         type: BID_FOR_PRODUCT,
         payload: data
       });
     })
     .catch(({ response }) => {
+      dispatch({ type: HIDE_SPINNER });
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
       } else {
@@ -246,11 +261,14 @@ export const bidForProduct = (productId, amount) => dispatch => {
 };
 
 export const checkout = (data, addressId) => async dispatch => {
+  dispatch({ type: SHOW_SPINNER });
+
   axios
     .post(`${BASE_URL}/checkout?location=${addressId}`, {
       ...data
     })
     .then(({ data }) => {
+      dispatch({ type: HIDE_SPINNER });
       dispatch({
         type: CHECKOUT,
         payload: data
@@ -258,6 +276,7 @@ export const checkout = (data, addressId) => async dispatch => {
       boughtOrderHistory()(dispatch);
     })
     .catch(({ response }) => {
+      dispatch({ type: HIDE_SPINNER });
       if (response.status === 503) {
         return displayError('Server unvailable, please try later')(dispatch);
       }

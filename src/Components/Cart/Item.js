@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput
 } from 'react-native';
+import Picker from 'react-native-picker-select';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -45,7 +46,10 @@ class Item extends Component {
               <Text style={CStyles.top}> Rp {Math.round(cartItem.price)}</Text>
             </View>
             <View>
-              <TouchableOpacity style={CStyles.cancel}>
+              <TouchableOpacity style={CStyles.cancel} 
+                onPress={
+                  () => this.setState({ quantity: 0, cartItem: cartItem.id }, () => this.updateCartItem())
+                }>
                 <Text style={CStyles.ex}>X</Text>
               </TouchableOpacity>
             </View>
@@ -55,6 +59,14 @@ class Item extends Component {
               <Text style={CStyles.detailLabel}>QUANTITY</Text>
             </View>
             <View style={{ marginBottom: 10 }}>
+              {/* <Picker
+                  items={[1,2,3,4,5,6,7,8,9,10].map(i => ({ label: String(i), value: i }))}
+                  hideIcon
+                  onValueChange={quantity =>
+                    this.setState({ quantity, cartItem: cartItem.id })
+                  }
+                  value={cartItem.quantity}
+                /> */}
               <TextInput
                 onChangeText={quantity =>
                   this.setState({ quantity, cartItem: cartItem.id })

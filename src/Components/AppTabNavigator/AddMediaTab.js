@@ -113,9 +113,9 @@ class AddMediaTab extends Component {
   }
 
   onNext = () => {
-    if (this.validate()) {
+    // if (this.validate()) {
       this.props.navigation.navigate('BidSelection', { ...this.state.product });
-    }
+    // }
   };
 
   handleCategoryChange1(selectedValue, itemIndex) {

@@ -8,7 +8,7 @@ import { facebookLogin } from '../../Actions/AuthAction'
 class FacebookLoginButton extends Component {
   async onClick() {
     const { type, token } = await Expo.Facebook.logInWithReadPermissionsAsync(
-      '194433294293107',
+      '1557811061190451',
       {
         permissions: ['public_profile']
       }

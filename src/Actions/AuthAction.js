@@ -9,7 +9,9 @@ import {
   LOGGED_USER_PROFILE,
   UPDATE_PASSWORD,
   LOG_OUT,
-  FOLLOWING_USER_PROFILE
+  FOLLOWING_USER_PROFILE,
+  SHOW_SPINNER,
+  HIDE_SPINNER
 } from '../Constants/ActionTypes';
 import toArray from 'lodash/toArray';
 
@@ -23,9 +25,12 @@ const errorHandler = errors =>
     .join('\n');
 
 export const login = ({ email, password }, navigate) => dispatch => {
+  dispatch({ type: SHOW_SPINNER });
+
   axios
     .post(`${BASE_URL}/auth/login`, { email, password })
     .then(({ data }) => {
+      dispatch({ type: HIDE_SPINNER });
       dispatch({
         type: IS_AUTHENTICATED,
         payload: data
@@ -33,6 +38,7 @@ export const login = ({ email, password }, navigate) => dispatch => {
       return navigate('Home');
     })
     .catch(error => {
+      dispatch({ type: HIDE_SPINNER });
       const { data } = error.response;
       if (data.errors) {
         displayError(errorHandler(data.errors))(dispatch);
@@ -54,9 +60,12 @@ export const logout = () => async dispatch => {
 };
 
 export const facebookLogin = (access_token, navigate) => dispatch => {
+  dispatch({ type: SHOW_SPINNER });
+
   axios
     .post(`${BASE_URL}/auth/facebook`, { access_token })
     .then(({ data }) => {
+      dispatch({ type: HIDE_SPINNER });
       dispatch({
         type: IS_AUTHENTICATED,
         payload: data
@@ -64,6 +73,7 @@ export const facebookLogin = (access_token, navigate) => dispatch => {
       return navigate('Home');
     })
     .catch(error => {
+      dispatch({ type: HIDE_SPINNER });
       const { data } = error.response;
       displayError(data.message)(dispatch);
     });

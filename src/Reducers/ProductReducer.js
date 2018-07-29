@@ -1,6 +1,7 @@
 import { Map } from 'immutable';
 import {
   PRODUCT_CREATED,
+  CLEAR_PRODUCT,
   PRODUCT_ONSALE,
   PRODUCT_TRENDING,
   PRODUCT_FEATURED,
@@ -9,6 +10,7 @@ import {
   FETCH_CART,
   ADD_TO_CART,
   BID_FOR_PRODUCT,
+  
   CHECKOUT,
   FETCH_BOUGHT_ORDER_HISTORY,
   FETCH_SOLD_ORDER_HISTORY,
@@ -22,6 +24,8 @@ const ProductReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case PRODUCT_CREATED:
       return set('product', payload, state);
+    case CLEAR_PRODUCT:
+      return set('product', null, state);
     case PRODUCT_ONSALE:
       return set('productOnSale', payload, state);
     case PRODUCT_TRENDING:

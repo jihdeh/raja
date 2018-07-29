@@ -124,7 +124,7 @@ class UpdateAddress extends PureComponent {
   }
 
   onSubmit = async () => {
-    const { user } = this.props;
+    const { auth } = this.props;
     const { user: isAuthenticated } = auth;
     const token =
       (await AsyncStorage.getItem('token')) || isAuthenticated.token;
@@ -322,7 +322,7 @@ class UpdateAddress extends PureComponent {
 }
 const mapStateToProps = state => ({
   location: state.get('location').toJS(),
-  user: state.get('auth').toJS(),
+  auth: state.get('auth').toJS(),
   error: state.get('errorMessage').toJS()
 });
 

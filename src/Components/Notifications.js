@@ -38,7 +38,7 @@ socket.connection.bind('error', function(err) {
   }
 });
 
-console.log(socket);
+// console.log(socket);
 class Notification extends Component {
   constructor(props) {
     super(props);

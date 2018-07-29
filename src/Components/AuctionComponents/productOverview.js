@@ -7,10 +7,11 @@ import {
   ScrollView,
   AsyncStorage
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { createProduct } from '../../Actions/ProductAction';
+import { createProduct, clearProduct } from '../../Actions/ProductAction';
 import Styles from '../../Styles/ProductOverview';
 import GStyles from '../../Styles/GeneralStyle';
 
@@ -34,7 +35,12 @@ class ProductOverview extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    console.log(nextProps);
+    if (nextProps.product.product && !this.props.product.product) {
+      this.props.navigation.navigate('ProductInfo', {
+        item: nextProps.product.product
+      });
+      this.props.clearProduct()
+    }
   }
 
   renderImage(item, i) {
@@ -59,12 +65,13 @@ class ProductOverview extends Component {
   };
 
   render() {
-    const { navigation } = this.props;
+    const { navigation, shared: { showSpinner } } = this.props;
     const { state } = navigation;
     const { params } = state;
 
     return (
       <ScrollView>
+        <Spinner visible={showSpinner} textContent={"Please wait..."} textStyle={{color: '#333'}} />
         <View style={GStyles.hotListHeader}>
           <Text>Image(s)</Text>
         </View>
@@ -201,12 +208,14 @@ class ProductOverview extends Component {
 }
 
 const mapStateToProps = state => ({
-  product: state.get('product'),
+  product: state.get('product').toJS(),
+  shared: state.get('shared').toJS(),
   user: state.get('auth').toJS()
 });
 
 const mapDispatchToProps = dispatch => ({
-  createProduct: bindActionCreators(createProduct, dispatch)
+  createProduct: bindActionCreators(createProduct, dispatch),
+  clearProduct: bindActionCreators(clearProduct, dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductOverview);

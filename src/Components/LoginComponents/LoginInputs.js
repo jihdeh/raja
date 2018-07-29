@@ -107,11 +107,6 @@ class LoginInput extends Component {
             Forgot password?
           </Text>
         </View>
-        {this.state.loading && (
-          <View style={{ display: 'flex' }}>
-            <Text>Loading....</Text>
-          </View>
-        )}
       </KeyboardAvoidingView>
     )
   }

@@ -21,6 +21,8 @@ import Login from './Login';
 import Styles from '../Styles/LoginStyle';
 
 class LandingPage extends Component {
+  state= {}; 
+
   static navigationOptions = ({ navigation }) => {
     return {
       header: null
@@ -28,20 +30,23 @@ class LandingPage extends Component {
   };
 
   async componentWillMount() {
+    console.log('mounted')
     const value = await AsyncStorage.getItem('token');
     const verifyJwt = value && jwtDecode(value);
     if (verifyJwt && verifyJwt.exp < Date.now() / 1000 && value) {
       // do something
       console.log('exp');
       AsyncStorage.clear();
-      this.props.logout().then(() => {
-        this.props.navigation.navigate('Landing');
-      });
+      this.props.logout()
+      this.setState({ isAuthenticated: false })
       return;
     }
     if (value) {
+      this.setState({ isAuthenticated: true })
       this.props.navigation.navigate('Home');
       return;
+    } else {
+      this.setState({ isAuthenticated: false })
     }
   }
 
@@ -54,11 +59,15 @@ class LandingPage extends Component {
           AsyncStorage.setItem('token', isAuthenticated.token);
         }
       });
+      if (!this.state.isAuthenticated) this.setState({ isAuthenticated: true })
+    } else {
+      if (this.state.isAuthenticated) this.setState({ isAuthenticated: false })
     }
     return;
   }
 
   render() {
+    console.log('auth', this.state.isAuthenticated)
     return (
       <KeyboardAvoidingView behavior="padding" style={Styles.container}>
         <Image
@@ -68,9 +77,11 @@ class LandingPage extends Component {
               'https://airshp.com/wp-content/uploads/AL1-LogoSuite2016-v3_MARK-688x688.png'
           }}
         />
-        <View>
-          <Login {...this.props} />
-        </View>
+        {this.state.isAuthenticated === false &&
+          <View>
+            <Login {...this.props} />
+          </View>
+        }
       </KeyboardAvoidingView>
     );
   }

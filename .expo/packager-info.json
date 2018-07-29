@@ -1,8 +1,8 @@
 {
   "expoServerPort": 19000,
   "packagerPort": 19001,
-  "packagerPid": 8763,
-  "expoServerNgrokUrl": "https://k6-fuy.jihdeh.juli.exp.direct",
-  "packagerNgrokUrl": "https://packager.k6-fuy.jihdeh.juli.exp.direct",
-  "ngrokPid": 8783
+  "packagerPid": 25910,
+  "expoServerNgrokUrl": "https://79-t63.ladmerc.juli-mobile.exp.direct",
+  "packagerNgrokUrl": "https://packager.79-t63.ladmerc.juli-mobile.exp.direct",
+  "ngrokPid": 25922
 }
