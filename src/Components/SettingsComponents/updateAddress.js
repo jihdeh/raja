@@ -72,10 +72,8 @@ class UpdateAddress extends PureComponent {
     })
   }
 
-  async resetPromise(field, field2) {
-    const fields = field2
-      ? { [field]: undefined, [field2]: undefined }
-      : { [field]: undefined }
+  async resetPromise(field) {
+    const fields = { [field]: undefined }
     await this.setState({
       ...fields
     })
@@ -83,7 +81,7 @@ class UpdateAddress extends PureComponent {
   }
 
   onLocationChange({ id, name }, nextList) {
-    this.resetPromise('city', 'subdistrict').then(() => {
+    this.resetPromise('city').then(() => {
       this.setState({
         city: nextList.filter(list => list.province_id === id),
         provinceName: name,
@@ -93,7 +91,6 @@ class UpdateAddress extends PureComponent {
   }
 
   onCityChange({ id, name }, nextList) {
-    const { getSubdistrict } = this.props
     this.setState({
       cityId: id,
       cityName: name
@@ -280,7 +277,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getProvince: bindActionCreators(getProvince, dispatch),
-  getSubdistrict: bindActionCreators(getSubdistrict, dispatch),
   getCity: bindActionCreators(getCity, dispatch),
   updateProfile: bindActionCreators(updateProfile, dispatch),
   displayError: bindActionCreators(displayError, dispatch)
