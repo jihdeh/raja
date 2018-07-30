@@ -2,7 +2,6 @@ import { Map } from 'immutable'
 import {
   FETCH_PROVINCE,
   FETCH_CITY,
-  FETCH_SUBDISTRICT,
   FETCH_COURIERS
 } from '../Constants/ActionTypes'
 import { set } from '../utils/functional-immutable'
@@ -15,8 +14,6 @@ const AuthReducer = (state = initialState, { type, payload }) => {
       return set('loadedProvince', payload, state)
     case FETCH_CITY:
       return set('loadedCity', payload, state)
-    case FETCH_SUBDISTRICT:
-      return set('loadedSubdistrict', payload, state)
     case FETCH_COURIERS:
       return set('loadedCouriers', payload, state)
     default:

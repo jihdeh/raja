@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react'
 import {
   View,
   Text,
@@ -7,21 +7,17 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   AsyncStorage
-} from 'react-native';
-import CheckBox from 'react-native-checkbox';
-import Picker from 'react-native-picker-select';
-import get from 'lodash/get';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import {
-  getProvince,
-  getCity,
-  getSubdistrict
-} from '../../Actions/LocationAction';
-import { updateProfile } from '../../Actions/AuthAction';
-import { displayError } from '../../Actions/ErrorAction';
-import GStyles from '../../Styles/GeneralStyle';
-import Styles from '../../Styles/SettingStyle';
+} from 'react-native'
+import CheckBox from 'react-native-checkbox'
+import Picker from 'react-native-picker-select'
+import get from 'lodash/get'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { getProvince, getCity } from '../../Actions/LocationAction'
+import { updateProfile } from '../../Actions/AuthAction'
+import { displayError } from '../../Actions/ErrorAction'
+import GStyles from '../../Styles/GeneralStyle'
+import Styles from '../../Styles/SettingStyle'
 
 class UpdateAddress extends PureComponent {
   state = {
@@ -30,21 +26,18 @@ class UpdateAddress extends PureComponent {
     address: '',
     province: [],
     city: undefined,
-    subdistrict: undefined,
     provinceId: 'SELECT',
     cityName: 'SELECT',
-    subDistrictId: 'SELECT',
     provinceName: '',
     cityId: '',
-    subDistrictName: '',
     phone: '',
     isDefault: false,
     isLoading: false
-  };
+  }
 
   componentWillMount() {
-    const { getProvince, getCity } = this.props;
-    getProvince().then(() => getCity());
+    const { getProvince, getCity } = this.props
+    getProvince().then(() => getCity())
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,39 +51,35 @@ class UpdateAddress extends PureComponent {
         address: '',
         province: [],
         city: undefined,
-        subdistrict: undefined,
         provinceId: 'SELECT',
         cityName: 'SELECT',
-        subDistrictId: 'SELECT',
         provinceName: '',
         cityId: '',
-        subDistrictName: '',
         phone: '',
         isDefault: false,
         isLoading: false
-      });
-      console.log('3');
-      this.props.displayError('Successfully created');
+      })
+      this.props.displayError('Successfully created')
       // this.props.navigation.navigate('AddressScreen');
-      return;
+      return
     }
-    return;
+    return
   }
 
   onChange = (field, value) => {
     this.setState({
       [field]: value
-    });
-  };
+    })
+  }
 
   async resetPromise(field, field2) {
     const fields = field2
       ? { [field]: undefined, [field2]: undefined }
-      : { [field]: undefined };
+      : { [field]: undefined }
     await this.setState({
       ...fields
-    });
-    return true;
+    })
+    return true
   }
 
   onLocationChange({ id, name }, nextList) {
@@ -99,58 +88,42 @@ class UpdateAddress extends PureComponent {
         city: nextList.filter(list => list.province_id === id),
         provinceName: name,
         provinceId: id
-      });
-    });
+      })
+    })
   }
 
   onCityChange({ id, name }, nextList) {
-    const { getSubdistrict } = this.props;
-    getSubdistrict(id).then(res => {
-      this.resetPromise('subdistrict').then(() => {
-        this.setState({
-          subdistrict: res.filter(list => list.city_id === id),
-          cityId: id,
-          cityName: name
-        });
-      });
-    });
-  }
-
-  subdistrictChange({ id, name }) {
+    const { getSubdistrict } = this.props
     this.setState({
-      subDistrictId: id,
-      subDistrictName: name
-    });
+      cityId: id,
+      cityName: name
+    })
   }
 
   onSubmit = async () => {
-    const { auth } = this.props;
-    const { user: isAuthenticated } = auth;
-    const token =
-      (await AsyncStorage.getItem('token')) || isAuthenticated.token;
+    const { auth } = this.props
+    const { user: isAuthenticated } = auth
+    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
     const {
       firstName,
       lastName,
       provinceId,
       cityId,
       phone,
-      subDistrictId,
-      subDistrictName,
       cityName,
       provinceName,
       isDefault
-    } = this.state;
+    } = this.state
     if (
       !firstName.trim() ||
       !lastName.trim() ||
       !this.state.address.trim() ||
       !provinceId ||
       !cityId ||
-      !phone ||
-      !subDistrictId
+      !phone
     ) {
-      this.props.displayError('All fields are required');
-      return;
+      this.props.displayError('All fields are required')
+      return
     }
     const address = {
       firstName,
@@ -158,22 +131,20 @@ class UpdateAddress extends PureComponent {
       address: this.state.address,
       provinceId,
       cityId,
-      subDistrictName,
       cityName,
       provinceName,
       phone,
-      subDistrictId,
       isDefault
-    };
+    }
     this.setState({
       isLoading: true
-    });
-    this.props.updateProfile({ address }, token);
-  };
+    })
+    this.props.updateProfile({ address }, token)
+  }
 
   render() {
-    const { location: { loadedCity, loadedProvince } } = this.props;
-    const { isLoading } = this.state;
+    const { location: { loadedCity, loadedProvince } } = this.props
+    const { isLoading } = this.state
 
     return (
       <View style={{ margin: 10 }}>
@@ -273,25 +244,6 @@ class UpdateAddress extends PureComponent {
             </Fragment>
           </KeyboardAvoidingView>
         )}
-
-        {get(this.state, 'subdistrict') && (
-          <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
-            <Fragment>
-              <Text style={Styles.label_text}>SUBDISTRICT:</Text>
-              <View style={GStyles.dropDownSelection_input}>
-                <Picker
-                  items={this.state.subdistrict}
-                  hideIcon
-                  onValueChange={(subdistrict, index) =>
-                    this.subdistrictChange(subdistrict)
-                  }
-                  placeholder={{ label: 'SELECT' }}
-                  value={this.state.subDistrictId}
-                />
-              </View>
-            </Fragment>
-          </KeyboardAvoidingView>
-        )}
         <View style={Styles.checkSelections}>
           <CheckBox
             label="SET AS DEFAULT"
@@ -317,14 +269,14 @@ class UpdateAddress extends PureComponent {
           </TouchableOpacity>
         )}
       </View>
-    );
+    )
   }
 }
 const mapStateToProps = state => ({
   location: state.get('location').toJS(),
   auth: state.get('auth').toJS(),
   error: state.get('errorMessage').toJS()
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   getProvince: bindActionCreators(getProvince, dispatch),
@@ -332,6 +284,6 @@ const mapDispatchToProps = dispatch => ({
   getCity: bindActionCreators(getCity, dispatch),
   updateProfile: bindActionCreators(updateProfile, dispatch),
   displayError: bindActionCreators(displayError, dispatch)
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpdateAddress);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateAddress)
