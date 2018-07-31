@@ -106,10 +106,6 @@ class ProductInfo extends Component {
     return <SliderEntry data={item} even={(index + 1) % 2 === 0} />
   }
 
-  _submitComment() {
-    // console.log(target.value);
-  }
-
   _isBookmark(item, items) {
     const isBookmarked = items && items.find(bm => bm.id == item.id)
     this.setState({
@@ -356,14 +352,6 @@ class ProductInfo extends Component {
           </Fragment>
           <View style={{ marginTop: 20 }}>
             <Text>Comments</Text>
-            <TextInput
-              multiline={true}
-              numberOfLines={4}
-              style={PStyles.commentInput}
-              onChangeText={comment => this.setState({ comment })}
-              value={this.state.comment}
-            />
-            <Button title="Post" onPress={this._submitComment} />
           </View>
           <View style={PStyles.hr} />
           <View style={{ marginTop: 15 }}>

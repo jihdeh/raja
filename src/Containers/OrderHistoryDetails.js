@@ -6,14 +6,19 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  Dimensions
+  Dimensions,
+  ActivityIndicator,
+  Button,
+  AsyncStorage
 } from 'react-native'
 import { bindActionCreators } from 'redux'
 import Carousel from 'react-native-snap-carousel'
 import moment from 'moment/moment'
 import { connect } from 'react-redux'
 import get from 'lodash/get'
+import StarRating from 'react-native-star-rating'
 import SliderEntry from '../Components/SliderEntry'
+import { reviewProduct } from '../Actions/ProductAction'
 import styles, { colors } from '../Styles/SliderEntry.index'
 import { sliderWidth, itemWidth } from '../Styles/SliderEntry.style'
 import Styles from '../Styles/OrderHistoryStyle'
@@ -26,11 +31,14 @@ class OrderHistoryDetail extends Component {
     routes: [
       { key: 'bought', title: 'Bought Items' },
       { key: 'sold', title: 'Sold Items' }
-    ]
+    ],
+    starCount: 1,
+    comment: '',
+    isLoading: null
   }
 
-  componentDidMount() {
-    console.log(this.props)
+  componentWillReceiveProps(nextProps) {
+    this.setState({ isLoading: false })
   }
 
   _renderLightItem({ item, index }) {
@@ -41,11 +49,28 @@ class OrderHistoryDetail extends Component {
     return <SliderEntry data={item} even={(index + 1) % 2 === 0} />
   }
 
+  async _submitReview({ id }) {
+    const { starCount, comment } = this.state
+    const { reviewProduct, user } = this.props
+    this.setState({ isLoading: true })
+    const { user: isAuthenticated } = user
+    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
+    reviewProduct(id, { rating: starCount, comment }, token)
+    // console.log(target.value);
+  }
+
+  onStarRatingPress(rating) {
+    this.setState({
+      starCount: rating
+    })
+  }
+
   render() {
     const isTinder = 'tinder'
     const { navigation: { state: { params: { item } } } } = this.props
+    const { isLoading } = this.state
     return (
-      <View>
+      <ScrollView>
         <Carousel
           data={[{ url: item.image }]}
           renderItem={isTinder ? this._renderLightItem : this._renderItem}
@@ -74,15 +99,63 @@ class OrderHistoryDetail extends Component {
 
           <View style={PStyles.hr} />
 
-          <View style={{ flex: 1 }}>
+          <View>
             <View style={PStyles.productInfoMore}>
               <Text>Seller Name: {item.seller.username}</Text>
             </View>
           </View>
+          <View style={{ marginTop: 20 }}>
+            <Text>Rating</Text>
+          </View>
+          <StarRating
+            disabled={false}
+            emptyStar={'ios-star-outline'}
+            fullStar={'ios-star'}
+            halfStar={'ios-star-half'}
+            iconSet={'Ionicons'}
+            halfStarEnabled
+            maxStars={7}
+            rating={this.state.starCount}
+            selectedStar={rating => this.onStarRatingPress(rating)}
+            fullStarColor={'red'}
+          />
+          <View style={{ marginTop: 20 }}>
+            <Text>Comments</Text>
+            <TextInput
+              multiline={true}
+              numberOfLines={4}
+              maxLength={250}
+              style={PStyles.commentInput}
+              onChangeText={comment => this.setState({ comment })}
+              value={this.state.comment}
+            />
+            <View style={{ margin: 20 }} />
+            {!isLoading ? (
+              <TouchableOpacity
+                onPress={() => !isLoading && this._submitReview(item)}
+                style={GStyles.buttonContainer}
+              >
+                <Text style={GStyles.buttonText}>SUBMIT REVIEW</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity style={GStyles.buttonContainer}>
+                <ActivityIndicator size="small" color="#ffffff" />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
-      </View>
+      </ScrollView>
     )
   }
 }
 
-export default OrderHistoryDetail
+const mapStateToProps = state => ({
+  product: state.get('product').toJS(),
+  user: state.get('auth').toJS()
+})
+
+const mapDispatchToProps = dispatch => ({
+  reviewProduct: bindActionCreators(reviewProduct, dispatch)
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrderHistoryDetail)
