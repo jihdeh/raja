@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
   View,
   Text,
@@ -6,18 +6,19 @@ import {
   Image,
   TouchableOpacity,
   TextInput,
-  Dimensions
-} from 'react-native';
-import { bindActionCreators } from 'redux';
-import moment from 'moment/moment';
-import { connect } from 'react-redux';
-import get from 'lodash/get';
-import { TabView, TabBar, SceneMap } from 'react-native-tab-view';
-import { boughtOrderHistory, soldOrderHistory } from '../Actions/ProductAction';
-import FirstRoute from '../Components/OrderHistoryComponents/FirstRoute';
-import SecondRoute from '../Components/OrderHistoryComponents/SecondRoute';
+  Dimensions,
+  AsyncStorage
+} from 'react-native'
+import { bindActionCreators } from 'redux'
+import moment from 'moment/moment'
+import { connect } from 'react-redux'
+import get from 'lodash/get'
+import { TabView, TabBar, SceneMap } from 'react-native-tab-view'
+import { boughtOrderHistory, soldOrderHistory } from '../Actions/ProductAction'
+import FirstRoute from '../Components/OrderHistoryComponents/FirstRoute'
+import SecondRoute from '../Components/OrderHistoryComponents/SecondRoute'
 
-import Styles from '../Styles/OrderHistoryStyle';
+import Styles from '../Styles/OrderHistoryStyle'
 
 class OrderHistory extends Component {
   state = {
@@ -26,11 +27,13 @@ class OrderHistory extends Component {
       { key: 'bought', title: 'Bought Items' },
       { key: 'sold', title: 'Sold Items' }
     ]
-  };
+  }
 
-  componentDidMount() {
-    const { getBoughtOrderHistory, getSoldOrderHistory } = this.props;
-    getBoughtOrderHistory().then(() => getSoldOrderHistory());
+  async componentDidMount() {
+    const { getBoughtOrderHistory, getSoldOrderHistory, user } = this.props
+    const { user: isAuthenticated } = user
+    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
+    getBoughtOrderHistory(token).then(() => getSoldOrderHistory(token))
   }
 
   render() {
@@ -38,14 +41,24 @@ class OrderHistory extends Component {
       product: { boughtOrderHistory, soldOrderHistory },
       user: { userExtended },
       navigation
-    } = this.props;
+    } = this.props
 
     return (
       <TabView
         navigationState={this.state}
         renderScene={SceneMap({
-          bought: () => <FirstRoute orderHistory={boughtOrderHistory} />,
-          sold: () => <SecondRoute orderHistory={soldOrderHistory} />
+          bought: () => (
+            <FirstRoute
+              navigation={navigation}
+              orderHistory={boughtOrderHistory}
+            />
+          ),
+          sold: () => (
+            <SecondRoute
+              navigation={navigation}
+              orderHistory={soldOrderHistory}
+            />
+          )
         })}
         renderTabBar={props => (
           <TabBar {...props} tabStyle={{ backgroundColor: '#515151' }} />
@@ -56,18 +69,18 @@ class OrderHistory extends Component {
           height: Dimensions.get('window').height
         }}
       />
-    );
+    )
   }
 }
 
 const mapStateToProps = state => ({
   product: state.get('product').toJS(),
   user: state.get('auth').toJS()
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   getBoughtOrderHistory: bindActionCreators(boughtOrderHistory, dispatch),
   getSoldOrderHistory: bindActionCreators(soldOrderHistory, dispatch)
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderHistory);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderHistory)

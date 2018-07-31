@@ -1,7 +1,7 @@
-import axios from 'axios';
-import { BASE_URL } from '../Constants/BaseUrl';
-import { displayError } from './ErrorAction';
-import { AsyncStorage } from 'react-native';
+import axios from 'axios'
+import { BASE_URL } from '../Constants/BaseUrl'
+import { displayError } from './ErrorAction'
+import { AsyncStorage } from 'react-native'
 import {
   SHOW_SPINNER,
   HIDE_SPINNER,
@@ -19,31 +19,31 @@ import {
   FETCH_SOLD_ORDER_HISTORY,
   FETCH_SHIPPING_COST,
   CLEAR_PRODUCT
-} from '../Constants/ActionTypes';
+} from '../Constants/ActionTypes'
 
 AsyncStorage.getItem('token').then(
   token => (axios.defaults.headers.common['Authorization'] = `Bearer ${token}`)
-);
+)
 
 const errorHandler = errors =>
   Object.keys(errors)
     .map((key, i) => `${i + 1}. ${key}: ${errors[key]}`)
-    .join('\n');
+    .join('\n')
 
 export const createProduct = (product, token) => async dispatch => {
-  dispatch({ type: SHOW_SPINNER });
-  
-  const form = new FormData();
+  dispatch({ type: SHOW_SPINNER })
+
+  const form = new FormData()
   Object.keys(product).forEach(key => {
-    const item = product[key];
+    const item = product[key]
     if (key !== 'images') {
       if (Array.isArray(item)) {
-        form.append(key, JSON.stringify(item));
+        form.append(key, JSON.stringify(item))
       } else {
-        form.append(key, item);
+        form.append(key, item)
       }
     }
-  });
+  })
 
   // append images last
   product.images.forEach((image, index) =>
@@ -52,7 +52,7 @@ export const createProduct = (product, token) => async dispatch => {
       type: 'image/png',
       name: 'image-0' + (index + 1)
     })
-  );
+  )
 
   const options = {
     method: 'POST',
@@ -61,53 +61,55 @@ export const createProduct = (product, token) => async dispatch => {
     },
     data: form,
     url: `${BASE_URL}/products`
-  };
+  }
   axios(options)
     .then(response => {
-      dispatch({ type: PRODUCT_CREATED, payload: response.data });
-      dispatch({ type: HIDE_SPINNER });
+      dispatch({ type: PRODUCT_CREATED, payload: response.data })
+      dispatch({ type: HIDE_SPINNER })
     })
     .catch(({ response }) => {
-      dispatch({ type: HIDE_SPINNER });
-      displayError(errorHandler(response.data.errors || response.data.message))(dispatch);
-    });
-};
+      dispatch({ type: HIDE_SPINNER })
+      displayError(errorHandler(response.data.errors || response.data.message))(
+        dispatch
+      )
+    })
+}
 
 export const clearProduct = () => async dispatch => {
   dispatch({
-    type: CLEAR_PRODUCT,
-  });
-};
+    type: CLEAR_PRODUCT
+  })
+}
 
 export const getProducts = type => async dispatch => {
-  let dispatchType;
+  let dispatchType
   switch (type) {
     case 'onSale':
-      dispatchType = PRODUCT_ONSALE;
-      break;
+      dispatchType = PRODUCT_ONSALE
+      break
     case 'isFeatured':
-      dispatchType = PRODUCT_FEATURED;
-      break;
+      dispatchType = PRODUCT_FEATURED
+      break
     case 'isTrending':
-      dispatchType = PRODUCT_TRENDING;
-      break;
+      dispatchType = PRODUCT_TRENDING
+      break
     default:
-      return;
+      return
   }
 
   axios
     .get(`${BASE_URL}/products?${type}=true`)
     .then(response => {
-      dispatch({ type: dispatchType, payload: response.data });
+      dispatch({ type: dispatchType, payload: response.data })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const getUserProducts = (token, userId, type) => async dispatch => {
   axios
@@ -116,19 +118,19 @@ export const getUserProducts = (token, userId, type) => async dispatch => {
     })
     .then(({ data }) => {
       if (type === 'following') {
-        dispatch({ type: FOLLOWING_PROFILE_PRODUCTS, payload: data });
-        return;
+        dispatch({ type: FOLLOWING_PROFILE_PRODUCTS, payload: data })
+        return
       }
-      dispatch({ type: PROFILE_PRODUCTS, payload: data });
+      dispatch({ type: PROFILE_PRODUCTS, payload: data })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const getCartItem = token => dispatch => {
   axios
@@ -141,34 +143,38 @@ export const getCartItem = token => dispatch => {
       dispatch({
         type: FETCH_CART,
         payload: data
-      });
+      })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
-export const boughtOrderHistory = () => async dispatch => {
+export const boughtOrderHistory = token => async dispatch => {
   axios
-    .get(`${BASE_URL}/orders`)
+    .get(`${BASE_URL}/orders`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     .then(({ data }) => {
       dispatch({
         type: FETCH_BOUGHT_ORDER_HISTORY,
         payload: data
-      });
+      })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const getShippingCost = (token, addressId) => async dispatch => {
   axios
@@ -178,112 +184,124 @@ export const getShippingCost = (token, addressId) => async dispatch => {
       }
     })
     .then(({ data }) => {
-      console.log(data);
       dispatch({
         type: FETCH_SHIPPING_COST,
         payload: data
-      });
+      })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
-export const soldOrderHistory = () => async dispatch => {
+export const soldOrderHistory = token => async dispatch => {
   axios
-    .get(`${BASE_URL}/orders?tab=seller`)
+    .get(`${BASE_URL}/orders?tab=seller`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
     .then(({ data }) => {
+      console.log(data, '---soldOrderHistory')
       dispatch({
         type: FETCH_SOLD_ORDER_HISTORY,
         payload: data
-      });
+      })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const addToCart = (cartId, { id: productId }, quantity) => dispatch => {
-  dispatch({ type: SHOW_SPINNER });
+  dispatch({ type: SHOW_SPINNER })
   axios
     .put(`${BASE_URL}/cart/${cartId}/update`, {
       product: productId,
       quantity
     })
     .then(({ data }) => {
-      dispatch({ type: HIDE_SPINNER });
+      dispatch({ type: HIDE_SPINNER })
       dispatch({
         type: ADD_TO_CART,
         payload: data
-      });
+      })
     })
     .catch(({ response }) => {
-      dispatch({ type: HIDE_SPINNER });
-      console.log(response.data);
+      dispatch({ type: HIDE_SPINNER })
+      console.log(response.data)
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
 export const bidForProduct = (productId, amount) => dispatch => {
-  dispatch({ type: SHOW_SPINNER });
+  dispatch({ type: SHOW_SPINNER })
 
   axios
     .put(`${BASE_URL}/products/${productId}/bid`, {
       amount
     })
     .then(({ data }) => {
-      dispatch({ type: HIDE_SPINNER });
+      dispatch({ type: HIDE_SPINNER })
       dispatch({
         type: BID_FOR_PRODUCT,
         payload: data
-      });
+      })
     })
     .catch(({ response }) => {
-      dispatch({ type: HIDE_SPINNER });
+      dispatch({ type: HIDE_SPINNER })
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}
 
-export const checkout = (data, addressId) => async dispatch => {
-  dispatch({ type: SHOW_SPINNER });
+export const checkout = (data, addressId, token) => async dispatch => {
+  dispatch({ type: SHOW_SPINNER })
 
   axios
-    .post(`${BASE_URL}/checkout?location=${addressId}`, {
-      ...data
-    })
+    .post(
+      `${BASE_URL}/checkout?location=${addressId}`,
+      {
+        ...data
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
     .then(({ data }) => {
-      dispatch({ type: HIDE_SPINNER });
+      dispatch({ type: HIDE_SPINNER })
       dispatch({
         type: CHECKOUT,
         payload: data
-      });
-      boughtOrderHistory()(dispatch);
+      })
+      boughtOrderHistory(token)(dispatch)
     })
     .catch(({ response }) => {
-      dispatch({ type: HIDE_SPINNER });
+      dispatch({ type: HIDE_SPINNER })
       if (response.status === 503) {
-        return displayError('Server unvailable, please try later')(dispatch);
+        return displayError('Server unvailable, please try later')(dispatch)
       }
       if (response.data.errors) {
-        displayError(errorHandler(response.data.errors))(dispatch);
+        displayError(errorHandler(response.data.errors))(dispatch)
       } else {
-        displayError(response.data.message)(dispatch);
+        displayError(response.data.message)(dispatch)
       }
-    });
-};
+    })
+}

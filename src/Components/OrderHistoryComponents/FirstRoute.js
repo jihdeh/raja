@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
-import Accordion from 'react-native-collapsible/Accordion';
-import { bindActionCreators } from 'redux';
-import moment from 'moment/moment';
-import get from 'lodash/get';
+import React, { Component } from 'react'
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
+import Accordion from 'react-native-collapsible/Accordion'
+import { bindActionCreators } from 'redux'
+import moment from 'moment/moment'
+import get from 'lodash/get'
 
-import Styles from '../../Styles/OrderHistoryStyle';
+import Styles from '../../Styles/OrderHistoryStyle'
 
 class FirstRoute extends Component {
   _renderHeader(section) {
@@ -17,16 +17,24 @@ class FirstRoute extends Component {
         <Text>Delivery To: {get(section, 'address.address')}</Text>
         <Text>Subtotal: RP {section.totalPrice}</Text>
       </View>
-    );
+    )
   }
 
-  _renderContent(section) {
+  _renderContent = section => {
+    const { navigation } = this.props
     return (
       <ScrollView style={{ backgroundColor: '#ffffff' }}>
         {section.items.map((tlItem, key) => {
-          const { name, image, price, quantity } = tlItem;
+          const { name, image, price, quantity } = tlItem
           return (
-            <View key={key}>
+            <TouchableOpacity
+              key={key}
+              onPress={() =>
+                navigation.navigate('OrderHistoryDetailScreen', {
+                  item: tlItem
+                })
+              }
+            >
               <View style={Styles.listOrder}>
                 <View>
                   <Image source={{ uri: image }} style={Styles.logo} />
@@ -40,15 +48,15 @@ class FirstRoute extends Component {
               <View style={Styles.horizon}>
                 <View style={Styles.horizonLine} />
               </View>
-            </View>
-          );
+            </TouchableOpacity>
+          )
         })}
       </ScrollView>
-    );
+    )
   }
 
   render() {
-    const { orderHistory } = this.props;
+    const { orderHistory } = this.props
 
     return (
       <ScrollView>
@@ -64,8 +72,8 @@ class FirstRoute extends Component {
           </View>
         )}
       </ScrollView>
-    );
+    )
   }
 }
 
-export default FirstRoute;
+export default FirstRoute

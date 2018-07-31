@@ -137,7 +137,6 @@ class ProductInfo extends Component {
     const { params } = state
     const { item } = params
     const { bidPrice } = this.state
-    console.log(bidPrice)
     bidForProduct(item.id, +bidPrice)
   }
 
@@ -174,14 +173,11 @@ class ProductInfo extends Component {
   render() {
     const isTinder = 'tinder'
     const {
-      navigation,
+      navigation: { state: { params: { item } } },
       product,
       user: { userExtended: { id, addresses, email } }
     } = this.props
     const { isBookmarked } = this.state
-    const { state } = navigation
-    const { params } = state
-    const { item } = params
 
     const isInCart =
       get(product, 'getCart') &&
