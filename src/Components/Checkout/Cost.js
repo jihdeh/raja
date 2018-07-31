@@ -146,6 +146,9 @@ class Cost extends Component {
 
   async onPayClicked() {
     if (!this.validate()) return
+    this.setState({
+      isLoading: true
+    })
     const { auth } = this.props
     const { user: isAuthenticated } = auth
     const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
@@ -159,9 +162,6 @@ class Cost extends Component {
       internetBankName,
       paymentMethod
     }
-    this.setState({
-      isLoading: true
-    })
     this.props.pay(obj, location.id, token)
   }
 
@@ -241,7 +241,7 @@ class Cost extends Component {
           </View>
           {!isLoading ? (
             <TouchableOpacity
-              onPress={() => this.onPayClicked()}
+              onPress={() => !isLoading && this.onPayClicked()}
               style={FStyles.evtbtn}
             >
               <Text style={FStyles.evntTxt}>PAY</Text>

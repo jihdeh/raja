@@ -206,7 +206,6 @@ export const soldOrderHistory = token => async dispatch => {
       }
     })
     .then(({ data }) => {
-      console.log(data, '---soldOrderHistory')
       dispatch({
         type: FETCH_SOLD_ORDER_HISTORY,
         payload: data
