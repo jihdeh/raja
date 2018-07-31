@@ -1,4 +1,4 @@
-import React, { Component, PureComponent } from 'react';
+import React, { Component, PureComponent } from 'react'
 import {
   View,
   Text,
@@ -10,21 +10,21 @@ import {
   TextInput,
   FlatList,
   ScrollView
-} from 'react-native';
-import jwtDecode from 'jwt-decode';
-import get from 'lodash/get';
-import { Icon } from 'native-base';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { logout, getFollowingUserProfile } from '../../Actions/AuthAction';
-import RightHeader from '../ProfileRightHeader';
-import ProfileView from '../ProfileView';
-import { getUserProducts } from '../../Actions/ProductAction';
+} from 'react-native'
+import jwtDecode from 'jwt-decode'
+import get from 'lodash/get'
+import { Icon } from 'native-base'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { logout, getFollowingUserProfile } from '../../Actions/AuthAction'
+import RightHeader from '../ProfileRightHeader'
+import ProfileView from '../ProfileView'
+import { getUserProducts } from '../../Actions/ProductAction'
 
 class ProfileTab extends PureComponent {
   constructor(props) {
-    super(props);
-    this.hasLoaded = null;
+    super(props)
+    this.hasLoaded = null
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -39,50 +39,50 @@ class ProfileTab extends PureComponent {
         </Text>
       ),
       headerRight: <RightHeader navigation={navigation} />
-    };
-  };
+    }
+  }
 
   async componentWillMount() {
-    const { navigation, getUserProducts } = this.props;
-    const value = await AsyncStorage.getItem('token');
-    const decoded = jwtDecode(value);
+    const { navigation, getUserProducts } = this.props
+    const value = await AsyncStorage.getItem('token')
+    const decoded = jwtDecode(value)
     if (decoded && !get(navigation, 'state.params.username')) {
       navigation.setParams({
         username: decoded.username
-      });
+      })
     }
   }
 
   async loadProfileProducts(id, type) {
-    const { user: isAuthenticated } = this.props.user;
+    const { user: isAuthenticated } = this.props.user
     const authToken =
-      (await AsyncStorage.getItem('token')) || get(isAuthenticated, 'token');
-    const { getUserProducts, getFollowingUserProfile } = this.props;
+      (await AsyncStorage.getItem('token')) || get(isAuthenticated, 'token')
+    const { getUserProducts, getFollowingUserProfile } = this.props
 
-    if (authToken) {
-      getUserProducts(authToken, id, type);
-      getFollowingUserProfile(authToken, id);
+    if (authToken && id) {
+      getUserProducts(authToken, id, type)
+      getFollowingUserProfile(authToken, id)
     }
-    return;
+    return
   }
 
   pullAddress(addresses, type) {
     if (type === 'following') {
-      return addresses;
+      return addresses
     }
-    return addresses.find(user => user.isDefault);
+    return addresses.find(user => user.isDefault)
   }
 
   async pullProducts() {
-    const { navigation, products, user: { userExtended } } = this.props;
-    const { state: { params } } = navigation;
-    const hotListsItems = products;
+    const { navigation, products, user: { userExtended } } = this.props
+    const { state: { params } } = navigation
+    const hotListsItems = products
     get(params, 'followingProfile') &&
     get(params, 'username') !== get(userExtended, 'username')
       ? (!this.hasLoaded || this.hasLoaded !== get(params, 'username')) &&
         this.loadProfileProducts(get(params, 'following.id'), 'following')
       : get(hotListsItems, 'profileProducts.items') == undefined &&
-        this.loadProfileProducts(get(userExtended, 'id'));
+        this.loadProfileProducts(get(userExtended, 'id'))
   }
 
   render() {
@@ -91,17 +91,17 @@ class ProfileTab extends PureComponent {
       products,
       user: { userExtended, followingUserExtended },
       shared
-    } = this.props;
-    const { state: { params } } = navigation;
-    const hotListsItems = products;
+    } = this.props
+    const { state: { params } } = navigation
+    const hotListsItems = products
 
-    this.pullProducts().then(() => (this.hasLoaded = get(params, 'username')));
+    this.pullProducts().then(() => (this.hasLoaded = get(params, 'username')))
 
     const findDefaultAddress = !get(params, 'followingProfile')
       ? get(userExtended, 'addresses') &&
         this.pullAddress(userExtended.addresses)
       : get(params.following, 'location') &&
-        this.pullAddress(params.following.location, 'following');
+        this.pullAddress(params.following.location, 'following')
 
     return (
       <View>
@@ -124,7 +124,7 @@ class ProfileTab extends PureComponent {
           />
         )}
       </View>
-    );
+    )
   }
 }
 
@@ -132,7 +132,7 @@ const mapStateToProps = state => ({
   products: state.get('product').toJS(),
   user: state.get('auth').toJS(),
   shared: state.get('shared').toJS()
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   logout: bindActionCreators(logout, dispatch),
@@ -141,6 +141,6 @@ const mapDispatchToProps = dispatch => ({
     dispatch
   ),
   getUserProducts: bindActionCreators(getUserProducts, dispatch)
-});
+})
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileTab);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileTab)

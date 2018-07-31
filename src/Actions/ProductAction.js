@@ -19,7 +19,8 @@ import {
   FETCH_SOLD_ORDER_HISTORY,
   FETCH_SHIPPING_COST,
   CLEAR_PRODUCT,
-  REVIEW_PRODUCT
+  REVIEW_PRODUCT,
+  GET_PRODUCT_REVIEW
 } from '../Constants/ActionTypes'
 
 AsyncStorage.getItem('token').then(
@@ -324,6 +325,40 @@ export const reviewProduct = (id, data, token) => async dispatch => {
       dispatch({ type: HIDE_SPINNER })
       dispatch({
         type: REVIEW_PRODUCT,
+        payload: data
+      })
+    })
+    .catch(({ response }) => {
+      dispatch({ type: HIDE_SPINNER })
+      if (response.status === 503) {
+        return displayError('Server unvailable, please try later')(dispatch)
+      }
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch)
+      } else {
+        displayError(response.data.message)(dispatch)
+      }
+    })
+}
+
+export const getProductReview = (id, data, token) => async dispatch => {
+  // product/:id/review
+  axios
+    .get(
+      `${BASE_URL}/products/${id}/reviews`,
+      {
+        ...data
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    )
+    .then(({ data }) => {
+      dispatch({ type: HIDE_SPINNER })
+      dispatch({
+        type: GET_PRODUCT_REVIEW,
         payload: data
       })
     })
