@@ -18,7 +18,7 @@ import { connect } from 'react-redux'
 import get from 'lodash/get'
 import StarRating from 'react-native-star-rating'
 import SliderEntry from '../Components/SliderEntry'
-import { reviewProduct } from '../Actions/ProductAction'
+import { reviewProduct, getProductReview } from '../Actions/ProductAction'
 import styles, { colors } from '../Styles/SliderEntry.index'
 import { sliderWidth, itemWidth } from '../Styles/SliderEntry.style'
 import Styles from '../Styles/OrderHistoryStyle'
@@ -35,6 +35,16 @@ class OrderHistoryDetail extends Component {
     starCount: 1,
     comment: '',
     isLoading: null
+  }
+
+  async componentWillMount() {
+    const { navigation, user, getProductReview, product } = this.props
+    const { user: isAuthenticated } = user
+    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
+    const { state: { params: { item } } } = navigation
+    if (!product.getProductReview) {
+      getProductReview(item.id, token)
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -67,8 +77,9 @@ class OrderHistoryDetail extends Component {
 
   render() {
     const isTinder = 'tinder'
-    const { navigation: { state: { params: { item } } } } = this.props
+    const { navigation: { state: { params: { item } } }, product } = this.props
     const { isLoading } = this.state
+    console.log(product.getProductReview)
     return (
       <ScrollView>
         <Carousel
@@ -114,7 +125,7 @@ class OrderHistoryDetail extends Component {
             halfStar={'ios-star-half'}
             iconSet={'Ionicons'}
             halfStarEnabled
-            maxStars={7}
+            maxStars={5}
             rating={this.state.starCount}
             selectedStar={rating => this.onStarRatingPress(rating)}
             fullStarColor={'red'}
@@ -155,7 +166,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  reviewProduct: bindActionCreators(reviewProduct, dispatch)
+  reviewProduct: bindActionCreators(reviewProduct, dispatch),
+  getProductReview: bindActionCreators(getProductReview, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderHistoryDetail)

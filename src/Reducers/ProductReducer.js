@@ -14,7 +14,8 @@ import {
   CHECKOUT,
   FETCH_BOUGHT_ORDER_HISTORY,
   FETCH_SOLD_ORDER_HISTORY,
-  FETCH_SHIPPING_COST
+  FETCH_SHIPPING_COST,
+  GET_PRODUCT_REVIEW
 } from '../Constants/ActionTypes'
 import { set } from '../utils/functional-immutable'
 
@@ -52,6 +53,8 @@ const ProductReducer = (state = initialState, { type, payload }) => {
       return set('shippingCost', payload, state)
     case REVIEW_PRODUCT:
       return set('productReview', payload, state)
+    case GET_PRODUCT_REVIEW:
+      return set('getProductReview', payload, state)
     default:
       return state
   }
