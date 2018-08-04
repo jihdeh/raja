@@ -13,6 +13,7 @@ import {
 } from 'react-native'
 import { bindActionCreators } from 'redux'
 import Carousel from 'react-native-snap-carousel'
+import Spinner from 'react-native-loading-spinner-overlay'
 import moment from 'moment/moment'
 import { connect } from 'react-redux'
 import get from 'lodash/get'
@@ -77,11 +78,20 @@ class OrderHistoryDetail extends Component {
 
   render() {
     const isTinder = 'tinder'
-    const { navigation: { state: { params: { item } } }, product } = this.props
+    const {
+      navigation: { state: { params: { item } } },
+      product,
+      shared: { showSpinner }
+    } = this.props
     const { isLoading } = this.state
-    console.log(product.getProductReview)
+
     return (
       <ScrollView>
+        <Spinner
+          visible={showSpinner}
+          textContent={'Please wait...'}
+          textStyle={{ color: '#333' }}
+        />
         <Carousel
           data={[{ url: item.image }]}
           renderItem={isTinder ? this._renderLightItem : this._renderItem}
@@ -162,7 +172,8 @@ class OrderHistoryDetail extends Component {
 
 const mapStateToProps = state => ({
   product: state.get('product').toJS(),
-  user: state.get('auth').toJS()
+  user: state.get('auth').toJS(),
+  shared: state.get('shared').toJS()
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -308,6 +308,7 @@ export const checkout = (data, addressId, token) => async dispatch => {
 }
 
 export const reviewProduct = (id, data, token) => async dispatch => {
+  console.log(data, '-ass', id, token)
   // product/:id/review
   axios
     .post(
@@ -336,7 +337,8 @@ export const reviewProduct = (id, data, token) => async dispatch => {
         return displayError('Server unvailable, please try later')(dispatch)
       }
       if (response.status === 403) {
-        return displayError('Server unvailable, please try later')(dispatch)
+        let msg = response.data.message || 'Server unvailable, please try later'
+        return displayError(msg)(dispatch)
       }
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch)

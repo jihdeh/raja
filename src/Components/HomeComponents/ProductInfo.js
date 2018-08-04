@@ -85,7 +85,6 @@ class ProductInfo extends Component {
     const { state } = navigation
     const { params } = state
     const { item } = params
-    console.log(nextProps)
 
     if (requestSuccess && this.state.followTrigger) {
       this.setState({
@@ -176,6 +175,7 @@ class ProductInfo extends Component {
       user: { userExtended: { id, addresses, email } }
     } = this.props
     const { isBookmarked } = this.state
+    console.log(product.getProductReview)
 
     const isInCart =
       get(product, 'getCart') &&
