@@ -356,7 +356,7 @@ class ProductInfo extends Component {
             <Text>Reviews</Text>
           </View>
           <View style={PStyles.hr} />
-          <View style={{ marginTop: 15, flex: 1 }}>
+          <View style={{ marginTop: 15 }}>
             {get(product.getProductReview, 'items.length') ? (
               product.getProductReview.items.map((review, key) => {
                 return (
@@ -367,7 +367,7 @@ class ProductInfo extends Component {
                         disabled
                         emptyStar={'ios-star-outline'}
                         fullStar={'ios-star'}
-                        containerStyle={{ width: '10%', height: '2%' }}
+                        containerStyle={{ width: '10%', flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}
                         halfStar={'ios-star-half'}
                         iconSet={'Ionicons'}
                         halfStarEnabled
@@ -380,6 +380,7 @@ class ProductInfo extends Component {
                     <View>
                       <Text>Hello world, this is a comment section with lots of love</Text>
                     </View>
+                    <View style={{borderWidth: 1, borderColor: '#e4e4e4', marginBottom: 10 }} />
                   </View>
                 )
               })
