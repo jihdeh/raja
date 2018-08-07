@@ -41,7 +41,7 @@ class HomeTab extends Component {
             onPress={() => navigation.navigate('CartScreen')}
             style={{ paddingLeft: 10 }}
           />
-          <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />
+          <Icon name="ios-cash-outline" onPress={() => navigation.navigate('WalletScreen')} style={{ paddingLeft: 10 }} />
         </View>
       ),
       headerRight: (

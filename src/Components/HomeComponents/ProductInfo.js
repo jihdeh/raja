@@ -377,6 +377,9 @@ class ProductInfo extends Component {
                         fullStarColor={'red'}
                       />
                     </View>
+                    <View>
+                      <Text>Hello world, this is a comment section with lots of love</Text>
+                    </View>
                   </View>
                 )
               })

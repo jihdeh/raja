@@ -17,6 +17,7 @@ import LoginScreen from './Containers/Login'
 import SignUpScreen from './Containers/SignUp'
 import SettingsScreen from './Containers/Settings'
 import CartScreen from './Containers/Cart'
+import WalletScreen from './Containers/Wallet'
 import CheckoutScreen from './Containers/Checkout'
 import AddressScreen from './Containers/Address'
 import OrderHistoryScreen from './Containers/OrderHistory'
@@ -68,6 +69,7 @@ const AppNavigator = StackNavigator({
   BidSelection: { screen: BidSelection },
   BookmarkScreen: { screen: BookmarkScreen },
   SettingsScreen: { screen: SettingsScreen },
+  WalletScreen: { screen: WalletScreen },
   CartScreen: { screen: CartScreen },
   CheckoutScreen: { screen: CheckoutScreen },
   AddressScreen: { screen: AddressScreen },
