@@ -175,7 +175,6 @@ class ProductInfo extends Component {
       user: { userExtended: { id, addresses, email } }
     } = this.props
     const { isBookmarked } = this.state
-    console.log(product.getProductReview)
 
     const isInCart =
       get(product, 'getCart') &&

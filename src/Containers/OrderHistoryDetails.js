@@ -84,7 +84,7 @@ class OrderHistoryDetail extends Component {
       shared: { showSpinner }
     } = this.props
     const { isLoading } = this.state
-
+    console.log(get(product.getProductReview, 'hasReviewed'));
     return (
       <ScrollView>
         <Spinner
@@ -128,42 +128,76 @@ class OrderHistoryDetail extends Component {
           <View style={{ marginTop: 20 }}>
             <Text>Rating</Text>
           </View>
-          <StarRating
-            disabled={false}
-            emptyStar={'ios-star-outline'}
-            fullStar={'ios-star'}
-            halfStar={'ios-star-half'}
-            iconSet={'Ionicons'}
-            halfStarEnabled
-            maxStars={5}
-            rating={this.state.starCount}
-            selectedStar={rating => this.onStarRatingPress(rating)}
-            fullStarColor={'red'}
-          />
-          <View style={{ marginTop: 20 }}>
-            <Text>Comments</Text>
-            <TextInput
-              multiline={true}
-              numberOfLines={4}
-              maxLength={250}
-              style={PStyles.commentInput}
-              onChangeText={comment => this.setState({ comment })}
-              value={this.state.comment}
-            />
-            <View style={{ margin: 20 }} />
-            {!isLoading ? (
-              <TouchableOpacity
-                onPress={() => !isLoading && this._submitReview(item)}
-                style={GStyles.buttonContainer}
-              >
-                <Text style={GStyles.buttonText}>SUBMIT REVIEW</Text>
-              </TouchableOpacity>
+          {!get(product.getProductReview, 'hasReviewed')  ? (
+              <View>
+                <StarRating
+                disabled={false}
+                emptyStar={'ios-star-outline'}
+                fullStar={'ios-star'}
+                halfStar={'ios-star-half'}
+                iconSet={'Ionicons'}
+                halfStarEnabled
+                maxStars={5}
+                rating={this.state.starCount}
+                selectedStar={rating => this.onStarRatingPress(rating)}
+                fullStarColor={'red'}
+              />
+              <View style={{ marginTop: 20 }}>
+                <Text>Comments</Text>
+                <TextInput
+                  multiline={true}
+                  numberOfLines={4}
+                  maxLength={250}
+                  style={PStyles.commentInput}
+                  onChangeText={comment => this.setState({ comment })}
+                  value={this.state.comment}
+                />
+                <View style={{ margin: 20 }} />
+                {!isLoading ? (
+                  <TouchableOpacity
+                    onPress={() => !isLoading && this._submitReview(item)}
+                    style={GStyles.buttonContainer}
+                  >
+                    <Text style={GStyles.buttonText}>SUBMIT REVIEW</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={GStyles.buttonContainer}>
+                    <ActivityIndicator size="small" color="#ffffff" />
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
             ) : (
-              <TouchableOpacity style={GStyles.buttonContainer}>
-                <ActivityIndicator size="small" color="#ffffff" />
-              </TouchableOpacity>
-            )}
-          </View>
+              <View>
+                {get(product.getProductReview, 'items.length') ? (
+                  product.getProductReview.items.map((review, key) => {
+                    return (
+                      <View key={key}>
+                        <View>
+                          <Text>{review.user.username.toUpperCase()}</Text>
+                          <StarRating
+                            disabled
+                            emptyStar={'ios-star-outline'}
+                            fullStar={'ios-star'}
+                            containerStyle={{ width: '10%', flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}
+                            halfStar={'ios-star-half'}
+                            iconSet={'Ionicons'}
+                            halfStarEnabled
+                            starSize={20}
+                            maxStars={5}
+                            rating={review.rating}
+                            fullStarColor={'red'}
+                          />
+                        </View>
+                        <View>
+                          <Text>Hello world, this is a comment section with lots of love</Text>
+                        </View>
+                        <View style={{borderWidth: 1, borderColor: '#e4e4e4', marginBottom: 10 }} />
+                      </View>
+                    )
+                  })) : <Text>.</Text>}
+              </View>)
+          }
         </View>
       </ScrollView>
     )
