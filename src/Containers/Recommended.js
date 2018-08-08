@@ -15,10 +15,47 @@ import { Icon } from "native-base";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import get from "lodash/get";
-import { boughtOrderHistory, soldOrderHistory } from "../Actions/ProductAction";
+import RecommendedFeeds from "../Components/HomeComponents/UserFeeds";
 
 import GStyles from "../Styles/GeneralStyle";
 import Styles from "../Styles/WalletStyle";
+
+const dummyData = [
+  {
+    displayName: "ladmerc",
+    email: "ladna_mekelive@yahoo.com",
+    id: "5ac94d1d3359b90004ab9756",
+    isFeatured: false,
+    isFollowing: false,
+    location: {
+      isDefault: true,
+      _id: "5b3ea53bf1cd600004f19a64",
+      firstName: "asm",
+      lastName: "masm",
+      phone: "0292912801381830"
+    },
+    meta: { averageRating: 0, sellCount: 0 },
+    photo: "https://s3.eu-west-2.amazonaws.com/juli-test/profile-icon.png",
+    username: "ladmerc"
+  },
+  {
+    displayName: "rogers",
+    email: "jide2@gmail.com",
+    id: "5b16f79378420800040c08f5",
+    isFeatured: false,
+    isFollowing: false,
+    location: {
+      isDefault: true,
+      _id: "5b2ac7638f6fcd00043bbeec",
+      firstName: "Awonpere",
+      lastName: "Suffery",
+      phone: "8069790405"
+    },
+    meta: { averageRating: 0, sellCount: 0 },
+    photo: "https://s3.eu-west-2.amazonaws.com/juli-test/profile-icon.png",
+    username: "rogers"
+  }
+];
 
 class Recommended extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -37,7 +74,7 @@ class Recommended extends Component {
   state = {};
 
   async componentDidMount() {
-    const { getBoughtOrderHistory, getSoldOrderHistory, user } = this.props;
+    const { user } = this.props;
     const { user: isAuthenticated } = user;
   }
 
@@ -49,40 +86,27 @@ class Recommended extends Component {
 
     return (
       <View style={Styles.container}>
-        <View style={Styles.subContainer}>
-          <View style={Styles.labelHeader}>
-            <Text>
-              You will need to follow at least 3 people, before you can move
-              onto the next screen.
-            </Text>
-          </View>
-          <View style={{ alignItems: "center" }}>
-            <View style={Styles.sectionOneCurrContainer}>
-              <Text style={{ fontWeight: "bold", fontSize: 30 }}>1.00</Text>
-              <Text>Rp</Text>
+        <ScrollView>
+          <View style={Styles.subContainer}>
+            <View style={Styles.labelHeader}>
+              <Text>
+                You will need to follow at least 3 people, before you can move
+                onto the next screen.
+              </Text>
             </View>
-            <TouchableOpacity style={Styles.topUpButton}>
-              <Text style={GStyles.buttonText}>Top Up</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={{ borderWidth: 3, borderColor: "#e4e4e4" }} />
-        <View style={{ padding: 30 }}>
-          <View style={{ width: width / 2 }}>
-            <View style={Styles.sectionTwoMenu}>
-              <Icon style={Styles.sectionTwoMenuIcon} name="md-mail" />
-              <Text style={Styles.sectionTwoMenuText}>Transaction History</Text>
-            </View>
-            <View style={Styles.sectionTwoMenu}>
-              <Icon style={Styles.sectionTwoMenuIcon} name="md-mail" />
-              <Text style={Styles.sectionTwoMenuText}>Reset Juli Pin</Text>
-            </View>
-            <View style={Styles.sectionTwoMenu}>
-              <Icon style={Styles.sectionTwoMenuIcon} name="md-mail" />
-              <Text style={Styles.sectionTwoMenuText}>Top Up History</Text>
+            <View style={{ alignItems: "center" }}>
+              <View style={Styles.sectionOneCurrContainer}>
+                <Text style={{ fontWeight: "bold", fontSize: 30 }}>1.00</Text>
+                <Text>Rp</Text>
+              </View>
+              <TouchableOpacity style={Styles.topUpButton}>
+                <Text style={GStyles.buttonText}>Top Up</Text>
+              </TouchableOpacity>
             </View>
           </View>
-        </View>
+          <View style={{ borderWidth: 3, borderColor: "#e4e4e4" }} />
+          <RecommendedFeeds userFeedsList={dummyData} />
+        </ScrollView>
         <TouchableOpacity
           onPress={() => navigation.navigate("Home")}
           style={[
@@ -118,12 +142,7 @@ const mapStateToProps = state => ({
   user: state.get("auth").toJS()
 });
 
-const mapDispatchToProps = dispatch => ({
-  getBoughtOrderHistory: bindActionCreators(boughtOrderHistory, dispatch),
-  getSoldOrderHistory: bindActionCreators(soldOrderHistory, dispatch)
-});
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(Recommended);

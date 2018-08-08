@@ -91,7 +91,7 @@ class HomeTab extends Component {
   render() {
     const { navigation, products, shared } = this.props;
     const hasFetchedProducts = products && products.toJS();
-
+    console.log(get(shared, "followings"), "------");
     return (
       <View>
         <ScrollView>
