@@ -49,7 +49,6 @@ class LandingPage extends Component {
       });
       return;
     }
-    // console.log(getUserFollowings);
     if (token) {
       this.props.navigation.navigate("RecommendedScreen");
       return;

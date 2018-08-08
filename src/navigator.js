@@ -8,6 +8,9 @@ import NotificationsTab from "./Components/AppTabNavigator/NotificationsTab";
 import ProfileTab from "./Components/AppTabNavigator/ProfileTab";
 import BidSelection from "./Components/AuctionComponents/bidSelection";
 import ProductOverview from "./Components/AuctionComponents/productOverview";
+import EditProfile from "./Components/SettingsComponents/editProfile";
+import UpdatePassword from "./Components/SettingsComponents/updatePassword";
+import UpdateAddress from "./Components/SettingsComponents/updateAddress";
 
 import ProductInfo from "./Components/HomeComponents/ProductInfo";
 
@@ -78,6 +81,9 @@ const AppNavigator = StackNavigator({
   OrderHistoryScreen: { screen: OrderHistoryScreen },
   OrderHistoryDetailScreen: { screen: OrderHistoryDetailScreen },
   FollowersScreen: { screen: FollowersScreen },
+  EditProfile: { screen: EditProfile },
+  UpdateAddress: { screen: UpdateAddress },
+  UpdatePassword: { screen: UpdatePassword },
   Home: {
     screen: AppTabNavigator
   },
