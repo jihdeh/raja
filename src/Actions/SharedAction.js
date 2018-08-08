@@ -108,6 +108,7 @@ export const unBookmarkProduct = (productID, token) => dispatch => {
 };
 
 export const getNotifications = () => async dispatch => {
+  dispatch({ type: SHOW_SPINNER });
   axios
     .get(`${BASE_URL}/user/notifications`)
     .then(({ data }) => {
@@ -115,8 +116,10 @@ export const getNotifications = () => async dispatch => {
         type: FETCH_NOTIFICATIONS,
         payload: data
       });
+      dispatch({ type: HIDE_SPINNER });
     })
     .catch(({ response }) => {
+      dispatch({ type: HIDE_SPINNER });
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
       } else {
