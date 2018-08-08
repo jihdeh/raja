@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent } from "react";
 import {
   View,
   Text,
@@ -6,31 +6,43 @@ import {
   TextInput,
   TouchableOpacity,
   AsyncStorage
-} from 'react-native'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { updateProfile } from '../../Actions/AuthAction'
-import GStyles from '../../Styles/GeneralStyle'
-import Styles from '../../Styles/SettingStyle'
+} from "react-native";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import { updateProfile } from "../../Actions/AuthAction";
+import GStyles from "../../Styles/GeneralStyle";
+import Styles from "../../Styles/SettingStyle";
 
 class EditProfile extends PureComponent {
-  state = {}
+  state = {};
+
+  componentWillMount(nextProps) {
+    const {
+      user: { userExtended }
+    } = this.props;
+    this.setState({ ...userExtended });
+  }
 
   onChange = (field, value) => {
     this.setState({
       [field]: value
-    })
-  }
+    });
+  };
 
   async onUpdateProfile() {
-    const { user: { userExtended } } = this.props
-    const token = (await AsyncStorage.getItem('token')) || this.props.user.token
-    const moldObj = Object.assign({ ...userExtended }, { ...this.state })
-    this.props.updateProfile(moldObj, token)
+    const {
+      user: { userExtended }
+    } = this.props;
+    const token =
+      (await AsyncStorage.getItem("token")) || this.props.user.token;
+    const moldObj = Object.assign({ ...userExtended }, { ...this.state });
+    this.props.updateProfile(moldObj, token);
   }
 
   render() {
-    const { user: { userExtended } } = this.props
+    const {
+      user: { userExtended }
+    } = this.props;
 
     return (
       <View style={{ margin: 10 }}>
@@ -43,9 +55,9 @@ class EditProfile extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={'none'}
-            onChangeText={firstName => this.onChange('firstName', firstName)}
-            value={this.state.firstName || userExtended.firstName}
+            autoCapitalize={"none"}
+            onChangeText={firstName => this.onChange("firstName", firstName)}
+            value={this.state.firstName}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -58,9 +70,9 @@ class EditProfile extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={'none'}
-            onChangeText={lastName => this.onChange('lastName', lastName)}
-            value={this.state.lastName || userExtended.lastName}
+            autoCapitalize={"none"}
+            onChangeText={lastName => this.onChange("lastName", lastName)}
+            value={this.state.lastName}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -73,9 +85,9 @@ class EditProfile extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={'none'}
-            onChangeText={email => this.onChange('email', email)}
-            value={this.state.email || userExtended.email}
+            autoCapitalize={"none"}
+            onChangeText={email => this.onChange("email", email)}
+            value={this.state.email}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -88,9 +100,9 @@ class EditProfile extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={'none'}
-            onChangeText={username => this.onChange('username', username)}
-            value={this.state.username || userExtended.username}
+            autoCapitalize={"none"}
+            onChangeText={username => this.onChange("username", username)}
+            value={this.state.username}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -103,7 +115,7 @@ class EditProfile extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="go"
             keyboardType="numeric"
-            onChangeText={phone => this.onChange('phone', phone)}
+            onChangeText={phone => this.onChange("phone", phone)}
             value={this.state.phone}
             autoCorrect={false}
           />
@@ -115,16 +127,19 @@ class EditProfile extends PureComponent {
           <Text style={GStyles.buttonText}>UPDATE PROFILE</Text>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 }
 
 const mapStateToProps = state => ({
-  user: state.get('auth').toJS()
-})
+  user: state.get("auth").toJS()
+});
 
 const mapDispatchToProps = dispatch => ({
   updateProfile: bindActionCreators(updateProfile, dispatch)
-})
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditProfile)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EditProfile);
