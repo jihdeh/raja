@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent, Fragment } from "react";
 import {
   View,
   Text,
@@ -7,100 +7,102 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   AsyncStorage
-} from 'react-native'
-import CheckBox from 'react-native-checkbox'
-import Picker from 'react-native-picker-select'
-import get from 'lodash/get'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { getProvince, getCity } from '../../Actions/LocationAction'
-import { updateProfile } from '../../Actions/AuthAction'
-import { displayError } from '../../Actions/ErrorAction'
-import GStyles from '../../Styles/GeneralStyle'
-import Styles from '../../Styles/SettingStyle'
+} from "react-native";
+import CheckBox from "react-native-checkbox";
+import Picker from "react-native-picker-select";
+import get from "lodash/get";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import Spinner from "react-native-loading-spinner-overlay";
+import { getProvince, getCity } from "../../Actions/LocationAction";
+import { updateProfile } from "../../Actions/AuthAction";
+import { displayError } from "../../Actions/ErrorAction";
+import GStyles from "../../Styles/GeneralStyle";
+import Styles from "../../Styles/SettingStyle";
 
 class UpdateAddress extends PureComponent {
   state = {
-    firstName: '',
-    lastName: '',
-    address: '',
+    firstName: "",
+    lastName: "",
+    address: "",
     province: [],
     city: undefined,
-    provinceId: 'SELECT',
-    cityName: 'SELECT',
-    provinceName: '',
-    cityId: '',
-    phone: '',
+    provinceId: "SELECT",
+    cityName: "SELECT",
+    provinceName: "",
+    cityId: "",
+    phone: "",
     isDefault: false,
     isLoading: false
-  }
+  };
 
   componentWillMount() {
-    const { getProvince, getCity } = this.props
-    getProvince().then(() => getCity())
+    const { getProvince, getCity } = this.props;
+    getProvince().then(() => getCity());
   }
 
   componentWillReceiveProps(nextProps) {
     if (
-      get(nextProps.user, 'updateProfile.addresses.length') >
-      get(this.props.user, 'userExtended.addresses.length')
+      get(nextProps.user, "updateProfile.addresses.length") >
+      get(this.props.user, "userExtended.addresses.length")
     ) {
       this.setState({
-        firstName: '',
-        lastName: '',
-        address: '',
+        firstName: "",
+        lastName: "",
+        address: "",
         province: [],
         city: undefined,
-        provinceId: 'SELECT',
-        cityName: 'SELECT',
-        provinceName: '',
-        cityId: '',
-        phone: '',
+        provinceId: "SELECT",
+        cityName: "SELECT",
+        provinceName: "",
+        cityId: "",
+        phone: "",
         isDefault: false,
         isLoading: false
-      })
-      this.props.displayError('Successfully created')
+      });
+      this.props.displayError("Successfully created");
       // this.props.navigation.navigate('AddressScreen');
-      return
+      return;
     }
-    return
+    return;
   }
 
   onChange = (field, value) => {
     this.setState({
       [field]: value
-    })
-  }
+    });
+  };
 
   async resetPromise(field) {
-    const fields = { [field]: undefined }
+    const fields = { [field]: undefined };
     await this.setState({
       ...fields
-    })
-    return true
+    });
+    return true;
   }
 
   onLocationChange({ id, name }, nextList) {
-    this.resetPromise('city').then(() => {
+    this.resetPromise("city").then(() => {
       this.setState({
         city: nextList.filter(list => list.province_id === id),
         provinceName: name,
         provinceId: id
-      })
-    })
+      });
+    });
   }
 
   onCityChange({ id, name }, nextList) {
     this.setState({
       cityId: id,
       cityName: name
-    })
+    });
   }
 
   onSubmit = async () => {
-    const { auth } = this.props
-    const { user: isAuthenticated } = auth
-    const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
+    const { auth } = this.props;
+    const { user: isAuthenticated } = auth;
+    const token =
+      (await AsyncStorage.getItem("token")) || isAuthenticated.token;
     const {
       firstName,
       lastName,
@@ -110,7 +112,7 @@ class UpdateAddress extends PureComponent {
       cityName,
       provinceName,
       isDefault
-    } = this.state
+    } = this.state;
     if (
       !firstName.trim() ||
       !lastName.trim() ||
@@ -119,8 +121,8 @@ class UpdateAddress extends PureComponent {
       !cityId ||
       !phone
     ) {
-      this.props.displayError('All fields are required')
-      return
+      this.props.displayError("All fields are required");
+      return;
     }
     const address = {
       firstName,
@@ -132,19 +134,27 @@ class UpdateAddress extends PureComponent {
       provinceName,
       phone,
       isDefault
-    }
+    };
     this.setState({
       isLoading: true
-    })
-    this.props.updateProfile({ address }, token)
-  }
+    });
+    this.props.updateProfile({ address }, token);
+  };
 
   render() {
-    const { location: { loadedCity, loadedProvince } } = this.props
-    const { isLoading } = this.state
+    const {
+      location: { loadedCity, loadedProvince },
+      shared: { showSpinner }
+    } = this.props;
+    const { isLoading } = this.state;
 
     return (
       <View style={{ margin: 10 }}>
+        <Spinner
+          visible={showSpinner}
+          textContent={"Please wait..."}
+          textStyle={{ color: "#333" }}
+        />
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
           <Text style={Styles.label_text}>FIRST NAME:</Text>
           <TextInput
@@ -154,8 +164,8 @@ class UpdateAddress extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={'none'}
-            onChangeText={firstName => this.onChange('firstName', firstName)}
+            autoCapitalize={"none"}
+            onChangeText={firstName => this.onChange("firstName", firstName)}
             value={this.state.firstName}
             autoCorrect={false}
           />
@@ -169,8 +179,8 @@ class UpdateAddress extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={'none'}
-            onChangeText={lastName => this.onChange('lastName', lastName)}
+            autoCapitalize={"none"}
+            onChangeText={lastName => this.onChange("lastName", lastName)}
             value={this.state.lastName}
             autoCorrect={false}
           />
@@ -184,8 +194,8 @@ class UpdateAddress extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={'none'}
-            onChangeText={address => this.onChange('address', address)}
+            autoCapitalize={"none"}
+            onChangeText={address => this.onChange("address", address)}
             value={this.state.address}
             autoCorrect={false}
           />
@@ -199,7 +209,7 @@ class UpdateAddress extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="go"
             keyboardType="numeric"
-            onChangeText={phone => this.onChange('phone', phone)}
+            onChangeText={phone => this.onChange("phone", phone)}
             value={this.state.phone}
             autoCorrect={false}
           />
@@ -215,7 +225,7 @@ class UpdateAddress extends PureComponent {
                   onValueChange={(province, index) =>
                     this.onLocationChange(province, loadedCity)
                   }
-                  placeholder={{ label: 'SELECT' }}
+                  placeholder={{ label: "SELECT" }}
                   value={this.state.provinceId}
                 />
               )}
@@ -223,7 +233,7 @@ class UpdateAddress extends PureComponent {
           </Fragment>
         </KeyboardAvoidingView>
 
-        {get(this.state, 'city') && (
+        {get(this.state, "city") && (
           <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
             <Fragment>
               <Text style={Styles.label_text}>CITY:</Text>
@@ -234,7 +244,7 @@ class UpdateAddress extends PureComponent {
                   onValueChange={(city, index) =>
                     this.onCityChange(city, loadedCity)
                   }
-                  placeholder={{ label: 'SELECT' }}
+                  placeholder={{ label: "SELECT" }}
                   value={this.state.cityName}
                 />
               </View>
@@ -266,20 +276,24 @@ class UpdateAddress extends PureComponent {
           </TouchableOpacity>
         )}
       </View>
-    )
+    );
   }
 }
 const mapStateToProps = state => ({
-  location: state.get('location').toJS(),
-  auth: state.get('auth').toJS(),
-  error: state.get('errorMessage').toJS()
-})
+  location: state.get("location").toJS(),
+  auth: state.get("auth").toJS(),
+  error: state.get("errorMessage").toJS(),
+  shared: state.get("shared").toJS()
+});
 
 const mapDispatchToProps = dispatch => ({
   getProvince: bindActionCreators(getProvince, dispatch),
   getCity: bindActionCreators(getCity, dispatch),
   updateProfile: bindActionCreators(updateProfile, dispatch),
   displayError: bindActionCreators(displayError, dispatch)
-})
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpdateAddress)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UpdateAddress);

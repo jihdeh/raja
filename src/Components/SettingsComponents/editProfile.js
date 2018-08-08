@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Spinner from "react-native-loading-spinner-overlay";
 import { updateProfile } from "../../Actions/AuthAction";
 import GStyles from "../../Styles/GeneralStyle";
 import Styles from "../../Styles/SettingStyle";
@@ -41,11 +42,17 @@ class EditProfile extends PureComponent {
 
   render() {
     const {
-      user: { userExtended }
+      user: { userExtended },
+      shared: { showSpinner }
     } = this.props;
 
     return (
       <View style={{ margin: 10 }}>
+        <Spinner
+          visible={showSpinner}
+          textContent={"Please wait..."}
+          textStyle={{ color: "#333" }}
+        />
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
           <Text style={Styles.label_text}>FIRST NAME:</Text>
           <TextInput
@@ -132,7 +139,8 @@ class EditProfile extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  user: state.get("auth").toJS()
+  user: state.get("auth").toJS(),
+  shared: state.get("shared").toJS()
 });
 
 const mapDispatchToProps = dispatch => ({

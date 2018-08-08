@@ -10,7 +10,9 @@ import {
   FETCH_USER_FOLLOWINGS,
   FOLLOW_USER,
   UNFOLLOW_USER,
-  REQUEST_SUCCESS
+  REQUEST_SUCCESS,
+  SHOW_SPINNER,
+  HIDE_SPINNER
 } from "../Constants/ActionTypes";
 import { AsyncStorage } from "react-native";
 import toArray from "lodash/toArray";

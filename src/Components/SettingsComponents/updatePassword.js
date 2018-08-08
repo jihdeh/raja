@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import Spinner from "react-native-loading-spinner-overlay";
 import { updatePassword } from "../../Actions/AuthAction";
 import { displayError } from "../../Actions/ErrorAction";
 import GStyles from "../../Styles/GeneralStyle";
@@ -54,8 +55,16 @@ class UpdatePassword extends PureComponent {
   };
 
   render() {
+    const {
+      shared: { showSpinner }
+    } = this.props;
     return (
       <View style={{ margin: 10 }}>
+        <Spinner
+          visible={showSpinner}
+          textContent={"Please wait..."}
+          textStyle={{ color: "#333" }}
+        />
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
           <Text style={Styles.label_text}>CURRENT PASSWORD:</Text>
           <TextInput
@@ -119,7 +128,8 @@ class UpdatePassword extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  user: state.get("auth").toJS()
+  user: state.get("auth").toJS(),
+  shared: state.get("shared").toJS()
 });
 
 const mapDispatchToProps = dispatch => ({
