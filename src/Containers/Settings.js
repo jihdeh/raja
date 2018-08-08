@@ -16,19 +16,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import get from "lodash/get";
 import { Cell, Section, TableView } from "react-native-tableview-simple";
-import { getLoggedUserProfile, logout } from "../Actions/AuthAction";
-import { getFollowers } from "../Actions/SharedAction";
-import { getProducts } from "../Actions/ProductAction";
-
-import GStyles from "../Styles/GeneralStyle";
-import HStyles from "../Styles/HomeStyle";
-import Styles from "../Styles/SettingStyle";
-
-const CustomSectionHeader = () => (
-  <View>
-    <Text>Custom header!</Text>
-  </View>
-);
+import { logout } from "../Actions/AuthAction";
 
 class Settings extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -100,16 +88,12 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  shared: state.get("shared"),
   user: state.get("auth").toJS()
 });
 
 const mapDispatchToProps = dispatch => {
   return {
-    getFollowers: bindActionCreators(getFollowers, dispatch),
-    logout: bindActionCreators(logout, dispatch),
-    getProducts: bindActionCreators(getProducts, dispatch),
-    getLoggedUserProfile: bindActionCreators(getLoggedUserProfile, dispatch)
+    logout: bindActionCreators(logout, dispatch)
   };
 };
 
