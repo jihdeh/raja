@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   View,
   Text,
@@ -6,24 +6,24 @@ import {
   Image,
   ScrollView,
   AsyncStorage
-} from 'react-native';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import get from 'lodash/get';
-import { getLoggedUserProfile } from '../../Actions/AuthAction';
+} from "react-native";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import get from "lodash/get";
+import { getLoggedUserProfile } from "../../Actions/AuthAction";
 import {
   getCategories,
   getFollowers,
   getFollowings
-} from '../../Actions/SharedAction';
-import { getCouriers } from '../../Actions/LocationAction';
-import { getProducts, getCartItem } from '../../Actions/ProductAction';
+} from "../../Actions/SharedAction";
+import { getCouriers } from "../../Actions/LocationAction";
+import { getProducts, getCartItem } from "../../Actions/ProductAction";
 
-import { Container, Content, Icon } from 'native-base';
-import HotLists from '../HomeComponents/HotLists';
-import UserFeeds from '../HomeComponents/UserFeeds';
-import Styles from '../../Styles/HomeStyle';
-import GStyles from '../../Styles/GeneralStyle';
+import { Container, Content, Icon } from "native-base";
+import HotLists from "../HomeComponents/HotLists";
+import UserFeeds from "../HomeComponents/UserFeeds";
+import Styles from "../../Styles/HomeStyle";
+import GStyles from "../../Styles/GeneralStyle";
 
 class HomeTab extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -38,16 +38,20 @@ class HomeTab extends Component {
         <View style={GStyles.headerRightContainer}>
           <Icon
             name="ios-cart"
-            onPress={() => navigation.navigate('CartScreen')}
+            onPress={() => navigation.navigate("CartScreen")}
             style={{ paddingLeft: 10 }}
           />
-          <Icon name="ios-cash-outline" onPress={() => navigation.navigate('WalletScreen')} style={{ paddingLeft: 10 }} />
+          <Icon
+            name="ios-cash-outline"
+            onPress={() => navigation.navigate("WalletScreen")}
+            style={{ paddingLeft: 10 }}
+          />
         </View>
       ),
       headerRight: (
         <View style={GStyles.headerRightContainer}>
           <Icon
-            onPress={() => navigation.navigate('BookmarkScreen')}
+            onPress={() => navigation.navigate("BookmarkScreen")}
             style={GStyles.headerRightIcon}
             name="ios-bookmark-outline"
           />
@@ -58,9 +62,9 @@ class HomeTab extends Component {
   };
 
   async componentDidMount() {
-    const { navigation, auth } = this.props;
-    const { user: isAuthenticated } = auth;
     const {
+      navigation,
+      auth,
       getCategories,
       getProducts,
       getCouriers,
@@ -69,13 +73,15 @@ class HomeTab extends Component {
       getFollowings,
       getCartItem
     } = this.props;
+    const { user: isAuthenticated } = auth;
+
     getCategories();
     getCouriers();
     const value =
-      (await AsyncStorage.getItem('token')) || isAuthenticated.token;
-    getProducts('onSale')
-      .then(() => getProducts('isTrending'))
-      .then(() => getProducts('isFeatured'))
+      (await AsyncStorage.getItem("token")) || isAuthenticated.token;
+    getProducts("onSale")
+      .then(() => getProducts("isTrending"))
+      .then(() => getProducts("isFeatured"))
       .then(() => getLoggedUserProfile(value))
       .then(() => getFollowers(value))
       .then(() => getFollowings(value))
@@ -94,7 +100,7 @@ class HomeTab extends Component {
             navigation={navigation}
           />
           <UserFeeds
-            userFeedsList={get(shared, 'followings') && shared.followings}
+            userFeedsList={get(shared, "followings") && shared.followings}
             navigation={navigation}
           />
         </ScrollView>
@@ -104,9 +110,9 @@ class HomeTab extends Component {
 }
 
 const mapStateToProps = state => ({
-  shared: state.get('shared').toJS(),
-  products: state.get('product'),
-  auth: state.get('auth').toJS()
+  shared: state.get("shared").toJS(),
+  products: state.get("product"),
+  auth: state.get("auth").toJS()
 });
 
 const mapDispatchToProps = dispatch => {
@@ -121,4 +127,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomeTab);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(HomeTab);
