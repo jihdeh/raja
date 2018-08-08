@@ -52,6 +52,15 @@ class Settings extends Component {
               accessory="DisclosureIndicator"
               onPress={() => navigation.navigate("OrderHistoryScreen")}
             />
+            {get(updateProfile, "addresses.length") ||
+              (get(userExtended, "addresses.length") && (
+                <Cell
+                  cellStyle="Basic"
+                  title="View Addresses"
+                  accessory="DisclosureIndicator"
+                  onPress={() => navigation.navigate("AddressScreen")}
+                />
+              ))}
 
             <Cell
               cellStyle="Basic"

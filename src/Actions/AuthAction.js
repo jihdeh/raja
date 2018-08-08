@@ -102,9 +102,11 @@ export const createAccount = (accountDetails, navigate) => async dispatch => {
 };
 
 export const updateProfile = (profile, token) => async dispatch => {
+  dispatch({ type: SHOW_SPINNER });
   axios
     .put(`${BASE_URL}/user`, profile)
     .then(async ({ data }) => {
+      dispatch({ type: HIDE_SPINNER });
       await dispatch({
         type: UPDATE_PROFILE,
         payload: data
@@ -112,6 +114,7 @@ export const updateProfile = (profile, token) => async dispatch => {
       getLoggedUserProfile(token)(dispatch);
     })
     .catch(error => {
+      dispatch({ type: HIDE_SPINNER });
       const { data } = error.response;
       if (data.errors) {
         displayError(errorHandler(data.errors))(dispatch);
@@ -122,15 +125,18 @@ export const updateProfile = (profile, token) => async dispatch => {
 };
 
 export const updatePassword = password => async dispatch => {
+  dispatch({ type: SHOW_SPINNER });
   axios
     .post(`${BASE_URL}/auth/change-password`, password)
     .then(async ({ data }) => {
+      dispatch({ type: HIDE_SPINNER });
       await dispatch({
         type: UPDATE_PASSWORD,
         payload: data
       });
     })
     .catch(error => {
+      dispatch({ type: HIDE_SPINNER });
       const { data } = error.response;
       if (data.errors) {
         displayError(errorHandler(data.errors))(dispatch);

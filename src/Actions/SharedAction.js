@@ -158,21 +158,6 @@ export const getFollowings = token => async dispatch => {
       displayError("Error getting people you follow")(dispatch);
     }
   }
-
-  //   .then(({ data }) => {
-  //     dispatch({
-  //       type: FETCH_USER_FOLLOWINGS,
-  //       payload: data
-  //     });
-  //   })
-  //   .catch(({ response }) => {
-  //     if (response.data.errors) {
-  //       displayError(errorHandler(response.data.errors))(dispatch);
-  //     } else {
-  //       displayError(response.data.message)(dispatch);
-  //     }
-  //   });
-  // return 3;
 };
 
 export const followUser = userId => dispatch => {
