@@ -170,6 +170,7 @@ class ProductInfo extends Component {
   render() {
     const isTinder = 'tinder'
     const {
+      navigation,
       navigation: { state: { params: { item } } },
       product,
       user: { userExtended: { id, addresses, email } }
@@ -201,19 +202,34 @@ class ProductInfo extends Component {
             </View>
             {item.owner.id !== id ? (
               this.state.isFollowing ? (
-                <TouchableHighlight
-                  onPress={() => this._unFollowUser(item.owner.id)}
-                >
-                  <Text style={PStyles.followBtn}>Unfollow</Text>
-                </TouchableHighlight>
-              ) : (
-                <TouchableHighlight
-                  onPress={() => this._followUser(item.owner.id)}
-                >
-                  <Text style={PStyles.followBtn}>Follow</Text>
-                </TouchableHighlight>
-              )
-            ) : null}
+                <View>
+                  <TouchableHighlight
+                    onPress={() => this._unFollowUser(item.owner.id)}
+                  >
+                    <Text style={PStyles.followBtn}>Unfollow</Text>
+                  </TouchableHighlight>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate('ChatDetailScreen', { chatMember: item.owner }) }
+                  >
+                    <Icon name="md-mail"  />
+                  </TouchableOpacity>
+                </View>
+                ) : (
+                  <View>
+                    <TouchableHighlight
+                      onPress={() => this._followUser(item.owner.id)}
+                    >
+                      <Text style={PStyles.followBtn}>Follow</Text>
+                    </TouchableHighlight>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('ChatDetailScreen', { chatMember: item.owner }) }
+                    >
+                      <Icon name="md-mail"  />
+                  </TouchableOpacity>
+                  </View>
+                )
+              ) : null}
+
           </View>
         </View>
         <View

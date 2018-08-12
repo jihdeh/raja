@@ -178,7 +178,7 @@ class ChatList extends React.Component {
     const { chat: { messages } } = this.props;
     const { user: { userExtended } } = this.props;
     const defaultAvatar = 'http://via.placeholder.com/50x50' 
-    const roomIds = Object.keys(messages);
+    const roomIds = Object.keys(messages).reverse();
 
     if (!roomIds.length) {
       return (
