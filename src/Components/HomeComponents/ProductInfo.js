@@ -16,6 +16,7 @@ import moment from 'moment/moment'
 import { Icon } from 'native-base'
 import get from 'lodash/get'
 import Carousel from 'react-native-snap-carousel'
+import StarRating from 'react-native-star-rating'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import {
@@ -30,7 +31,8 @@ import {
 import {
   getCartItem,
   addToCart,
-  bidForProduct
+  bidForProduct,
+  getProductReview
 } from '../../Actions/ProductAction'
 import SliderEntry from '../../Components/SliderEntry'
 
@@ -58,18 +60,17 @@ class ProductInfo extends Component {
   }
 
   async componentWillMount() {
-    const { getBookmarks, navigation, user } = this.props
+    const { getBookmarks, navigation, user, getProductReview } = this.props
     const { user: isAuthenticated } = user
     const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
-    const { state } = navigation
-    const { params } = state
-    const { item } = params
+    const { state: { params: { item } } } = navigation
     if (item.owner.isFollowing) {
       this.setState({
         isFollowing: true
       })
     }
     getBookmarks(token)
+    getProductReview(item.id, token)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -351,11 +352,40 @@ class ProductInfo extends Component {
             ) : null}
           </Fragment>
           <View style={{ marginTop: 20 }}>
-            <Text>Comments</Text>
+            <Text>Reviews</Text>
           </View>
           <View style={PStyles.hr} />
           <View style={{ marginTop: 15 }}>
-            <Text>No comments yet</Text>
+            {get(product.getProductReview, 'items.length') ? (
+              product.getProductReview.items.map((review, key) => {
+                return (
+                  <View key={key}>
+                    <View>
+                      <Text>{review.user.username.toUpperCase()}</Text>
+                      <StarRating
+                        disabled
+                        emptyStar={'ios-star-outline'}
+                        fullStar={'ios-star'}
+                        containerStyle={{ width: '10%', flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}
+                        halfStar={'ios-star-half'}
+                        iconSet={'Ionicons'}
+                        halfStarEnabled
+                        starSize={20}
+                        maxStars={5}
+                        rating={review.rating}
+                        fullStarColor={'red'}
+                      />
+                    </View>
+                    <View>
+                      <Text>Hello world, this is a comment section with lots of love</Text>
+                    </View>
+                    <View style={{borderWidth: 1, borderColor: '#e4e4e4', marginBottom: 10 }} />
+                  </View>
+                )
+              })
+            ) : (
+              <Text>No comments yet</Text>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -379,7 +409,8 @@ const mapDispatchToProps = dispatch => ({
   successHandler: bindActionCreators(successHandler, dispatch),
   bookmarkProduct: bindActionCreators(bookmarkProduct, dispatch),
   unBookmarkProduct: bindActionCreators(unBookmarkProduct, dispatch),
-  bidForProduct: bindActionCreators(bidForProduct, dispatch)
+  bidForProduct: bindActionCreators(bidForProduct, dispatch),
+  getProductReview: bindActionCreators(getProductReview, dispatch)
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductInfo)

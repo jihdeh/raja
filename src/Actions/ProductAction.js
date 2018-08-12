@@ -308,6 +308,7 @@ export const checkout = (data, addressId, token) => async dispatch => {
 }
 
 export const reviewProduct = (id, data, token) => async dispatch => {
+  console.log(data, '-ass', id, token)
   // product/:id/review
   axios
     .post(
@@ -322,6 +323,7 @@ export const reviewProduct = (id, data, token) => async dispatch => {
       }
     )
     .then(({ data }) => {
+      console.log('--data', data)
       dispatch({ type: HIDE_SPINNER })
       dispatch({
         type: REVIEW_PRODUCT,
@@ -329,9 +331,14 @@ export const reviewProduct = (id, data, token) => async dispatch => {
       })
     })
     .catch(({ response }) => {
+      console.log('--dataERROR', response)
       dispatch({ type: HIDE_SPINNER })
       if (response.status === 503) {
         return displayError('Server unvailable, please try later')(dispatch)
+      }
+      if (response.status === 403) {
+        let msg = response.data.message || 'Server unvailable, please try later'
+        return displayError(msg)(dispatch)
       }
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch)
@@ -341,20 +348,14 @@ export const reviewProduct = (id, data, token) => async dispatch => {
     })
 }
 
-export const getProductReview = (id, data, token) => async dispatch => {
+export const getProductReview = (id, token) => async dispatch => {
   // product/:id/review
   axios
-    .get(
-      `${BASE_URL}/products/${id}/reviews`,
-      {
-        ...data
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
+    .get(`${BASE_URL}/products/${id}/reviews`, {
+      headers: {
+        Authorization: `Bearer ${token}`
       }
-    )
+    })
     .then(({ data }) => {
       dispatch({ type: HIDE_SPINNER })
       dispatch({

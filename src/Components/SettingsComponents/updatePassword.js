@@ -1,61 +1,70 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent } from "react";
 import {
   View,
   Text,
   KeyboardAvoidingView,
   TextInput,
   TouchableOpacity
-} from 'react-native'
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import { updatePassword } from '../../Actions/AuthAction'
-import { displayError } from '../../Actions/ErrorAction'
-import GStyles from '../../Styles/GeneralStyle'
-import Styles from '../../Styles/SettingStyle'
+} from "react-native";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import Spinner from "react-native-loading-spinner-overlay";
+import { updatePassword } from "../../Actions/AuthAction";
+import { displayError } from "../../Actions/ErrorAction";
+import GStyles from "../../Styles/GeneralStyle";
+import Styles from "../../Styles/SettingStyle";
 
 class UpdatePassword extends PureComponent {
   state = {
-    password: '',
-    newPassword: '',
-    confirmPassword: ''
-  }
+    password: "",
+    newPassword: "",
+    confirmPassword: ""
+  };
 
   onChange = (field, value) => {
     this.setState({
       [field]: value
-    })
-  }
+    });
+  };
 
   validatePass = () => {
-    const { confirmPassword, newPassword, password } = this.state
-    const trimmedConfirmPassword = confirmPassword.trim()
-    const trimmednewPassword = newPassword.trim()
-    const trimmedpassword = password.trim()
+    const { confirmPassword, newPassword, password } = this.state;
+    const trimmedConfirmPassword = confirmPassword.trim();
+    const trimmednewPassword = newPassword.trim();
+    const trimmedpassword = password.trim();
     if (!trimmednewPassword || !trimmedConfirmPassword || !trimmedpassword) {
-      this.props.displayError('Fields cannot be blank')
-      return false
+      this.props.displayError("Fields cannot be blank");
+      return false;
     }
 
     if (trimmednewPassword !== confirmPassword) {
-      this.props.displayError('Passwords do not match')
-      return false
+      this.props.displayError("Passwords do not match");
+      return false;
     }
 
-    return true
-  }
+    return true;
+  };
 
   onUpdateProfile = () => {
-    const { confirmPassword, newPassword, password } = this.state
-    if (!this.validatePass()) return
+    const { confirmPassword, newPassword, password } = this.state;
+    if (!this.validatePass()) return;
     this.props.updatePassword({
       newPassword,
       password
-    })
-  }
+    });
+  };
 
   render() {
+    const {
+      shared: { showSpinner }
+    } = this.props;
     return (
       <View style={{ margin: 10 }}>
+        <Spinner
+          visible={showSpinner}
+          textContent={"Please wait..."}
+          textStyle={{ color: "#333" }}
+        />
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
           <Text style={Styles.label_text}>CURRENT PASSWORD:</Text>
           <TextInput
@@ -65,8 +74,9 @@ class UpdatePassword extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={'none'}
-            onChangeText={password => this.onChange('password', password)}
+            secureTextEntry
+            autoCapitalize={"none"}
+            onChangeText={password => this.onChange("password", password)}
             value={this.state.password}
             autoCorrect={false}
           />
@@ -80,9 +90,10 @@ class UpdatePassword extends PureComponent {
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
             returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={'none'}
+            secureTextEntry
+            autoCapitalize={"none"}
             onChangeText={newPassword =>
-              this.onChange('newPassword', newPassword)
+              this.onChange("newPassword", newPassword)
             }
             value={this.state.newPassword}
             autoCorrect={false}
@@ -95,11 +106,11 @@ class UpdatePassword extends PureComponent {
             underlineColorAndroid="transparent"
             placeholder="Confirm Password"
             placeholderTextColor="rgba(45, 45, 45, 0.3)"
-            returnKeyType="next"
             keyboardType="default"
-            autoCapitalize={'none'}
+            autoCapitalize={"none"}
+            secureTextEntry
             onChangeText={confirmPassword =>
-              this.onChange('confirmPassword', confirmPassword)
+              this.onChange("confirmPassword", confirmPassword)
             }
             value={this.state.confirmPassword}
             autoCorrect={false}
@@ -112,17 +123,21 @@ class UpdatePassword extends PureComponent {
           <Text style={GStyles.buttonText}>CHANGE PASSWORD</Text>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
 }
 
 const mapStateToProps = state => ({
-  user: state.get('auth').toJS()
-})
+  user: state.get("auth").toJS(),
+  shared: state.get("shared").toJS()
+});
 
 const mapDispatchToProps = dispatch => ({
   updatePassword: bindActionCreators(updatePassword, dispatch),
   displayError: bindActionCreators(displayError, dispatch)
-})
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(UpdatePassword)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UpdatePassword);

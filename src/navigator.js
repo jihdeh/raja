@@ -1,29 +1,34 @@
-import { Platform } from 'react-native'
-import { TabNavigator, StackNavigator } from 'react-navigation'
+import { Platform } from "react-native";
+import { TabNavigator, StackNavigator } from "react-navigation";
 
-import HomeTab from './Components/AppTabNavigator/HomeTab'
-import SearchTab from './Components/AppTabNavigator/SearchTab'
-import AddMediaTab from './Components/AppTabNavigator/AddMediaTab'
-import NotificationsTab from './Components/AppTabNavigator/NotificationsTab'
-import ProfileTab from './Components/AppTabNavigator/ProfileTab'
-import BidSelection from './Components/AuctionComponents/bidSelection'
-import ProductOverview from './Components/AuctionComponents/productOverview'
+import HomeTab from "./Components/AppTabNavigator/HomeTab";
+import SearchTab from "./Components/AppTabNavigator/SearchTab";
+import AddMediaTab from "./Components/AppTabNavigator/AddMediaTab";
+import NotificationsTab from "./Components/AppTabNavigator/NotificationsTab";
+import ProfileTab from "./Components/AppTabNavigator/ProfileTab";
+import BidSelection from "./Components/AuctionComponents/bidSelection";
+import ProductOverview from "./Components/AuctionComponents/productOverview";
+import EditProfile from "./Components/SettingsComponents/editProfile";
+import UpdatePassword from "./Components/SettingsComponents/updatePassword";
+import UpdateAddress from "./Components/SettingsComponents/updateAddress";
 
-import ProductInfo from './Components/HomeComponents/ProductInfo'
+import ProductInfo from "./Components/HomeComponents/ProductInfo";
 
-import LandingScreen from './Containers/Landing'
-import BookmarkScreen from './Containers/Bookmarks'
+import LandingScreen from "./Containers/Landing";
+import BookmarkScreen from "./Containers/Bookmarks";
+import LoginScreen from "./Containers/Login";
+import SignUpScreen from "./Containers/SignUp";
 import ChatListScreen from './Containers/ChatList'
 import ChatDetailScreen from './Containers/ChatDetail'
-import LoginScreen from './Containers/Login'
-import SignUpScreen from './Containers/SignUp'
-import SettingsScreen from './Containers/Settings'
-import CartScreen from './Containers/Cart'
-import CheckoutScreen from './Containers/Checkout'
-import AddressScreen from './Containers/Address'
-import OrderHistoryScreen from './Containers/OrderHistory'
-import OrderHistoryDetailScreen from './Containers/OrderHistoryDetails'
-import FollowersScreen from './Containers/Followers'
+import SettingsScreen from "./Containers/Settings";
+import CartScreen from "./Containers/Cart";
+import WalletScreen from "./Containers/Wallet";
+import RecommendedScreen from "./Containers/Recommended";
+import CheckoutScreen from "./Containers/Checkout";
+import AddressScreen from "./Containers/Address";
+import OrderHistoryScreen from "./Containers/OrderHistory";
+import OrderHistoryDetailScreen from "./Containers/OrderHistoryDetails";
+import FollowersScreen from "./Containers/Followers";
 
 const AppTabNavigator = TabNavigator(
   {
@@ -46,22 +51,22 @@ const AppTabNavigator = TabNavigator(
   {
     animationEnabled: true,
     swipeEnabled: true,
-    tabBarPosition: 'bottom',
+    tabBarPosition: "bottom",
     tabBarOptions: {
       style: {
         ...Platform.select({
           android: {
-            backgroundColor: 'white'
+            backgroundColor: "white"
           }
         })
       },
-      activeTintColor: '#000',
-      inactiveTintColor: '#d1cece',
+      activeTintColor: "#000",
+      inactiveTintColor: "#d1cece",
       showLabel: false,
       showIcon: true
     }
   }
-)
+);
 
 const AppNavigator = StackNavigator({
   Landing: { screen: LandingScreen },
@@ -72,12 +77,17 @@ const AppNavigator = StackNavigator({
   ChatListScreen: { screen: ChatListScreen },
   ChatDetailScreen: { screen: ChatDetailScreen },
   SettingsScreen: { screen: SettingsScreen },
+  WalletScreen: { screen: WalletScreen },
+  RecommendedScreen: { screen: RecommendedScreen },
   CartScreen: { screen: CartScreen },
   CheckoutScreen: { screen: CheckoutScreen },
   AddressScreen: { screen: AddressScreen },
   OrderHistoryScreen: { screen: OrderHistoryScreen },
   OrderHistoryDetailScreen: { screen: OrderHistoryDetailScreen },
   FollowersScreen: { screen: FollowersScreen },
+  EditProfile: { screen: EditProfile },
+  UpdateAddress: { screen: UpdateAddress },
+  UpdatePassword: { screen: UpdatePassword },
   Home: {
     screen: AppTabNavigator
   },
@@ -87,6 +97,6 @@ const AppNavigator = StackNavigator({
   ProductInfo: {
     screen: ProductInfo
   }
-})
+});
 
-export default AppNavigator
+export default AppNavigator;

@@ -10,7 +10,6 @@ import {
   AsyncStorage
 } from 'react-native'
 import { bindActionCreators } from 'redux'
-import moment from 'moment/moment'
 import { connect } from 'react-redux'
 import get from 'lodash/get'
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view'
