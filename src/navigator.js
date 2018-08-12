@@ -13,6 +13,8 @@ import ProductInfo from './Components/HomeComponents/ProductInfo'
 
 import LandingScreen from './Containers/Landing'
 import BookmarkScreen from './Containers/Bookmarks'
+import ChatListScreen from './Containers/ChatList'
+import ChatDetailScreen from './Containers/ChatDetail'
 import LoginScreen from './Containers/Login'
 import SignUpScreen from './Containers/SignUp'
 import SettingsScreen from './Containers/Settings'
@@ -67,6 +69,8 @@ const AppNavigator = StackNavigator({
   SignUp: { screen: SignUpScreen },
   BidSelection: { screen: BidSelection },
   BookmarkScreen: { screen: BookmarkScreen },
+  ChatListScreen: { screen: ChatListScreen },
+  ChatDetailScreen: { screen: ChatDetailScreen },
   SettingsScreen: { screen: SettingsScreen },
   CartScreen: { screen: CartScreen },
   CheckoutScreen: { screen: CheckoutScreen },

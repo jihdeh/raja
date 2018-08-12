@@ -6,6 +6,7 @@ import { Map } from "immutable";
 import thunk from "redux-thunk";
 import reducer from "./Reducers";
 import { createReactNavigationReduxMiddleware } from "react-navigation-redux-helpers";
+import Reactotron from "./ReactotronConfig"
 
 if (__DEV__) {
   // Use it if Remote debugging with RNDebugger, otherwise use remote-redux-devtools
@@ -27,7 +28,8 @@ let middleware = [thunk, NavMiddleware];
 const enhancer = compose(applyMiddleware(...middleware));
 
 export default function configureStore(initialState = new Map()) {
-  const store = createStore(reducer, initialState, enhancer);
+  let store = __DEV__ ? Reactotron.createStore(reducer, initialState, enhancer) : createStore(reducer, initialState, enhancer);
+
   if (module.hot) {
     module.hot.accept(() => {
       store.replaceReducer(require("./Reducers").default);

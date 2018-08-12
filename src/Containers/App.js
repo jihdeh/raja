@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, AsyncStorage } from "react-native";
 import { connect } from "react-redux";
 import { NavigationActions, addNavigationHelpers } from "react-navigation";
 import AppNavigator from "../navigator";
+import ChatSetup from "./ChatSetup";
 
 import ErrorModal from "../Components/ErrorModal";
 
@@ -20,7 +21,8 @@ class App extends Component {
       Roboto: require("native-base/Fonts/Roboto.ttf"),
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
       Ionicons: require("native-base/Fonts/Ionicons.ttf"),
-      MaterialIcons: require("native-base/Fonts/MaterialIcons.ttf")
+      MaterialIcons: require("native-base/Fonts/MaterialIcons.ttf"),
+      'Material Icons': require("native-base/Fonts/MaterialIcons.ttf")
     });
     this.setState({ loading: false });
   }
@@ -47,6 +49,7 @@ class App extends Component {
           errorMessage={theErrorMessage}
           onClose={() => this.onClose()}
         />
+        <ChatSetup />
         <AppNavigator navigation={navHelpers} />
       </View>
     );

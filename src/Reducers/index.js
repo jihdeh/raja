@@ -5,6 +5,7 @@ import SharedReducer from './SharedReducer'
 import LocationReducer from './LocationReducer'
 import nav from './nav'
 import ErrorReducer from './ErrorReducer'
+import ChatReducer from './ChatReducer';
 
 const appReducer = combineReducers({
   nav,
@@ -12,6 +13,7 @@ const appReducer = combineReducers({
   shared: SharedReducer,
   product: ProductReducer,
   location: LocationReducer,
+  chat: ChatReducer,
   errorMessage: ErrorReducer
 })
 
