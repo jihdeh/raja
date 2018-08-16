@@ -5,11 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
-  ActivityIndicator,
-  Switch,
-  Image,
   StyleSheet,
-  TextInput,
   AsyncStorage
 } from "react-native";
 import { bindActionCreators } from "redux";

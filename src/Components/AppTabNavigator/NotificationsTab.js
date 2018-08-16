@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Icon } from 'native-base';
-import Notifications from '../Notifications';
-import GStyles from '../../Styles/GeneralStyle';
+import React, { Component } from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { Icon } from "native-base";
+import Notifications from "../Notifications";
+import GStyles from "../../Styles/GeneralStyle";
 
 class NotificationsTab extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -14,7 +14,7 @@ class NotificationsTab extends Component {
       headerRight: (
         <View style={GStyles.headerRightContainer}>
           <Icon
-            onPress={() => navigation.navigate('BookmarkScreen')}
+            onPress={() => navigation.navigate("BookmarkScreen")}
             style={GStyles.headerRightIcon}
             name="ios-bookmark-outline"
           />

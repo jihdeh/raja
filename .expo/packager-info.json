@@ -1,8 +1,8 @@
 {
-  "expoServerPort": 19000,
-  "expoServerNgrokUrl": "https://79-t63.jihdeh.juli.exp.direct",
-  "packagerNgrokUrl": "https://packager.79-t63.jihdeh.juli.exp.direct",
-  "ngrokPid": 53293,
-  "packagerPort": 19001,
-  "packagerPid": 53281
+  "expoServerPort": null,
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
+  "packagerPort": null,
+  "packagerPid": null
 }
