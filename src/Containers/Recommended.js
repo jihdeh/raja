@@ -83,7 +83,7 @@ class Recommended extends Component {
       user: { userExtended },
       navigation
     } = this.props;
-
+    
     return (
       <View style={Styles.container}>
         <ScrollView>

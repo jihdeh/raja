@@ -272,6 +272,7 @@ export const bidForProduct = (productId, amount) => dispatch => {
 }
 
 export const checkout = (data, addressId, token) => async dispatch => {
+  console.log(data);
   dispatch({ type: SHOW_SPINNER })
 
   axios
@@ -295,6 +296,7 @@ export const checkout = (data, addressId, token) => async dispatch => {
       boughtOrderHistory(token)(dispatch)
     })
     .catch(({ response }) => {
+      console.log(response)
       dispatch({ type: HIDE_SPINNER })
       if (response.status === 503) {
         return displayError('Server unvailable, please try later')(dispatch)

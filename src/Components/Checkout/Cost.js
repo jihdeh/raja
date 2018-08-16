@@ -132,7 +132,7 @@ class Cost extends Component {
       return false
     }
     if (
-      (paymentMethod === 'bank' || paymentMethod === 'internet') &&
+      (paymentMethod === 'bank') &&
       !bankOption
     ) {
       this.props.displayError('Please select bank option')
@@ -152,14 +152,17 @@ class Cost extends Component {
     const { auth } = this.props
     const { user: isAuthenticated } = auth
     const token = (await AsyncStorage.getItem('token')) || isAuthenticated.token
+
     const {
-      selection: { bankName, internetBankName },
+      selection,
       paymentMethod
     } = this.state
+
     const location = this.defaultAddress()
-    const obj = {
-      bankName,
-      internetBankName,
+    const obj =  paymentMethod !== 'wallet' ? {
+      bankName: selection.bankName,
+      paymentMethod
+    } :  {
       paymentMethod
     }
     this.props.pay(obj, location.id, token)
@@ -183,13 +186,14 @@ class Cost extends Component {
             <Text>Pay with card</Text>
           </RadioButton>
 
+          <RadioButton value={'wallet'}>
+            <Text>Pay from wallet</Text>
+          </RadioButton>
+
           <RadioButton value={'bank'}>
             <Text>Bank Transfer</Text>
           </RadioButton>
 
-          <RadioButton value={'internet'}>
-            <Text>Internet Banking</Text>
-          </RadioButton>
         </RadioGroup>
         {this.state.paymentMethod === 'bank' && (
           <Fragment>
@@ -205,19 +209,6 @@ class Cost extends Component {
           </Fragment>
         )}
 
-        {this.state.paymentMethod === 'internet' && (
-          <Fragment>
-            <View style={[GStyles.dropDownSelection_input, { marginTop: 20 }]}>
-              <Picker
-                items={INTERNET_BANKING}
-                hideIcon
-                onValueChange={(bank, index) => this.bankSelection(bank)}
-                placeholder={{ label: 'SELECT' }}
-                value={this.state.bankOption}
-              />
-            </View>
-          </Fragment>
-        )}
         <View style={FStyles.contTwo}>
           <View style={FStyles.lowCont}>
             <Text style={FStyles.noEmph}>Subtotal</Text>
