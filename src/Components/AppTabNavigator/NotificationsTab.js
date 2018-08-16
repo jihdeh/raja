@@ -18,7 +18,9 @@ class NotificationsTab extends Component {
             style={GStyles.headerRightIcon}
             name="ios-bookmark-outline"
           />
-          <Icon style={GStyles.headerRightIcon} name="md-mail" />
+          <Icon onPress={() => navigation.navigate('ChatListScreen')}
+            style={GStyles.headerRightIcon} name="md-mail" 
+          />
         </View>
       )
     };

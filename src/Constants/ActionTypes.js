@@ -47,3 +47,11 @@ export const REVIEW_PRODUCT = 'REVIEW_PRODUCT'
 
 export const GET_PRODUCT_REVIEW = 'GET_PRODUCT_REVIEW'
 export const LOG_OUT = 'LOG_OUT'
+
+export const SET_CHAT_USER = 'SET_CHAT_USER'
+export const SET_ROOM = 'SET_ROOM'
+export const IS_TYPING = 'IS_TYPING'
+export const IS_NOT_TYPING = 'IS_NOT_TYPING'
+export const ON_RECEIVE_MESSAGE = 'ON_RECEIVE_MESSAGE'
+export const SEND_MESSAGE = 'SEND_MESSAGE'
+export const SEND_MESSAGE_ERROR = 'SEND_MESSAGE_ERROR'

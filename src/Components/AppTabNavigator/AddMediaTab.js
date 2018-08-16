@@ -40,7 +40,9 @@ class AddMediaTab extends Component {
             style={GStyles.headerRightIcon}
             name="ios-bookmark-outline"
           />
-          <Icon style={GStyles.headerRightIcon} name="md-mail" />
+          <Icon onPress={() => navigation.navigate('ChatListScreen')}
+            style={GStyles.headerRightIcon} name="md-mail" 
+          />
         </View>
       )
     };
@@ -113,9 +115,9 @@ class AddMediaTab extends Component {
   }
 
   onNext = () => {
-    // if (this.validate()) {
+    if (this.validate()) {
       this.props.navigation.navigate('BidSelection', { ...this.state.product });
-    // }
+    }
   };
 
   handleCategoryChange1(selectedValue, itemIndex) {

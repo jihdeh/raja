@@ -144,12 +144,12 @@ class BidSelection extends Component {
   }
 
   onNext = () => {
-    // if (this.validate()) {
+    if (this.validate()) {
       this.props.navigation.navigate('ProductOverview', {
         ...this.state.product,
         ...this.props.navigation.state.params
       });
-    // }
+    }
   };
 
   componentWillReceiveProps(nextProps) {
