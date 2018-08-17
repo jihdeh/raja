@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     flexDirection: "row"
   },
   headerRightIcon: {
-    paddingRight: 10
+    paddingRight: 20
   }
 });
 

@@ -107,8 +107,10 @@ class Wallet extends Component {
       navigation,
       shared: { showSpinner, walletAmount }
     } = this.props;
-    console.log(walletAmount)
     const { togglePayment, isLoading } = this.state;
+    const reducer = (accumulator, currentValue) => accumulator + +currentValue.amount
+    const amountTotal = walletAmount && walletAmount.items.reduce(reducer, 0)
+    console.log(walletAmount, amountTotal)
 
     return (
       <ScrollView style={Styles.container}>
@@ -124,7 +126,7 @@ class Wallet extends Component {
           </View>
           <View style={{ alignItems: "center" }}>
             <View style={Styles.sectionOneCurrContainer}>
-              <Text style={{ fontWeight: "bold", fontSize: 30 }}>1.00</Text>
+              <Text style={{ fontWeight: "bold", fontSize: 30 }}>{amountTotal}</Text>
               <Text>Rp</Text>
             </View>
             {!togglePayment ? (

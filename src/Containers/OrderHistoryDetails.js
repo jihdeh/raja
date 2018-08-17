@@ -20,6 +20,7 @@ import get from "lodash/get";
 import StarRating from "react-native-star-rating";
 import SliderEntry from "../Components/SliderEntry";
 import { reviewProduct, getProductReview } from "../Actions/ProductAction";
+import { displayError } from "../Actions/ErrorAction";
 import styles, { colors } from "../Styles/SliderEntry.index";
 import { sliderWidth, itemWidth } from "../Styles/SliderEntry.style";
 import Styles from "../Styles/OrderHistoryStyle";
@@ -94,7 +95,6 @@ class OrderHistoryDetail extends Component {
       shared: { showSpinner }
     } = this.props;
     const { isLoading } = this.state;
-    console.log(get(product.getProductReview, "hasReviewed"));
     return (
       <ScrollView>
         <Spinner
@@ -141,7 +141,7 @@ class OrderHistoryDetail extends Component {
           <View style={{ marginTop: 20 }}>
             <Text>Rating</Text>
           </View>
-          {!get(product.getProductReview, "hasReviewed") ? (
+          {!get(product.getProductReview, "hasReviewed") && get(product.getProductReview, "canReview") ? (
             <View>
               <StarRating
                 disabled={false}
@@ -242,6 +242,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   reviewProduct: bindActionCreators(reviewProduct, dispatch),
+  displayError: bindActionCreators(displayError, dispatch),
   getProductReview: bindActionCreators(getProductReview, dispatch)
 });
 

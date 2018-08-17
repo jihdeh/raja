@@ -85,8 +85,10 @@ class Notification extends Component {
 
   render() {
     const { notifications } = this.state;
+    console.log(notifications);
     const {
-      shared: { showSpinner }
+      shared: { showSpinner },
+      navigation
     } = this.props;
 
     return (
@@ -117,10 +119,21 @@ class Notification extends Component {
                   justifyContent: "space-between"
                 }}
               >
-                <Text>{notification.actor} followed you </Text>
-                <Text style={{ fontSize: 10 }}>
-                  {moment(notification.created_at).fromNow(true)}
-                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate("ProfileTab", {
+                      username: notification.actor,
+                      followingProfile: true
+                    })
+                  }
+                >
+                  <Text>{notification.actor} followed you </Text>
+                  <Text style={{ fontSize: 10 }}>
+                    {moment(notification.createdAt)
+                      .startOf("hour")
+                      .fromNow()}
+                  </Text>
+                </TouchableOpacity>
               </View>
             );
           })

@@ -310,8 +310,8 @@ export const checkout = (data, addressId, token) => async dispatch => {
 }
 
 export const reviewProduct = (id, data, token) => async dispatch => {
-  console.log(data, '-ass', id, token)
   // product/:id/review
+  dispatch({ type: SHOW_SPINNER })
   axios
     .post(
       `${BASE_URL}/products/${id}/review`,
@@ -325,15 +325,15 @@ export const reviewProduct = (id, data, token) => async dispatch => {
       }
     )
     .then(({ data }) => {
-      console.log('--data', data)
       dispatch({ type: HIDE_SPINNER })
       dispatch({
         type: REVIEW_PRODUCT,
         payload: data
       })
+      displayError('Review Successfull');
+      getProductReview(id, token)(dispatch);
     })
     .catch(({ response }) => {
-      console.log('--dataERROR', response)
       dispatch({ type: HIDE_SPINNER })
       if (response.status === 503) {
         return displayError('Server unvailable, please try later')(dispatch)
@@ -352,6 +352,7 @@ export const reviewProduct = (id, data, token) => async dispatch => {
 
 export const getProductReview = (id, token) => async dispatch => {
   // product/:id/review
+  dispatch({ type: SHOW_SPINNER })
   axios
     .get(`${BASE_URL}/products/${id}/reviews`, {
       headers: {

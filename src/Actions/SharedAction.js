@@ -220,18 +220,20 @@ export const topUpWallet = (data, token) => dispatch => {
 
 
 export const getWalletAmount = (token) => dispatch => {
+  dispatch({ type: SHOW_SPINNER });
   axios
-    .get(`${BASE_URL}/topup`, {
+    .get(`${BASE_URL}/user/topups`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     .then(({ data }) => {
-      console.log(data);
+      dispatch({ type: HIDE_SPINNER });
       dispatch({
         type: GET_WALLET_AMOUNT,
         payload: data
       })
     })
     .catch(({ response }) => {
+      dispatch({ type: HIDE_SPINNER });
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch);
       } else {

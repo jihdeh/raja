@@ -45,7 +45,7 @@ class HomeTab extends Component {
           <Icon
             name="ios-cash-outline"
             onPress={() => navigation.navigate("WalletScreen")}
-            style={{ paddingLeft: 10 }}
+            style={{ paddingLeft: 20 }}
           />
         </View>
       ),
@@ -57,7 +57,7 @@ class HomeTab extends Component {
             name="ios-bookmark-outline"
           />
           <Icon onPress={() => navigation.navigate('ChatListScreen')}
-            style={GStyles.headerRightIcon} name="md-mail" 
+            style={{ paddingRight: 10 }} name="md-mail" 
           />
         </View>
       )

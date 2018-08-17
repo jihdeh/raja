@@ -19,16 +19,29 @@ class SearchTab extends Component {
       tabBarIcon: ({ tintColor }) => (
         <Icon name="ios-search" style={{ color: tintColor }} />
       ),
-      headerLeft: <Icon name="ios-cash-outline" style={{ paddingLeft: 10 }} />,
+     headerLeft: (
+        <View style={GStyles.headerRightContainer}>
+          <Icon
+            name="ios-cart"
+            onPress={() => navigation.navigate("CartScreen")}
+            style={{ paddingLeft: 10 }}
+          />
+          <Icon
+            name="ios-cash-outline"
+            onPress={() => navigation.navigate("WalletScreen")}
+            style={{ paddingLeft: 20 }}
+          />
+        </View>
+      ),
       headerRight: (
         <View style={GStyles.headerRightContainer}>
           <Icon
-            onPress={() => navigation.navigate('BookmarkScreen')}
+            onPress={() => navigation.navigate("BookmarkScreen")}
             style={GStyles.headerRightIcon}
             name="ios-bookmark-outline"
           />
           <Icon onPress={() => navigation.navigate('ChatListScreen')}
-            style={GStyles.headerRightIcon} name="md-mail" 
+            style={{ paddingRight: 10 }} name="md-mail" 
           />
         </View>
       )
