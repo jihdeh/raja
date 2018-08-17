@@ -117,10 +117,9 @@ class Cost extends Component {
 
   render() {
     const {
-      product: { addToCart, getCart }
+      product: { addToCart, getCart, shippingCost }
     } = this.props;
     const { bankOption, isLoading } = this.state;
-
     return (
       <View>
         <PaymentSelection
@@ -139,7 +138,7 @@ class Cost extends Component {
           </View>
           <View style={FStyles.lowCont}>
             <Text style={FStyles.noEmph}>Shipping cost</Text>
-            <Text style={FStyles.noEmph}>Rp 5.00</Text>
+            <Text style={FStyles.noEmph}>Rp {get(shippingCost, 'shippingCost')}</Text>
           </View>
           <View style={FStyles.lowCont}>
             <Text style={FStyles.emph}>Total</Text>

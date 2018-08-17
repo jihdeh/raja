@@ -179,6 +179,7 @@ export const boughtOrderHistory = token => async dispatch => {
 }
 
 export const getShippingCost = (token, addressId) => async dispatch => {
+  dispatch({ type: SHOW_SPINNER })
   axios
     .get(`${BASE_URL}/checkout?location=${addressId}`, {
       headers: {
@@ -186,12 +187,14 @@ export const getShippingCost = (token, addressId) => async dispatch => {
       }
     })
     .then(({ data }) => {
+      dispatch({ type: HIDE_SPINNER })
       dispatch({
         type: FETCH_SHIPPING_COST,
         payload: data
       })
     })
     .catch(({ response }) => {
+      dispatch({ type: HIDE_SPINNER })
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch)
       } else {
@@ -238,7 +241,6 @@ export const addToCart = (cartId, { id: productId }, quantity) => dispatch => {
     })
     .catch(({ response }) => {
       dispatch({ type: HIDE_SPINNER })
-      console.log(response.data)
       if (response.data.errors) {
         displayError(errorHandler(response.data.errors))(dispatch)
       } else {
@@ -272,7 +274,6 @@ export const bidForProduct = (productId, amount) => dispatch => {
 }
 
 export const checkout = (data, addressId, token) => async dispatch => {
-  console.log(data);
   dispatch({ type: SHOW_SPINNER })
 
   axios
@@ -296,7 +297,6 @@ export const checkout = (data, addressId, token) => async dispatch => {
       boughtOrderHistory(token)(dispatch)
     })
     .catch(({ response }) => {
-      console.log(response)
       dispatch({ type: HIDE_SPINNER })
       if (response.status === 503) {
         return displayError('Server unvailable, please try later')(dispatch)
