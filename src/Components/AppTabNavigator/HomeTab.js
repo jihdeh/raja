@@ -14,7 +14,8 @@ import { getLoggedUserProfile } from "../../Actions/AuthAction";
 import {
   getCategories,
   getFollowers,
-  getFollowings
+  getFollowings,
+  getWalletAmount
 } from "../../Actions/SharedAction";
 import { getCouriers } from "../../Actions/LocationAction";
 import { getProducts, getCartItem } from "../../Actions/ProductAction";
@@ -73,21 +74,23 @@ class HomeTab extends Component {
       getLoggedUserProfile,
       getFollowers,
       getFollowings,
-      getCartItem
+      getCartItem,
+      getWalletAmount
     } = this.props;
     const { user: isAuthenticated } = auth;
 
     getCategories();
     getCouriers();
-    const value =
+    const token =
       (await AsyncStorage.getItem("token")) || isAuthenticated.token;
     getProducts("onSale")
       .then(() => getProducts("isTrending"))
       .then(() => getProducts("isFeatured"))
-      .then(() => getLoggedUserProfile(value))
-      .then(() => getFollowers(value))
-      .then(() => getFollowings(value))
-      .then(() => getCartItem(value));
+      .then(() => getLoggedUserProfile(token))
+      .then(() => getFollowers(token))
+      .then(() => getFollowings(token))
+      .then(() => getCartItem(token))
+      .then(() => getWalletAmount(token));
   }
 
   render() {
@@ -124,7 +127,8 @@ const mapDispatchToProps = dispatch => {
     getFollowers: bindActionCreators(getFollowers, dispatch),
     getFollowings: bindActionCreators(getFollowings, dispatch),
     getLoggedUserProfile: bindActionCreators(getLoggedUserProfile, dispatch),
-    getCartItem: bindActionCreators(getCartItem, dispatch)
+    getCartItem: bindActionCreators(getCartItem, dispatch),
+    getWalletAmount: bindActionCreators(getWalletAmount, dispatch)
   };
 };
 

@@ -12,7 +12,8 @@ import {
   UNFOLLOW_USER,
   REQUEST_SUCCESS,
   SHOW_SPINNER,
-  HIDE_SPINNER
+  HIDE_SPINNER,
+  GET_WALLET_AMOUNT
 } from "../Constants/ActionTypes";
 import { AsyncStorage } from "react-native";
 import toArray from "lodash/toArray";
@@ -185,6 +186,50 @@ export const unFollowUser = userId => dispatch => {
     .delete(`${BASE_URL}/user/${userId}/unfollow`)
     .then(({ data }) => {
       successHandler(REQUEST_SUCCESS, true)(dispatch);
+    })
+    .catch(({ response }) => {
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
+export const topUpWallet = (data, token) => dispatch => {
+  dispatch({ type: SHOW_SPINNER });
+
+  axios
+    .post(`${BASE_URL}/topup`, {...data}, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(({ data }) => {
+      dispatch({ type: HIDE_SPINNER });
+      successHandler(REQUEST_SUCCESS, true)(dispatch);
+      getWalletAmount(token)(dispatch)
+    })
+    .catch(({ response }) => {
+       dispatch({ type: HIDE_SPINNER });
+      if (response.data.errors) {
+        displayError(errorHandler(response.data.errors))(dispatch);
+      } else {
+        displayError(response.data.message)(dispatch);
+      }
+    });
+};
+
+
+export const getWalletAmount = (token) => dispatch => {
+  axios
+    .get(`${BASE_URL}/topup`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(({ data }) => {
+      console.log(data);
+      dispatch({
+        type: GET_WALLET_AMOUNT,
+        payload: data
+      })
     })
     .catch(({ response }) => {
       if (response.data.errors) {
