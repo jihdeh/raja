@@ -29,6 +29,7 @@ import CheckoutScreen from "./Containers/Checkout";
 import AddressScreen from "./Containers/Address";
 import OrderHistoryScreen from "./Containers/OrderHistory";
 import OrderHistoryDetailScreen from "./Containers/OrderHistoryDetails";
+import WalletHistoryDetailsScreen from "./Containers/WalletHistoryDetails";
 import FollowersScreen from "./Containers/Followers";
 
 const AppTabNavigator = TabNavigator(
@@ -84,6 +85,7 @@ const AppNavigator = StackNavigator({
   CheckoutScreen: { screen: CheckoutScreen },
   AddressScreen: { screen: AddressScreen },
   OrderHistoryScreen: { screen: OrderHistoryScreen },
+  WalletHistoryDetailsScreen: { screen: WalletHistoryDetailsScreen },
   OrderHistoryDetailScreen: { screen: OrderHistoryDetailScreen },
   FollowersScreen: { screen: FollowersScreen },
   EditProfile: { screen: EditProfile },

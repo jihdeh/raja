@@ -14,7 +14,7 @@ import {
 } from "react-native";
 const width = Dimensions.get("window").width;
 import { Icon } from "native-base";
-import Spinner from 'react-native-loading-spinner-overlay'
+import Spinner from "react-native-loading-spinner-overlay";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import get from "lodash/get";
@@ -34,10 +34,10 @@ class Wallet extends Component {
     amount: "0"
   };
   componentWillReceiveProps(nextProps) {
-    if(nextProps.shared.requestSuccess) {
+    if (nextProps.shared.requestSuccess) {
       this.setState({
         togglePayment: !this.state.togglePayment
-      })
+      });
     }
   }
 
@@ -71,7 +71,7 @@ class Wallet extends Component {
       return false;
     }
 
-    if(paymentMethod === 'bank' && !bankOption) {
+    if (paymentMethod === "bank" && !bankOption) {
       this.props.displayError("Please select bank option");
       return false;
     }
@@ -103,31 +103,42 @@ class Wallet extends Component {
 
   render() {
     const {
-      user: { userExtended },
+      user: { userExtended = {} },
       navigation,
       shared: { showSpinner, walletAmount }
     } = this.props;
     const { togglePayment, isLoading } = this.state;
-    const reducer = (accumulator, currentValue) => accumulator + +currentValue.amount
-    const amountTotal = walletAmount && walletAmount.items.reduce(reducer, 0)
-    console.log(walletAmount, amountTotal)
+    const reducerIsPaid = (accumulator, currentValue) =>
+      currentValue.isPaid && accumulator + +currentValue.amount;
+    const amountPaidTotal =
+      walletAmount && walletAmount.items.reduce(reducerIsPaid, 0);
+
+    const reducerIsNotPaid = (accumulator, currentValue) =>
+      !currentValue.isPaid && accumulator + +currentValue.amount;
+    const amountOutstandingTotal =
+      walletAmount && walletAmount.items.reduce(reducerIsNotPaid, 0);
 
     return (
       <ScrollView style={Styles.container}>
         <Spinner
           visible={showSpinner}
-          textContent={'Please wait...'}
-          textStyle={{ color: '#333' }}
+          textContent={"Please wait..."}
+          textStyle={{ color: "#333" }}
         />
         <View style={Styles.subContainer}>
           <View style={Styles.labelHeader}>
-            <Text>Hello</Text>
-            <Text>Hello</Text>
+            <Text>{userExtended.firstName || '...'}</Text>
+            <Text>{userExtended.email || '...'}</Text>
           </View>
           <View style={{ alignItems: "center" }}>
             <View style={Styles.sectionOneCurrContainer}>
-              <Text style={{ fontWeight: "bold", fontSize: 30 }}>{amountTotal}</Text>
+              <Text style={{ fontWeight: "bold", fontSize: 30 }}>
+                {amountPaidTotal || 0}
+              </Text>
               <Text>Rp</Text>
+            </View>
+            <View style={{ marginBottom: 5 }}>
+              <Text>Outstanding: Rp {amountOutstandingTotal || 0}</Text>
             </View>
             {!togglePayment ? (
               <TouchableOpacity
@@ -185,15 +196,17 @@ class Wallet extends Component {
           <View style={{ width: width / 2 }}>
             <View style={Styles.sectionTwoMenu}>
               <Icon style={Styles.sectionTwoMenuIcon} name="md-mail" />
-              <Text style={Styles.sectionTwoMenuText}>Transaction History</Text>
-            </View>
-            <View style={Styles.sectionTwoMenu}>
-              <Icon style={Styles.sectionTwoMenuIcon} name="md-mail" />
-              <Text style={Styles.sectionTwoMenuText}>Reset Juli Pin</Text>
-            </View>
-            <View style={Styles.sectionTwoMenu}>
-              <Icon style={Styles.sectionTwoMenuIcon} name="md-mail" />
-              <Text style={Styles.sectionTwoMenuText}>Top Up History</Text>
+              <Text
+                style={Styles.sectionTwoMenuText}
+                onPress={() =>
+                  walletAmount &&
+                  navigation.navigate("WalletHistoryDetailsScreen", {
+                    ...walletAmount
+                  })
+                }
+              >
+                Top Up History
+              </Text>
             </View>
           </View>
         </View>
