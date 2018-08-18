@@ -85,7 +85,6 @@ class Notification extends Component {
 
   render() {
     const { notifications } = this.state;
-    console.log(notifications);
     const {
       shared: { showSpinner },
       navigation

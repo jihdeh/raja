@@ -34,7 +34,7 @@ class Address extends Component {
             {get(userExtended, 'addresses.length') ? (
               <View>
                 {addressMap.map((address, key) => (
-                  <Addresses key={key} address={address} />
+                  <Addresses key={key} address={address} navigation={navigation} />
                 ))}
               </View>
             ) : (
@@ -47,7 +47,7 @@ class Address extends Component {
         <View style={LStyles.bottomCont}>
           <View style={LStyles.trackbar} />
           <TouchableOpacity
-            onPress={() => navigation.navigate('SettingsScreen')}
+            onPress={() => navigation.navigate('AddAddress')}
             style={LStyles.myProceedBtn}
           >
             <Text style={LStyles.btnTxt}>Add New Delivery Address</Text>

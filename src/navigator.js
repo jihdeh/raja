@@ -11,6 +11,7 @@ import ProductOverview from "./Components/AuctionComponents/productOverview";
 import EditProfile from "./Components/SettingsComponents/editProfile";
 import UpdatePassword from "./Components/SettingsComponents/updatePassword";
 import UpdateAddress from "./Components/SettingsComponents/updateAddress";
+import AddAddress from "./Components/SettingsComponents/addAddress";
 
 import ProductInfo from "./Components/HomeComponents/ProductInfo";
 
@@ -87,6 +88,7 @@ const AppNavigator = StackNavigator({
   FollowersScreen: { screen: FollowersScreen },
   EditProfile: { screen: EditProfile },
   UpdateAddress: { screen: UpdateAddress },
+  AddAddress: { screen: AddAddress },
   UpdatePassword: { screen: UpdatePassword },
   Home: {
     screen: AppTabNavigator

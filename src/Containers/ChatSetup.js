@@ -27,7 +27,6 @@ class ChatSetup extends React.Component {
   }
 
   componentDidMount() {
-    console.log('mounted')
     const { user: { userExtended } } = this.props;
     if (userExtended) {
       this.tokenProvider = new Chatkit.TokenProvider({
@@ -39,29 +38,24 @@ class ChatSetup extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('did updated')
     const { user: { userExtended } } = this.props;
 
     if (userExtended && !this.props.chat.user && !this.isConnecting) {
-      console.log('in if');
       this.tokenProvider = new Chatkit.TokenProvider({
         url: CHATKIT_TOKEN_PROVIDER_ENDPOINT
         // url: (id, token) => `${BASE_URL}/user/chat-token`,
       });
       this.connectChat()
     } else if (!userExtended && this.props.chat.user) {
-      console.log('in else');
       this.clearSubscription()
     }
   }
 
   componentWillUnmount() {
-    console.log('unmounting');
     this.clearSubscription()
   }
 
   clearSubscription() {
-    console.log('clear sub');
     const { chat: { user } } = this.props;
     if (!user) return;
 
@@ -70,7 +64,6 @@ class ChatSetup extends React.Component {
   }
 
   connectChat() {
-    console.log('connect chat')
     this.isConnecting = true;
     const { user: { userExtended } } = this.props;
 
@@ -83,7 +76,6 @@ class ChatSetup extends React.Component {
     chatManager.connect()
     .then(currentUser => {
      this.isConnecting = false;
-      console.log('chatmanager connect');
       this.props.setUser(currentUser);
       return Promise.all(
         currentUser.rooms.map(room => currentUser.subscribeToRoom({
@@ -159,7 +151,6 @@ class ChatSetup extends React.Component {
   // END slack clone
 
   onReceive(data) {
-    console.log('on receivesss')
     Reactotron.log(data)
     const { senderId, id, roomId, text, createdAt } = data;
     const { chat: { user, currentRoom } } = this.props;
@@ -195,7 +186,6 @@ class ChatSetup extends React.Component {
   }
 
   onSend([message]) {
-    console.log('onsendd', message)
     const { chat: { currentRoom, user } } = this.props;
     user.sendMessage({
       text: message.text,

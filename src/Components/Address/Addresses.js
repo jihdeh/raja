@@ -46,7 +46,7 @@ class Addresses extends Component {
 
   render() {
     const { edit, addyId, location } = this.state;
-    const { address } = this.props;
+    const { address, navigation } = this.props;
 
     return (
       <View>
@@ -90,23 +90,11 @@ class Addresses extends Component {
                   />
                 )}
               </View>
-              {edit ? null : (
                 <View style={LStyles.divis}>
                   <Ionicons name="ios-home" size={40} color="grey" />
                 </View>
-              )}
               <View style={LStyles.moreDetails}>
                 <Text style={LStyles.loc}>SEND TO</Text>
-                {edit ? (
-                  <TextInput
-                    placeholder={address.address}
-                    value={address.address}
-                    onChange={location => this.setState({ location })}
-                    numberOfLines={4}
-                    editable={true}
-                    multiline={true}
-                  />
-                ) : (
                   <Text
                     numberOfLines={1}
                     style={
@@ -118,16 +106,14 @@ class Addresses extends Component {
                   >
                     {address.address}
                   </Text>
-                )}
+
               </View>
             </View>
 
             <View style={LStyles.editor}>
               <TouchableOpacity
                 onPress={() =>
-                  this.setState({
-                    edit: !edit
-                  })
+                  navigation.navigate('UpdateAddress', {address})
                 }
               >
                 <MaterialIcons name="edit" size={22} color="grey" />
