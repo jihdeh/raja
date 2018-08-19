@@ -4,13 +4,37 @@ import {
   Text,
   StyleSheet,
   TextInput,
+  FlatList,
+  Image,
   TouchableOpacity
 } from 'react-native';
+import { InstantSearch, Configure, Index, createConnector } from 'react-instantsearch-native';
 import Styles from '../../Styles/SearchStyle';
 import GStyles from '../../Styles/GeneralStyle';
+import Hits from './Hits';
+import SearchBox from './SearchBox';
+import SearchResults from './SearchResults';
 import DummyProductList from '../../utils/dummySearchCategoryJson';
-
 import { Icon } from 'native-base';
+
+
+const Suggestions = createConnector({
+  displayName: 'CustomResults',
+  getProvidedProps(props, searchState, searchResults) {
+		let status = 'initial';
+		if (searchResults.searching) { status = 'pending';}
+		else if (searchResults.results && !searchResults.results.products.nbHits && !searchResults.results.users.nbHits) status = 'empty'
+		else if (searchResults.results && (searchResults.results.products.nbHits || searchResults.results.users.nbHits)) status = 'data'
+		
+		return { query: searchState.query, status, results: searchResults.results };
+  }
+})(({ status, query, results, ...props }) => {
+	if (!status || status === 'initial' || !query || query.length < 2) return null;
+
+	return (
+		<SearchResults {...props} status={status} results={results} query={query}/>
+	)
+});
 
 class SearchTab extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -35,16 +59,15 @@ class SearchTab extends Component {
     };
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.suggestionCountArray = [];
+    this.onChangeText = this.onChangeText.bind(this);
   }
 
   state = {
     searchInput: '',
-    searchResultCount: 0,
-    selectedTab: 'product' //product && profile
   };
 
   renderList(list, key) {
@@ -68,86 +91,34 @@ class SearchTab extends Component {
     });
   }
 
-  renderSuggestionHeader(products, profiles) {
-    const { selectedTab, searchResultCount } = this.state;
-    return (
-      <View>
-        <View style={Styles.suggestionContainer}>
-          <TouchableOpacity
-            style={selectedTab === 'product' && Styles.suggestionHeaderWrapper}
-            onPress={() =>
-              this.setState({
-                selectedTab: 'product'
-              })
-            }
-          >
-            <Text style={Styles.suggestionHeader}>Products</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={selectedTab === 'profile' && Styles.suggestionHeaderWrapper}
-            onPress={() =>
-              this.setState({
-                selectedTab: 'profile'
-              })
-            }
-          >
-            <Text style={Styles.suggestionHeader}>Profile</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={Styles.suggestionTextContainer}>
-          <Text style={Styles.suggestionText}>SUGGESTIONS (...)</Text>
-        </View>
-        <View>
-          {selectedTab === 'product'
-            ? products.map(({ products }, key) =>
-                this.renderSuggestionList(products)
-              )
-            : this.renderSuggestionList(profiles)}
-        </View>
-      </View>
-    );
+  onChangeText(text) {
+    this.setState({ searchInput: text })
   }
 
-  renderSuggestionList(suggestions) {
-    const { selectedTab, searchInput } = this.state;
-    const cleanInput = searchInput.trim().toLowerCase();
-    if (selectedTab === 'product') {
-      const result = suggestions.filter(
-        (product, key) => product.name.toLowerCase().indexOf(cleanInput) > -1
-      );
-
-      return result.map((product, key) => (
-        <Text key={key}>{product.name}</Text>
-      ));
-    } else if (selectedTab == 'profile') {
-      const result = suggestions.filter(
-        (profile, key) => profile.name.toLowerCase().indexOf(cleanInput) > -1
-      );
-
-      return result.length ? (
-        result.map((profile, key) => <Text key={key}>{profile.name}</Text>)
-      ) : (
-        <Text>No results found</Text>
-      );
-    }
-  }
+  onSearchStateChange(search) {
+	}
 
   render() {
     const { searchInput } = this.state;
     const { products, profiles } = DummyProductList;
 
     return (
+      <InstantSearch
+        appId="1IEICQZOWX"
+        apiKey="4d3c510ccdc37b9795824befc4d29dde"
+        indexName="products"
+        onSearchStateChange={this.onSearchStateChange}
+        >
+        <Index indexName="users" />
+        <Configure 
+					hitsPerPage={20} 
+					facets={['category']}
+					maxValuesPerFacet={3}
+					attributesToHighlight={['name', 'description']}
+				/>
       <View>
         <View style={Styles.searchSection}>
-          <TextInput
-            style={Styles.searchInput}
-            underlineColorAndroid="transparent"
-            placeholder="What are you looking for?"
-            placeholderTextColor="rgba(45, 45, 45, 0.3)"
-            returnKeyType="search"
-            onChangeText={searchInput => this.setState({ searchInput })}
-            value={this.state.searchInput}
-          />
+          <SearchBox onChangeText={this.onChangeText}/>
           <Icon
             style={Styles.searchIcon}
             name="ios-search"
@@ -155,10 +126,10 @@ class SearchTab extends Component {
             color="#000"
           />
         </View>
-        {!searchInput
-          ? products.map((list, key) => this.renderList(list, key))
-          : this.renderSuggestionHeader(products, profiles)}
+        {!searchInput && products.map((list, key) => this.renderList(list, key)) }
+        <Suggestions />
       </View>
+      </InstantSearch>
     );
   }
 }

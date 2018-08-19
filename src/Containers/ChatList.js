@@ -199,6 +199,7 @@ class ChatList extends React.Component {
         text: lastMessage ?
           (lastMessage.attachment ? 'sent a file' : lastMessage.text ) : '...',
         avatar: lastMessage ? (lastMessage.user.avatar || defaultAvatar) : defaultAvatar,
+        lastMessage
       }
     })
     

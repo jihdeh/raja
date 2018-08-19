@@ -2,6 +2,7 @@ import React from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { connect } from 'react-redux';
 import Chatkit from '@pusher/chatkit';
+import { View, Platform } from 'react-native';
 
 const CHATKIT_TOKEN_PROVIDER_ENDPOINT = 'https://us1.pusherplatform.io/services/chatkit_token_provider/v1/49729f5a-a444-4e01-97b9-4f9a46bd5ee7/token';
 const CHATKIT_INSTANCE_LOCATOR = 'v1:us1:49729f5a-a444-4e01-97b9-4f9a46bd5ee7';

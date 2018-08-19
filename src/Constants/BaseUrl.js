@@ -1,1 +1,1 @@
-export const BASE_URL = "https://boiling-mountain-63569.herokuapp.com/api/v1";
+export const BASE_URL = "https://6bad8a49.ngrok.io/api/v1";
