@@ -3,19 +3,25 @@ import {
   TextInput,
 } from 'react-native';
 import Styles from '../../Styles/SearchStyle';
-import { connectInfiniteHits, connectSearchBox } from 'react-instantsearch-native';
+import { connectSearchBox } from 'react-instantsearch-native';
+import Reactotron, { trackGlobalErrors } from 'reactotron-react-native';
+
 
 const SearchBox = connectSearchBox(({ refine, currentRefinement, ...props }) => {
-  console.log('xxin searchbox top', props)
+  if (props.text && currentRefinement !== props.text) {
+    console.log('refining text')
+    refine(props.text)
+  }
+
   return (
     <TextInput
       underlineColorAndroid="transparent"
       style={Styles.searchInput}
       onChangeText={text => {
-        refine(text);
+        if (text) { refine(text); }
         props.onChangeText(text);
       }}
-      value={currentRefinement}
+      value={props.text}
       placeholder={'Search products or users..'}
       clearButtonMode={'always'}
       spellCheck={false}

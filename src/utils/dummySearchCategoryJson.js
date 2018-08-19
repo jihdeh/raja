@@ -7,11 +7,11 @@ module.exports = {
       products: [
         {
           id: 1,
-          name: "Samsung"
+          name: "Phone Accessories"
         },
         {
           id: 2,
-          name: "Panasonic"
+          name: "Laptop"
         }
       ]
     },

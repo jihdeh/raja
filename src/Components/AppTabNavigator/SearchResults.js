@@ -51,7 +51,7 @@ class SearchResults extends Component {
 
     return (
       <React.Fragment>
-        {this.renderSuggestionHeader()}
+        {results.users && this.renderSuggestionHeader()}
         <View>
           { selectedTab === 'product' ? <Hits /> : <Index indexName="users"><Hits /></Index>}
         </View>

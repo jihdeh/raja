@@ -27,7 +27,7 @@ class ChatSetup extends React.Component {
   }
 
   componentDidMount() {
-    console.log('mounted')
+
     const { user: { userExtended } } = this.props;
     if (userExtended) {
       this.tokenProvider = new Chatkit.TokenProvider({
@@ -39,7 +39,6 @@ class ChatSetup extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log('did updated')
     const { user: { userExtended } } = this.props;
 
     if (userExtended && !this.props.chat.user && !this.isConnecting) {
@@ -50,13 +49,11 @@ class ChatSetup extends React.Component {
       });
       this.connectChat()
     } else if (!userExtended && this.props.chat.user) {
-      console.log('in else');
       this.clearSubscription()
     }
   }
 
   componentWillUnmount() {
-    console.log('unmounting');
     this.clearSubscription()
   }
 
