@@ -14,7 +14,7 @@ import Styles from '../../Styles/SearchStyle';
 import GStyles from '../../Styles/GeneralStyle';
 import Hits from './Hits';
 import SearchBox from './SearchBox';
-import Categories from './RefinementModal';
+import RefinementModal from './RefinementModal';
 import SearchResults from './SearchResults';
 import DummyProductList from '../../utils/dummySearchCategoryJson';
 import { Icon } from 'native-base';
@@ -38,8 +38,10 @@ const Suggestions = createConnector({
         if (!searchResults.results.nbHits) status = 'empty'
         else if (searchResults.results.nbHits) status = 'data'
       }
+      console.log('nnnnnn', searchResults.results.products? searchResults.results.products.nbHits : searchResults.results.nbHits);
+      console.log('hhhhhhh', searchResults.results.products? searchResults.results.products.hits.length : searchResults.results.hits.length);
     }
-		
+
 		return { query: searchState.query, status, results: searchResults.results };
   }
 })(({ status, query, results, ...props }) => {
@@ -81,11 +83,12 @@ class SearchTab extends Component {
     this.onIconPress = this.onIconPress.bind(this);
     this.setModalVisible = this.setModalVisible.bind(this);
     this.onSearchStateChange = this.onSearchStateChange.bind(this);
+    this.onTabSelect = this.onTabSelect.bind(this);
   }
   
   defaultConfiguration = {
     hitsPerPage: 20,
-    facets: ['category'],
+    facets: ['category', 'salePrice'],
     maxValuesPerFacet: 3,
     attributesToHighlight: ['name', 'description']
   }
@@ -93,6 +96,7 @@ class SearchTab extends Component {
   state = {
     searchInput: '',
     selectedCategory: '',
+    selectedTab: 'product',
     configuration: this.defaultConfiguration,
     modalVisible: false,
     searchState: {}
@@ -137,15 +141,6 @@ class SearchTab extends Component {
     if (searchInput) this.setState({ searchInput: '', selectedCategory: '' }) 
   }
 
-  getDefaultConfigure() {
-    return {
-      hitsPerPage: 20,
-      facets: ['category'],
-      maxValuesPerFacet: 3,
-      attributesToHighlight: ['name', 'description']
-    }
-  }
-
   searchCategory(category) {
     console.log('setting category', category)
     this.setState({
@@ -167,9 +162,13 @@ class SearchTab extends Component {
   setModalVisible(visible) {
     this.setState({ modalVisible: visible });
   }
+
+  onTabSelect(tab) {
+    this.setState({ selectedTab: tab })
+  }
   
   render() {
-    const { searchInput, configuration, selectedCategory } = this.state;
+    const { searchInput, configuration, selectedCategory, selectedTab } = this.state;
     const { products, profiles } = DummyProductList;
 
     console.log('rendersss', this.state)
@@ -195,20 +194,26 @@ class SearchTab extends Component {
             color="#000"
           />
         </View>
-        <TouchableHighlight
-          onPress={() => {
-            this.setModalVisible(true);
-          }}
-        >
-          <Text>Categories</Text>
-        </TouchableHighlight>
+        {selectedTab === 'product' &&
+          <TouchableHighlight
+            onPress={() => {
+              this.setModalVisible(true);
+            }}
+          >
+            <Text>Filter</Text>
+          </TouchableHighlight>
+        }
         {!searchInput && !selectedCategory && products.map((list, key) => this.renderList(list, key)) }
-        <Suggestions hidden={!selectedCategory && (!searchInput || searchInput.length < 2)}/>
+        <Suggestions 
+          onTabSelect={this.onTabSelect}
+          selectedTab={selectedTab}
+          hidden={!selectedCategory && (!searchInput || searchInput.length < 2)}
+        />
       </View>
       <VirtualRefinementList attribute="category" />
-      <Categories
+      <RefinementModal
         setModalVisible={this.setModalVisible}
-        modalVisible={this.state.modalVisible}
+        modalVisible={this.state.modalVisible && selectedTab === 'product'}
         onSearchStateChange={this.onSearchStateChange}
         searchState={this.state.searchState}
       />

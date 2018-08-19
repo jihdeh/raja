@@ -10,32 +10,21 @@ import Hits from './Hits';
 import Styles from '../../Styles/SearchStyle';
 
 class SearchResults extends Component {
-  state = {
-    selectedTab: 'product'
-  };
 
   renderSuggestionHeader() {
-    const { selectedTab } = this.state;
+    const { selectedTab, onTabSelect } = this.props;
     return (
       <View>
         <View style={Styles.suggestionContainer}>
           <TouchableOpacity
             style={selectedTab === 'product' && Styles.suggestionHeaderWrapper}
-            onPress={() => 
-              this.setState({
-                selectedTab: 'product'
-              })
-            }
+            onPress={() => onTabSelect('product')}
           >
             <Text style={Styles.suggestionHeader}>Products</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={selectedTab === 'user' && Styles.suggestionHeaderWrapper}
-            onPress={() => 
-              this.setState({
-                selectedTab: 'user'
-              })
-            }
+            onPress={() => onTabSelect('user')}
           >
             <Text style={Styles.suggestionHeader}>Profile</Text>
           </TouchableOpacity>
@@ -45,8 +34,7 @@ class SearchResults extends Component {
   }
 
   render() {
-    const { selectedTab } = this.state;    
-    const { results } = this.props;
+    const { results, selectedTab } = this.props;
     if (!results) return null;
 
     return (

@@ -11,12 +11,13 @@ import {
 } from 'react-native';
 import { InstantSearch } from 'react-instantsearch-native';
 import RefinementList from './RefinementList';
+import PriceRefinement from './PriceRefinement';
 
 
-class Categories extends React.Component {
+class RefinementModal extends React.Component {
   render() {
     return (
-      <View style={{ marginTop: 22 }}>
+      <View style={{ marginTop: 22, padding: 20 }}>
         <Modal
           animationType={'none'}
           transparent={false}
@@ -30,6 +31,7 @@ class Categories extends React.Component {
               onSearchStateChange={this.props.onSearchStateChange}
               searchState={this.props.searchState}
             >
+              <PriceRefinement attribute="salePrice"/>
               <RefinementList attribute="category" />
               <TouchableHighlight
                 onPress={() => {
@@ -50,4 +52,4 @@ class Categories extends React.Component {
   }
 }
 
-export default Categories
+export default RefinementModal

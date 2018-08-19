@@ -9,7 +9,6 @@ import Reactotron, { trackGlobalErrors } from 'reactotron-react-native';
 
 const SearchBox = connectSearchBox(({ refine, currentRefinement, ...props }) => {
   if (props.text && currentRefinement !== props.text) {
-    console.log('refining text')
     refine(props.text)
   }
 

@@ -22,7 +22,6 @@ const RefinementList = connectRefinementList(({ refine, items }) =>
         Categories
       </Text>}
     renderItem={({ item }) => {
-      console.log('itemmmmm', item)
       return (
         <View style={{ height: 30 }}>
           <TouchableHighlight
@@ -31,7 +30,7 @@ const RefinementList = connectRefinementList(({ refine, items }) =>
             }}
           >
             <Text style={item.isRefined ? { fontWeight: 'bold' } : {}}>
-              {item.label}
+              {item.label} ({item.count})
             </Text>
           </TouchableHighlight>
         </View>
