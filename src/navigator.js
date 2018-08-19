@@ -11,6 +11,7 @@ import ProductOverview from "./Components/AuctionComponents/productOverview";
 import EditProfile from "./Components/SettingsComponents/editProfile";
 import UpdatePassword from "./Components/SettingsComponents/updatePassword";
 import UpdateAddress from "./Components/SettingsComponents/updateAddress";
+import AddAddress from "./Components/SettingsComponents/addAddress";
 
 import ProductInfo from "./Components/HomeComponents/ProductInfo";
 
@@ -28,6 +29,7 @@ import CheckoutScreen from "./Containers/Checkout";
 import AddressScreen from "./Containers/Address";
 import OrderHistoryScreen from "./Containers/OrderHistory";
 import OrderHistoryDetailScreen from "./Containers/OrderHistoryDetails";
+import WalletHistoryDetailsScreen from "./Containers/WalletHistoryDetails";
 import FollowersScreen from "./Containers/Followers";
 
 const AppTabNavigator = TabNavigator(
@@ -83,10 +85,12 @@ const AppNavigator = StackNavigator({
   CheckoutScreen: { screen: CheckoutScreen },
   AddressScreen: { screen: AddressScreen },
   OrderHistoryScreen: { screen: OrderHistoryScreen },
+  WalletHistoryDetailsScreen: { screen: WalletHistoryDetailsScreen },
   OrderHistoryDetailScreen: { screen: OrderHistoryDetailScreen },
   FollowersScreen: { screen: FollowersScreen },
   EditProfile: { screen: EditProfile },
   UpdateAddress: { screen: UpdateAddress },
+  AddAddress: { screen: AddAddress },
   UpdatePassword: { screen: UpdatePassword },
   Home: {
     screen: AppTabNavigator

@@ -14,7 +14,8 @@ import { getLoggedUserProfile } from "../../Actions/AuthAction";
 import {
   getCategories,
   getFollowers,
-  getFollowings
+  getFollowings,
+  getWalletAmount
 } from "../../Actions/SharedAction";
 import { getCouriers } from "../../Actions/LocationAction";
 import { getProducts, getCartItem } from "../../Actions/ProductAction";
@@ -44,7 +45,7 @@ class HomeTab extends Component {
           <Icon
             name="ios-cash-outline"
             onPress={() => navigation.navigate("WalletScreen")}
-            style={{ paddingLeft: 10 }}
+            style={{ paddingLeft: 20 }}
           />
         </View>
       ),
@@ -56,7 +57,7 @@ class HomeTab extends Component {
             name="ios-bookmark-outline"
           />
           <Icon onPress={() => navigation.navigate('ChatListScreen')}
-            style={GStyles.headerRightIcon} name="md-mail" 
+            style={{ paddingRight: 10 }} name="md-mail" 
           />
         </View>
       )
@@ -73,27 +74,28 @@ class HomeTab extends Component {
       getLoggedUserProfile,
       getFollowers,
       getFollowings,
-      getCartItem
+      getCartItem,
+      getWalletAmount
     } = this.props;
     const { user: isAuthenticated } = auth;
 
     getCategories();
     getCouriers();
-    const value =
+    const token =
       (await AsyncStorage.getItem("token")) || isAuthenticated.token;
     getProducts("onSale")
       .then(() => getProducts("isTrending"))
       .then(() => getProducts("isFeatured"))
-      .then(() => getLoggedUserProfile(value))
-      .then(() => getFollowers(value))
-      .then(() => getFollowings(value))
-      .then(() => getCartItem(value));
+      .then(() => getLoggedUserProfile(token))
+      .then(() => getFollowers(token))
+      .then(() => getFollowings(token))
+      .then(() => getCartItem(token))
+      .then(() => getWalletAmount(token));
   }
 
   render() {
     const { navigation, products, shared } = this.props;
     const hasFetchedProducts = products && products.toJS();
-    console.log(get(shared, "followings"), "------");
     return (
       <View>
         <ScrollView>
@@ -125,7 +127,8 @@ const mapDispatchToProps = dispatch => {
     getFollowers: bindActionCreators(getFollowers, dispatch),
     getFollowings: bindActionCreators(getFollowings, dispatch),
     getLoggedUserProfile: bindActionCreators(getLoggedUserProfile, dispatch),
-    getCartItem: bindActionCreators(getCartItem, dispatch)
+    getCartItem: bindActionCreators(getCartItem, dispatch),
+    getWalletAmount: bindActionCreators(getWalletAmount, dispatch)
   };
 };
 

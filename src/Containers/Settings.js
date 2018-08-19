@@ -5,11 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
-  ActivityIndicator,
-  Switch,
-  Image,
   StyleSheet,
-  TextInput,
   AsyncStorage
 } from "react-native";
 import { bindActionCreators } from "redux";
@@ -75,9 +71,9 @@ class Settings extends Component {
             />
             <Cell
               cellStyle="Basic"
-              title="Update Address"
+              title="Add Address"
               accessory="DisclosureIndicator"
-              onPress={() => navigation.navigate("UpdateAddress")}
+              onPress={() => navigation.navigate("AddAddress")}
             />
 
             <Cell cellStyle="Basic" title="Logout" onPress={this.onLogout} />

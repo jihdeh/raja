@@ -9,6 +9,7 @@ import {
   REQUEST_SUCCESS,
   SHOW_SPINNER,
   HIDE_SPINNER,
+  GET_WALLET_AMOUNT
 } from '../Constants/ActionTypes';
 import { set } from '../utils/functional-immutable';
 
@@ -34,6 +35,8 @@ const ProductReducer = (state = initialState, { type, payload }) => {
       return set('followings', payload, state);
     case REQUEST_SUCCESS:
       return set('requestSuccess', payload, state);
+    case GET_WALLET_AMOUNT:
+      return set('walletAmount', payload, state);
     default:
       return state;
   }

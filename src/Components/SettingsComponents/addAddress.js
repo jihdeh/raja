@@ -42,16 +42,6 @@ class UpdateAddress extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {
-      navigation: {
-        state: {
-          params: { address }
-        }
-      }
-    } = this.props;
-    this.setState({
-      ...address
-    });
     if (
       get(nextProps.user, "updateProfile.addresses.length") >
       get(this.props.user, "userExtended.addresses.length")
@@ -71,6 +61,7 @@ class UpdateAddress extends PureComponent {
         isLoading: false
       });
       this.props.displayError("Successfully created");
+      // this.props.navigation.navigate('AddressScreen');
       return;
     }
     return;
@@ -153,16 +144,9 @@ class UpdateAddress extends PureComponent {
   render() {
     const {
       location: { loadedCity, loadedProvince },
-      shared: { showSpinner },
-      navigation: {
-        state: {
-          params: {
-            address: { firstName, lastName, phone, address }
-          }
-        }
-      }
+      shared: { showSpinner }
     } = this.props;
-    const { isLoading, provinceName, cityName } = this.state;
+    const { isLoading } = this.state;
 
     return (
       <View style={{ margin: 10 }}>
@@ -182,7 +166,7 @@ class UpdateAddress extends PureComponent {
             keyboardType="default"
             autoCapitalize={"none"}
             onChangeText={firstName => this.onChange("firstName", firstName)}
-            value={this.state.firstName || firstName}
+            value={this.state.firstName}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -197,7 +181,7 @@ class UpdateAddress extends PureComponent {
             keyboardType="default"
             autoCapitalize={"none"}
             onChangeText={lastName => this.onChange("lastName", lastName)}
-            value={this.state.lastName || lastName}
+            value={this.state.lastName}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -212,7 +196,7 @@ class UpdateAddress extends PureComponent {
             keyboardType="default"
             autoCapitalize={"none"}
             onChangeText={address => this.onChange("address", address)}
-            value={this.state.address || address}
+            value={this.state.address}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
@@ -226,13 +210,13 @@ class UpdateAddress extends PureComponent {
             returnKeyType="go"
             keyboardType="numeric"
             onChangeText={phone => this.onChange("phone", phone)}
-            value={this.state.phone || phone}
+            value={this.state.phone}
             autoCorrect={false}
           />
         </KeyboardAvoidingView>
         <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
           <Fragment>
-            <Text style={Styles.label_text}>PROVINCE: {provinceName}</Text>
+            <Text style={Styles.label_text}>PROVINCE:</Text>
             <View style={GStyles.dropDownSelection_input}>
               {loadedProvince && (
                 <Picker
@@ -242,7 +226,7 @@ class UpdateAddress extends PureComponent {
                     this.onLocationChange(province, loadedCity)
                   }
                   placeholder={{ label: "SELECT" }}
-                  value={this.state.provinceId || provinceId}
+                  value={this.state.provinceId}
                 />
               )}
             </View>
@@ -252,7 +236,7 @@ class UpdateAddress extends PureComponent {
         {get(this.state, "city") && (
           <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={64}>
             <Fragment>
-              <Text style={Styles.label_text}>CITY: {cityName}</Text>
+              <Text style={Styles.label_text}>CITY:</Text>
               <View style={GStyles.dropDownSelection_input}>
                 <Picker
                   items={this.state.city}
@@ -261,7 +245,7 @@ class UpdateAddress extends PureComponent {
                     this.onCityChange(city, loadedCity)
                   }
                   placeholder={{ label: "SELECT" }}
-                  value={this.state.cityName || cityName}
+                  value={this.state.cityName}
                 />
               </View>
             </Fragment>
@@ -279,13 +263,18 @@ class UpdateAddress extends PureComponent {
           />
         </View>
 
+        {!isLoading ? (
           <TouchableOpacity
             onPress={this.onSubmit}
             style={[Styles.btn, GStyles.buttonContainer]}
           >
             <Text style={GStyles.buttonText}>SAVE ADDRESS</Text>
           </TouchableOpacity>
-
+        ) : (
+          <TouchableOpacity style={[Styles.btn, GStyles.buttonContainer]}>
+            <ActivityIndicator size="small" color="#ffffff" />
+          </TouchableOpacity>
+        )}
       </View>
     );
   }

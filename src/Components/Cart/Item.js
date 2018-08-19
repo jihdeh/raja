@@ -25,6 +25,10 @@ class Item extends Component {
     addToCart(cartId, cartItem, quantity);
   }
 
+  trunc(text) {
+  return text.length > 20 ? `${text.substr(0, 20)}...` : text;
+}
+
   render() {
     const { cartItem } = this.props;
 
@@ -41,7 +45,7 @@ class Item extends Component {
                 ellipsizeMode={'tail'}
                 style={CStyles.top}
               >
-                {cartItem.name}
+                {this.trunc(cartItem.name)}
               </Text>
               <Text style={CStyles.top}> Rp {Math.round(cartItem.price)}</Text>
             </View>
