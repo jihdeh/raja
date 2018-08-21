@@ -19,6 +19,7 @@ import { bindActionCreators } from "redux";
 import { logout, getFollowingUserProfile } from "../../Actions/AuthAction";
 import RightHeader from "../ProfileRightHeader";
 import ProfileView from "../ProfileView";
+import UserProfile from "../UserProfile";
 import { getUserProducts } from "../../Actions/ProductAction";
 
 class ProfileTab extends PureComponent {
@@ -125,13 +126,14 @@ class ProfileTab extends PureComponent {
             address={get(findDefaultAddress, "address")}
           />
         ) : (
-          <ProfileView
+          <UserProfile
             navigation={navigation}
-            username={get(userExtended, "username") || "..."}
-            profile={followingUserExtended && followingUserExtended}
-            followers={get(shared, "followers")}
-            hotListsItems={get(hotListsItems, "profileProducts")}
-            address={get(findDefaultAddress, "address")}
+            // username={get(userExtended, "username") || "..."}
+            // profile={followingUserExtended && followingUserExtended}
+            // followers={get(shared, "followers")}
+            // user={userExtended}
+            // hotListsItems={get(hotListsItems, "profileProducts")}
+            // address={get(findDefaultAddress, "address")}
           />
         )}
       </View>

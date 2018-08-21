@@ -51,7 +51,7 @@ class AddMediaTab extends Component {
           <Icon
             onPress={() => navigation.navigate("BookmarkScreen")}
             style={GStyles.headerRightIcon}
-            name="ios-bookmark-outline"
+            name="ios-bookmark"
           />
           <Icon onPress={() => navigation.navigate('ChatListScreen')}
             style={{ paddingRight: 10 }} name="md-mail" 
