@@ -15,7 +15,7 @@ import jwtDecode from "jwt-decode";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { logout } from "../Actions/AuthAction";
-import { getFollowings } from "../Actions/SharedAction";
+import { getFollowings, getRecommendations } from "../Actions/SharedAction";
 import { Icon } from "native-base";
 
 import Login from "./Login";
@@ -34,9 +34,10 @@ class LandingPage extends Component {
   };
 
   async componentWillMount() {
-    const { getFollowings } = this.props;
+    const { getFollowings, getRecommendations } = this.props;
     const token = await AsyncStorage.getItem("token");
-    // const getUserFollowings = await getFollowings(token);
+    const getUserFollowings = await getFollowings(token);
+    const getRecommended = await getRecommendations(token);
     this.setState({
       logged: token
     });
@@ -49,10 +50,13 @@ class LandingPage extends Component {
       });
       return;
     }
-    if (token) {
+    console.log('---', 'as', getUserFollowings, getRecommended)
+    if (token && getUserFollowings.length) {
       this.props.navigation.navigate("RecommendedScreen");
       return;
     }
+    // this.props.navigation.navigate("Home");
+    return;
   }
 
   async componentWillReceiveProps(props) {
@@ -135,7 +139,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   logout: bindActionCreators(logout, dispatch),
-  getFollowings: bindActionCreators(getFollowings, dispatch)
+  getFollowings: bindActionCreators(getFollowings, dispatch),
+  getRecommendations: bindActionCreators(getRecommendations, dispatch)
 });
 
 export default connect(

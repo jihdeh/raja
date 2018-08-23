@@ -9,13 +9,15 @@ import {
   REQUEST_SUCCESS,
   SHOW_SPINNER,
   HIDE_SPINNER,
-  GET_WALLET_AMOUNT
+  GET_WALLET_AMOUNT,
+  GET_RECOMMENDATIONS,
+  SELECT_RECOMMENDED
 } from '../Constants/ActionTypes';
 import { set } from '../utils/functional-immutable';
 
 const initialState = new Map();
 
-const ProductReducer = (state = initialState, { type, payload }) => {
+const SharedReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SHOW_SPINNER:
       return set('showSpinner', true, state);
@@ -37,9 +39,13 @@ const ProductReducer = (state = initialState, { type, payload }) => {
       return set('requestSuccess', payload, state);
     case GET_WALLET_AMOUNT:
       return set('walletAmount', payload, state);
+    case GET_RECOMMENDATIONS:
+      return set('recommendations', payload, state);
+    case SELECT_RECOMMENDED:
+      return set('selectedRecommendations', payload, state);
     default:
       return state;
   }
 };
 
-export default ProductReducer;
+export default SharedReducer;
